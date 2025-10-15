@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Markk's Emotions Scratch-Off</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&display=swap');
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+    }
+    
+    html {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    body {
+      font-family: 'Rubik', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    @keyframes bgShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    #emojiBG {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .emojiParticle {
+      position: absolute;
+      font-size: 1.8rem;
+      opacity: 0.25;
+      animation: floatUp linear infinite;
+      user-select: none;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-20vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+#container {
+  max-width: 480px;
+  margin: 1.5rem auto 3rem auto;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  box-shadow: 0 15px 50px rgba(0, 255, 136, 0.1);
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  padding: 20px 20px 30px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  backdrop-filter: blur(20px);
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  color: #00ff88;
+  text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+  user-select: none;
+  position: relative;
+  z-index: 15;
+  animation: floatTitle 3s ease-in-out infinite;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes floatTitle {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+    #balanceBar {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(0, 255, 136, 0.1);
+      color: #00ff88;
+      padding: 15px 20px;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      user-select: none;
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    #ticket {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 15px 50px rgba(0, 255, 136, 0.1);
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      backdrop-filter: blur(20px);
+      user-select: none;
+    }
+    #instructions {
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #00ff88;
+      text-align: center;
+      font-size: 1rem;
+      text-shadow: 0 0 10px #00ff88;
+    }
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      user-select: none;
+    }
+    .cell {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 255, 0.1));
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      border-radius: 15px;
+      font-size: 2.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      color: transparent;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+    }
+    .cell.disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .cell.revealed {
+      color: #00ff88;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 204, 255, 0.2));
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+      animation: pulseGlow 0.8s ease forwards;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+      50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.8); }
+      100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+    }
+    .cell.winning {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 165, 0, 0.3));
+      border-color: #ffd700;
+      box-shadow: 0 0 30px 10px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.3);
+      transition: box-shadow 0.4s ease;
+    }
+    #result {
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-align: center;
+      height: 2rem;
+      min-height: 2rem;
+      user-select: none;
+      color: #00ff88;
+      margin-top: 15px;
+      min-height: 38px;
+      text-shadow: 0 0 10px #00ff88;
+      background: rgba(0, 255, 136, 0.1);
+      padding: 10px;
+      border-radius: 15px;
+      border: 2px solid rgba(0, 255, 136, 0.3);
+    }
+    #controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    button {
+      flex: 1;
+      padding: 15px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      color: #000;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      box-shadow: none;
+    }
+    #buyBtn {
+      background: linear-gradient(135deg, #ff5e5b, #e64a48);
+    }
+    #buyBtn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(255, 94, 91, 0.6);
+    }
+    #useBtn {
+      background: linear-gradient(135deg, #00a878, #007a59);
+    }
+    #useBtn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 168, 120, 0.6);
+    }
+    #scanBtn {
+      background: linear-gradient(135deg, #007ea7, #00556d);
+    }
+    #scanBtn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 126, 167, 0.6);
+    }
+    #paybox {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 15px 50px rgba(0, 255, 136, 0.1);
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      backdrop-filter: blur(20px);
+      user-select: none;
+      font-size: 0.9rem;
+    }
+    #paybox h2 {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #00ff88;
+      text-shadow: 0 0 10px #00ff88;
+      font-size: 1.3rem;
+    }
+.payrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed #ddc;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+    .payrow:last-child {
+      border-bottom: none;
+    }
+.reward {
+  flex: 0 0 auto;
+  text-align: left;
+  font-weight: 700;
+  color: #00ff88;
+  min-width: 60px;
+  padding-right: 8px;
+  text-shadow: 0 0 5px #00ff88;
+}
+
+.emojis {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mood {
+  flex: 0 0 auto;
+  text-align: right;
+  color: #555;
+  font-weight: 600;
+  min-width: 80px;
+  padding-left: 8px;
+}
+    .payrow.lose .reward {
+      color: #ff4444;
+      text-shadow: 0 0 5px #ff4444;
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      #container {
+        margin: 1rem 10px 2rem;
+        padding: 12px 10px 18px;
+      }
+      .cell {
+        font-size: 1.7rem;
+      }
+      button {
+        font-size: 1rem;
+        padding: 10px;
+      }
+      .payrow {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="emojiBG"></div>
+  <div id="container" role="main" aria-label="Markk's Emotions Scratch-Off Game">
+    <h1>Markk's Emotions Scratch‑Off</h1>
+
+    <div id="balanceBar" aria-live="polite" aria-atomic="true" aria-relevant="text">
+      <div>Balance: $<span id="totalCash">0.00</span></div>
+      <div>Scratchers: <span id="scratchersCount">0</span></div>
+    </div>
+
+    <div id="ticket" aria-label="Scratch card grid" role="grid">
+      <div id="instructions">Click squares to reveal emojis. Buy & play scratchers to win!</div>
+      <div id="grid" role="rowgroup"></div>
+      <div id="result" aria-live="polite" aria-atomic="true"></div>
+    </div>
+
+    <div id="controls">
+      <button id="buyBtn" aria-label="Buy a scratcher for $5">Buy $5</button>
+      <button id="useBtn" aria-label="Play a scratcher" disabled>Play</button>
+      <button id="scanBtn" aria-label="Scan ticket to see results" disabled>Scan</button>
+    </div>
+
+    <div id="paybox" aria-label="Moods Pay Table">
+      <h2>Moods Pay Table</h2>
+      <div id="paytableList"></div>
+    </div>
+
+  </div>
+<div style="text-align: center;">
+  <a href="../../TheMarkkade.io-Home.html" style="color: #ffd700; user-select: none;">🏠 Back to Arcade</a>
+</div>
+<script>
+  const moods = [
+    { title: "Ecstatic", reward: 100, emojis: ["🤩","🥳","😂","🤗","😆"], win: true },
+    { title: "Happy", reward: 50, emojis: ["😃","😁","😊","😇","😋"], win: true },
+    { title: "Chill", reward: 25, emojis: ["😌","🥰","🤤","😎"], win: true },
+    { title: "Neutral", reward: 5, emojis: ["😐","😶","😑","😴"], win: true },
+    { title: "Awkward", reward: 1, emojis: ["😬","🙃","😅","🤨","😳"], win: true },
+    { title: "Uncertain", reward: "TICKET", emojis: ["🤔","😕","🥴","🤯"], win: true },
+    { title: "Disappointed", reward: -25, emojis: ["😟","😞","😒","😔","😣"], win: false },
+    { title: "Sad", reward: -50, emojis: ["😢","😥","😓","🥺","😖"], win: false },
+    { title: "Upset", reward: -75, emojis: ["😭","😫","😩","😤","😠"], win: false },
+    { title: "Overwhelmed", reward: -100, emojis: ["😱","😨","😰","😧","😵"], win: false },
+  ];
+
+  const ROWS = 5;
+  const COLS = 5;
+  const gridEl = document.getElementById("grid");
+  const totalCashEl = document.getElementById("totalCash");
+  const scratchersCountEl = document.getElementById("scratchersCount");
+  const buyBtn = document.getElementById("buyBtn");
+  const useBtn = document.getElementById("useBtn");
+  const scanBtn = document.getElementById("scanBtn");
+  const resultEl = document.getElementById("result");
+  const paytableListEl = document.getElementById("paytableList");
+
+  let balance = 0;
+  let scratchers = 0;
+  let ticket = null;
+  let scanned = false;
+  let isResetting = false;
+
+  // Load balance and scratchers count from localStorage on page load
+  function loadState() {
+    balance = Number(localStorage.getItem("localPlayerCash")) || 0;
+    scratchers = Number(localStorage.getItem("localPlayerScratchers")) || 0;
+    updateBalanceDisplay();
+    updateScratchersDisplay();
+    updateButtons();
+  }
+
+  // Save balance and scratchers count to localStorage
+  function saveState() {
+    localStorage.setItem("localPlayerCash", balance);
+    localStorage.setItem("localPlayerScratchers", scratchers);
+  }
+
+  function updateBalanceDisplay() {
+    totalCashEl.textContent = balance.toFixed(2);
+  }
+  function updateScratchersDisplay() {
+    scratchersCountEl.textContent = scratchers;
+  }
+
+  function updateButtons() {
+    buyBtn.disabled = balance < 5;
+    useBtn.disabled = scratchers < 1 || (ticket !== null && !scanned) || isResetting;
+    scanBtn.disabled = ticket === null || scanned || !allRevealed() || isResetting;
+  }
+
+  // Generate a new ticket grid with one winning row, others random non-winning
+  function generateTicket() {
+    const winMood = moods.filter(m => m.win)[Math.floor(Math.random() * 5)];
+    let winRow = [...winMood.emojis];
+    while (winRow.length < COLS) winRow.push(winMood.emojis[Math.floor(Math.random() * winMood.emojis.length)]);
+    winRow = shuffle(winRow).slice(0, COLS);
+
+    const winRowIndex = Math.floor(Math.random() * ROWS);
+    const grid = [];
+    for (let r = 0; r < ROWS; r++) {
+      if (r === winRowIndex) {
+        grid.push(winRow);
+      } else {
+        let row;
+        do {
+          row = Array.from({ length: COLS }, () => randomEmoji());
+        } while (moods.some(m => row.every(e => m.emojis.includes(e))));
+        grid.push(row);
+      }
+    }
+    return { grid, winRowIndex };
+  }
+
+  function randomEmoji() {
+    const allEmojis = moods.flatMap(m => m.emojis);
+    return allEmojis[Math.floor(Math.random() * allEmojis.length)];
+  }
+
+  // Shuffle helper
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function createGrid() {
+    gridEl.innerHTML = "";
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell", "disabled");
+        cell.textContent = "❓";
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.addEventListener("click", () => {
+          if (cell.classList.contains("disabled") || cell.classList.contains("revealed") || isResetting) return;
+          cell.classList.add("revealed");
+          cell.textContent = ticket.grid[r][c];
+          playScratchSound();
+          createParticle(cell);
+          checkAllRevealed();
+        });
+        gridEl.appendChild(cell);
+      }
+    }
+  }
+
+  function enableGrid(enabled) {
+    const cells = gridEl.querySelectorAll(".cell");
+    cells.forEach(c => {
+      if (!c.classList.contains("revealed")) {
+        c.classList.toggle("disabled", !enabled);
+      }
+    });
+  }
+
+  function allRevealed() {
+    return [...gridEl.querySelectorAll(".cell")].every(c => c.classList.contains("revealed"));
+  }
+
+  function checkAllRevealed() {
+    if (allRevealed()) {
+      scanBtn.disabled = false;
+      useBtn.disabled = true;
+    }
+  }
+
+  function scanTicket() {
+    if (scanned || !allRevealed() || isResetting) return;
+    scanned = true;
+    isResetting = true;
+    updateButtons();
+
+    let foundMood = null;
+    let winningRow = -1;
+
+    for (let r = 0; r < ROWS; r++) {
+      const rowEmojis = [...gridEl.children].slice(r * COLS, (r + 1) * COLS).map(c => c.textContent);
+      const mood = moods.find(m => rowEmojis.every(e => m.emojis.includes(e)));
+      if (mood) {
+        foundMood = mood;
+        winningRow = r;
+        break;
+      }
+    }
+
+    if (foundMood) {
+      highlightWinningRow(winningRow);
+      if (typeof foundMood.reward === "number") {
+        balance += foundMood.reward;
+        resultEl.textContent = `${foundMood.reward >= 0 ? "🎉 You won +$" : "😞 You lost -$"}${Math.abs(foundMood.reward)}`;
+      } else {
+        resultEl.textContent = "🎉 You won a FREE TICKET!";
+        scratchers++;
+      }
+    } else {
+      resultEl.textContent = "No winning mood found 😞";
+    }
+    updateBalanceDisplay();
+    updateScratchersDisplay();
+    saveState();
+    updateButtons();
+
+    setTimeout(() => {
+      resultEl.textContent = "Ripping ticket...";
+      clearWinningHighlight();
+      setTimeout(() => {
+        resetTicket();
+        isResetting = false;
+        updateButtons();
+      }, 5000);
+    }, 5000);
+  }
+
+  function highlightWinningRow(row) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = [...gridEl.children][row * COLS + c];
+      cell.classList.add("winning");
+    }
+  }
+
+  function clearWinningHighlight() {
+    [...gridEl.children].forEach(cell => {
+      cell.classList.remove("winning");
+    });
+  }
+
+  function resetTicket() {
+    ticket = null;
+    scanned = false;
+    resultEl.textContent = "";
+    createGrid();
+    enableGrid(false);
+    updateButtons();
+  }
+
+  // Scratch sound effect
+  const scratchAudio = new Audio("https://www.soundjay.com/buttons/sounds/button-09.mp3");
+  function playScratchSound() {
+    scratchAudio.currentTime = 0;
+    scratchAudio.play();
+  }
+
+  // Particle effect on scratch
+  function createParticle(cell) {
+    const particle = document.createElement("div");
+    particle.textContent = cell.textContent;
+    particle.style.position = "absolute";
+    particle.style.fontSize = "1.5rem";
+    particle.style.left = (cell.offsetLeft + cell.offsetWidth / 2) + "px";
+    particle.style.top = (cell.offsetTop + cell.offsetHeight / 2) + "px";
+    particle.style.pointerEvents = "none";
+    particle.style.color = "#f9d71c";
+    particle.style.textShadow = "0 0 6px #ffdc55";
+    particle.style.userSelect = "none";
+    particle.style.transition = "transform 0.8s ease, opacity 0.8s ease";
+    particle.style.zIndex = "20";
+
+    document.getElementById("ticket").appendChild(particle);
+
+    requestAnimationFrame(() => {
+      particle.style.transform = `translateY(-50px) scale(1.3)`;
+      particle.style.opacity = "0";
+    });
+
+    setTimeout(() => {
+      particle.remove();
+    }, 800);
+  }
+
+  // Initialize paytable
+  function initPayTable() {
+    paytableListEl.innerHTML = "";
+    moods.forEach(m => {
+      const row = document.createElement("div");
+      row.className = "payrow";
+      if (!m.win) row.classList.add("lose");
+
+      const reward = document.createElement("div");
+      reward.className = "reward";
+      reward.textContent = typeof m.reward === "number" ? (m.reward >= 0 ? `+$${m.reward}` : `-$${Math.abs(m.reward)}`) : "Free Ticket";
+
+      const emojis = document.createElement("div");
+      emojis.className = "emojis";
+      emojis.textContent = m.emojis.join(" ");
+
+      const mood = document.createElement("div");
+      mood.className = "mood";
+      mood.textContent = m.title;
+
+      row.append(reward, emojis, mood);
+      paytableListEl.appendChild(row);
+    });
+  }
+
+  // Emoji floating background setup
+  const emojiBG = document.getElementById("emojiBG");
+  const allEmojis = moods.flatMap(m => m.emojis);
+  for (let i = 0; i < 30; i++) {
+    const e = document.createElement("div");
+    e.className = "emojiParticle";
+    e.textContent = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+    e.style.left = (Math.random() * 100) + "%";
+    e.style.fontSize = (12 + Math.random() * 18) + "px";
+    e.style.animationDuration = (8 + Math.random() * 12) + "s";
+    e.style.animationDelay = "-" + (Math.random() * 20) + "s";
+    emojiBG.appendChild(e);
+  }
+
+  // Button events
+  buyBtn.addEventListener("click", () => {
+    if (balance < 5) {
+      alert("You need at least $5 to buy a scratcher!");
+      return;
+    }
+    if (isResetting) return;
+    balance -= 5;
+    scratchers++;
+    updateBalanceDisplay();
+    updateScratchersDisplay();
+    saveState();
+    updateButtons();
+  });
+
+  useBtn.addEventListener("click", () => {
+    if (scratchers < 1 || isResetting) return;
+    scratchers--;
+    ticket = generateTicket();
+    scanned = false;
+    resultEl.textContent = "";
+    updateScratchersDisplay();
+    saveState();
+    createGrid();
+    enableGrid(true);
+    updateButtons();
+  });
+
+  scanBtn.addEventListener("click", () => {
+    scanTicket();
+  });
+
+  // Initial load
+  loadState();
+  initPayTable();
+  resetTicket();
+</script>
+</body>
+</html>

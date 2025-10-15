@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Markk’d for Fortune</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      user-select: none;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    h1 {
+      background: linear-gradient(45deg, #00ff88, #00ccff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      padding: 20px;
+      font-size: 2.5em;
+      margin: 0;
+      text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+      letter-spacing: 2px;
+    }
+    #status {
+      font-size: 1.3em;
+      margin: 15px 0;
+      color: #00ff88;
+      min-height: 1.6em;
+      text-shadow: 0 0 10px #00ff88;
+      background: rgba(0, 255, 136, 0.1);
+      padding: 10px 20px;
+      border-radius: 15px;
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    #game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      position: relative;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      border-radius: 25px;
+      box-shadow: 0 15px 50px rgba(0, 255, 136, 0.1);
+    }
+    .disabled-grid {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    .card-section {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      justify-items: center;
+      width: 100%;
+      max-width: 500px;
+	
+    }
+	
+    .scratch-slot {
+      position: relative;
+      width: 80px;
+      height: 60px;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 255, 0.1));
+      border-radius: 15px;
+      overflow: hidden;
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    .scratch-content {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      font-size: 1.5em;
+      font-weight: bold;
+      line-height: 60px;
+      text-align: center;
+      z-index: 1;
+      user-select: none;
+      border-radius: 15px;
+    }
+    .grayed {
+      color: #999 !important;
+      background: #ccc !important;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    #result {
+      font-size: 1.3em;
+      color: #00ff88;
+      margin: 15px 0;
+      min-height: 1.5em;
+      min-width: 280px;
+      text-shadow: 0 0 10px #00ff88;
+      background: rgba(0, 255, 136, 0.1);
+      padding: 10px 20px;
+      border-radius: 15px;
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    button {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 1.1em;
+      background: linear-gradient(135deg, #00ff88, #00ccff);
+      color: #000;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 600;
+    }
+    button:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 255, 136, 0.6);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #paytable {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      margin: 20px auto;
+      padding: 20px 25px;
+      max-width: 400px;
+      border-radius: 20px;
+      color: #fff;
+      text-align: left;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 15px 50px rgba(0, 255, 136, 0.1);
+    }
+    #paytable h2 {
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      color: #00ff88;
+      text-align: center;
+      text-shadow: 0 0 10px #00ff88;
+    }
+    #paytable ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 1em;
+    }
+    #paytable li {
+      margin: 6px 0;
+      line-height: 1.3em;
+    }
+    #popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(212, 175, 55, 0.9);
+      color: #1d1f27;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1.4em;
+      font-weight: bold;
+      z-index: 9999;
+      display: none;
+      box-shadow: 0 0 15px gold;
+      user-select: none;
+    }
+    #paytable-balance {
+      text-align: center;
+      font-size: 1.3em;
+      margin-bottom: 10px;
+      color: #ffd700;
+      user-select: none;
+    }
+	#your-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  justify-content: center;  /* This centers the grid horizontally */
+  max-width: 270px;
+  margin: 0 auto;
+}
+  </style>
+</head>
+<body>
+  <h1>🎰 Markk’d for Fortune 🎰</h1>
+  <div id="popup"></div>
+  <div id="status">Balance: $0.00 | Tickets: 0</div>
+  <div id="game">
+    <div>
+      <h2>🎯 Your Winning Numbers</h2>
+      <div class="card-section" id="your-numbers"></div>
+    </div>
+    <div>
+      <h2>🎟️ Scratch Off</h2>
+      <div class="card-section" id="scratch-grid"></div>
+    </div>
+  </div>
+  <div id="result"></div>
+  <button id="buy-ticket-btn">Buy Ticket ($5)</button>
+  <button id="play-ticket-btn">Use Ticket to Play</button>
+  <button id="free-ticket-btn">🎟️ Free Ticket</button>
+  <br />
+  <div id="paytable">
+    <div id="paytable-balance">Balance: $0.00 | Tickets: 0</div>
+    <h2>Pay Table</h2>
+    <ul>
+      <li>🎯 Match 1 Number = $1 (Paid games only)</li>
+      <li>🎯 Match 2 Numbers = $2 (Paid games only)</li>
+      <li>🎯 Match 3 Numbers = $3 (Paid games only)</li>
+      <li>💰 2x Bonus = Double Winnings (Paid games only)</li>
+      <li>💰 5x Bonus = 5x Winnings (Paid games only)</li>
+      <li>💰 10x Bonus = 10x Winnings (Paid games only)</li>
+      <li>💰 100x Bonus = 100x Winnings (Paid games only)</li>
+      <li>🎟️ Free Ticket = Free Ticket Win (Both games)</li>
+    </ul>
+  </div>
+<div style="text-align: center;">
+  <a href="../../TheMarkkade.io-Home.html" style="color: #ffd700; user-select: none;">🏠 Back to Arcade</a>
+</div>
+<script>
+(() => {
+  // Initialize balance and tickets from localStorage or defaults
+  let balance = parseFloat(localStorage.getItem('localPlayerCash')) || 0;
+  let tickets = parseInt(localStorage.getItem('currentTickets')) || 0;
+
+  let gameStarted = false;
+  let freeTicketMode = false; // true if playing free ticket scratch
+  let playerNumbers = [];
+  let scratchNumbers = [];
+  let matches = 0;
+  let bonus = null;
+  let countdownInterval = null;
+  
+  let ticketsBought = parseInt(localStorage.getItem('ticketsBought')) || 0;
+let ticketsScratched = parseInt(localStorage.getItem('ticketsScratched')) || 0;
+let ticketsWon = parseInt(localStorage.getItem('ticketsWon')) || 0;
+let ticketsLost = parseInt(localStorage.getItem('ticketsLost')) || 0;
+
+
+  const bonuses = ["2x", "5x", "10x", "100x", "Free Ticket"];
+
+  const statusEl = document.getElementById('status');
+  const balanceDisplay = document.getElementById('paytable-balance');
+  const resultDiv = document.getElementById('result');
+  const popup = document.getElementById('popup');
+
+  const buyBtn = document.getElementById('buy-ticket-btn');
+  const playBtn = document.getElementById('play-ticket-btn');
+  const freeBtn = document.getElementById('free-ticket-btn');
+
+  function saveData() {
+    localStorage.setItem('localPlayerCash', balance);
+    localStorage.setItem('currentTickets', tickets);
+  }
+
+  function updateDisplay(countdownSeconds = null) {
+    saveData();
+    let statusText = `Balance: $${balance.toFixed(2)} | Tickets: ${tickets}`;
+    if (countdownSeconds !== null) {
+      statusText += ` | Ripping Ticket...`;
+    }
+    statusEl.innerText = statusText;
+    balanceDisplay.innerText = statusText;
+  }
+
+  function showPopup(text, duration = 2500) {
+    popup.innerText = text;
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.style.display = 'none';
+    }, duration);
+  }
+
+  function generateUniqueNumbers(count) {
+    const nums = [];
+    while (nums.length < count) {
+      const n = Math.floor(Math.random() * 99) + 1;
+      if (!nums.includes(n)) nums.push(n);
+    }
+    return nums;
+  }
+
+  function generateScratchNumbers(realTicket = true) {
+    // For free ticket mode, we only allow Free Ticket as possible win, others show faded prizes
+    if (!realTicket) {
+      const result = [];
+      while (result.length < 15) {
+        const chance = Math.random();
+        if (chance < 0.02) result.push("Free Ticket");
+        else {
+          // Show possible prizes faded for fun (numbers or bonuses)
+          const possiblePrizes = [...bonuses, ...Array.from({length:99}, (_,i) => i+1)];
+          const val = possiblePrizes[Math.floor(Math.random() * possiblePrizes.length)];
+          result.push(val);
+        }
+      }
+      return result;
+    }
+    // Real ticket scratch numbers
+    const result = [];
+    while (result.length < 15) {
+      const chance = Math.random();
+      if (chance < 0.01) result.push("100x");
+      else if (chance < 0.03) result.push("10x");
+      else if (chance < 0.06) result.push("5x");
+      else if (chance < 0.1) result.push("2x");
+      else if (chance < 0.12) result.push("Free Ticket");
+      else result.push(Math.floor(Math.random() * 99) + 1);
+    }
+    return result;
+  }
+
+  function createScratchSlot(value, isWinning = false, revealed = true, freeTicketFake = false) {
+    const slot = document.createElement('div');
+    slot.className = 'scratch-slot';
+
+    const text = document.createElement('div');
+    text.className = 'scratch-content';
+
+    // For free ticket mode, show prizes faded except actual Free Ticket values
+    if (freeTicketFake && !value.toString().includes("Free Ticket") && !isWinning) {
+      text.classList.add('grayed');
+    }
+
+    text.innerText = revealed ? value : '?';
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 300;
+    canvas.height = 300;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#999';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    canvas.addEventListener('click', () => {
+      if (!gameStarted || ctx.globalAlpha === 0) return;
+
+      // In free ticket mode, only reveal the slot, no impact except for free ticket prize
+      text.innerText = value;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 0;
+
+      if (!isWinning) {
+        if (!freeTicketMode) {
+          // Real ticket game logic
+          if (bonuses.includes(value)) {
+            bonus = value;
+          }
+          if (playerNumbers.includes(value)) {
+            matches++;
+          }
+        } else {
+          // Free ticket game: only free ticket wins tickets, others do nothing
+          if (value === "Free Ticket") {
+            tickets++;
+            updateDisplay();
+            showPopup('🎟️ You won a Free Ticket!', 1500);
+          }
+        }
+      }
+
+      checkIfAllScratched();
+    });
+
+    slot.appendChild(text);
+    slot.appendChild(canvas);
+    return slot;
+  }
+
+  function checkIfAllScratched() {
+    const canvases = document.querySelectorAll('#scratch-grid canvas');
+    const allCleared = Array.from(canvases).every(c => c.getContext('2d').globalAlpha === 0);
+    if (allCleared) endGame();
+  }
+
+function endGame() {
+  clearInterval(countdownInterval);
+
+  if (freeTicketMode) {
+    resultDiv.innerText = '🎟️ Free Ticket scratch complete!';
+  } else {
+    let win = 0;
+    let base = matches === 1 ? 1 : matches === 2 ? 2 : matches === 3 ? 3 : 0;
+    let multi = (bonus && bonus.endsWith('x')) ? parseInt(bonus) : 1;
+
+    tickets = Math.max(0, tickets - 1);
+    win = base * multi;
+    if (bonus === "Free Ticket") tickets++;
+
+    if (win > 0) balance += win;
+
+    let resultText = '';
+    if (win > 0) resultText += `💰 You matched ${matches} for $${win.toFixed(2)}`;
+    else if (bonus === "Free Ticket") resultText += '🎟️ You won a Free Ticket!';
+    else resultText = '😢 No matches';
+
+    if (bonus && bonus !== "Free Ticket") resultText += ` + Bonus ${bonus}`;
+
+    resultDiv.innerText = resultText;
+  }
+
+  updateDisplay();
+
+  gameStarted = false;
+  disableButtons(true);
+
+  // Clear the result message after 5 seconds
+  setTimeout(() => {
+    resultDiv.innerText = '';
+  }, 5000);
+
+  let countdown = 5;
+  updateDisplay(countdown);
+  countdownInterval = setInterval(() => {
+    countdown--;
+    if (countdown > 0) {
+      updateDisplay(countdown);
+    } else {
+      clearInterval(countdownInterval);
+      updateDisplay();
+      disableButtons(false);
+      showEmptyGrid();
+      updateButtonStates();
+    }
+  }, 1000);
+}
+
+
+  function disableButtons(disable) {
+    buyBtn.disabled = disable || balance < 5 || gameStarted;
+    playBtn.disabled = disable || tickets < 1 || gameStarted;
+    freeBtn.disabled = disable || gameStarted;
+  }
+
+  function updateButtonStates() {
+    buyBtn.disabled = balance < 5 || gameStarted;
+    playBtn.disabled = tickets < 1 || gameStarted;
+    freeBtn.disabled = gameStarted;
+  }
+
+  function buildBoard() {
+    playerNumbers = generateUniqueNumbers(3);
+    scratchNumbers = generateScratchNumbers(true);
+    matches = 0;
+    bonus = null;
+    resultDiv.innerText = '';
+
+    const yourNumbersDiv = document.getElementById('your-numbers');
+    const scratchGrid = document.getElementById('scratch-grid');
+    yourNumbersDiv.innerHTML = '';
+    scratchGrid.innerHTML = '';
+
+    playerNumbers.forEach(num => {
+      yourNumbersDiv.appendChild(createScratchSlot(num, true, true));
+    });
+    scratchNumbers.forEach(val => {
+      scratchGrid.appendChild(createScratchSlot(val, false, true));
+    });
+
+    yourNumbersDiv.classList.remove('disabled-grid');
+    scratchGrid.classList.remove('disabled-grid');
+
+    gameStarted = true;
+    updateButtonStates();
+  }
+
+  function buildFreeTicketBoard() {
+    playerNumbers = generateUniqueNumbers(3);
+    scratchNumbers = generateScratchNumbers(false); // free ticket mode
+
+    matches = 0;
+    bonus = null;
+    resultDiv.innerText = '';
+
+    const yourNumbersDiv = document.getElementById('your-numbers');
+    const scratchGrid = document.getElementById('scratch-grid');
+    yourNumbersDiv.innerHTML = '';
+    scratchGrid.innerHTML = '';
+
+    // In free ticket mode, all numbers & scratch slots are revealed but faded except Free Ticket
+    playerNumbers.forEach(num => {
+      yourNumbersDiv.appendChild(createScratchSlot(num, true, true, true));
+    });
+    scratchNumbers.forEach(val => {
+      scratchGrid.appendChild(createScratchSlot(val, false, true, true));
+    });
+
+    yourNumbersDiv.classList.remove('disabled-grid');
+    scratchGrid.classList.remove('disabled-grid');
+
+    gameStarted = true;
+    updateButtonStates();
+  }
+
+  function showEmptyGrid() {
+    const yourNumbersDiv = document.getElementById('your-numbers');
+    const scratchGrid = document.getElementById('scratch-grid');
+    yourNumbersDiv.innerHTML = '';
+    scratchGrid.innerHTML = '';
+
+    const placeholderNumbers = generateUniqueNumbers(3);
+    const placeholderScratch = generateScratchNumbers(true);
+
+    placeholderNumbers.forEach(num => {
+      yourNumbersDiv.appendChild(createScratchSlot(num, true, false));
+    });
+    placeholderScratch.forEach(val => {
+      scratchGrid.appendChild(createScratchSlot(val, false, false));
+    });
+
+    yourNumbersDiv.classList.add('disabled-grid');
+    scratchGrid.classList.add('disabled-grid');
+  }
+
+  buyBtn.addEventListener('click', () => {
+    if (balance >= 5) {
+      balance -= 5;
+      tickets++;
+      updateDisplay();
+      updateButtonStates();
+      showPopup('🎟️ Ticket purchased!');
+    } else {
+      showPopup('❌ Not enough funds to buy ticket ($5 required).');
+    }
+  });
+
+  playBtn.addEventListener('click', () => {
+    if (tickets > 0) {
+      freeTicketMode = false;
+      gameStarted = true;
+      buildBoard();
+      showPopup('🎟️ Game started! Scratch your ticket.', 2000);
+      updateButtonStates();
+    } else {
+      showPopup('❌ You need tickets to play.');
+    }
+  });
+
+  freeBtn.addEventListener('click', () => {
+    freeTicketMode = true;
+    gameStarted = true;
+    buildFreeTicketBoard();
+    showPopup('🎟️ Free Ticket scratch started! Win a Free Ticket or see what you could have won!', 3000);
+    updateButtonStates();
+  });
+
+  // Initial setup
+  updateDisplay();
+  showEmptyGrid();
+  updateButtonStates();
+})();
+</script>
+</body>
+</html>
