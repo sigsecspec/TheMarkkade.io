@@ -462,7 +462,7 @@
 
   .main-controls {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
     width: 100%;
     max-width: 600px;
@@ -518,22 +518,6 @@
 
   .action-buttons button:active {
     transform: scale(0.95);
-  }
-
-  #betBtn {
-    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,250,205,0.95) 100%);
-    border: 3px solid rgba(255, 140, 0, 0.6);
-    color: #ff6b35;
-  }
-
-  #betBtn.selected {
-    background: linear-gradient(135deg, rgba(255,215,0,1) 0%, rgba(255,255,0,1) 100%);
-    color: #000;
-    border-color: rgba(255, 69, 0, 1);
-    box-shadow: 
-      0 6px 20px rgba(255,215,0,0.6),
-      inset 0 2px 0 rgba(255,255,255,0.6),
-      0 0 20px rgba(255,215,0,0.5);
   }
 
   #autoSpinBtn {
@@ -765,64 +749,6 @@
   }
 
   /* Mobile/Razr optimizations */
-  #autoSpinSelector {
-    background: linear-gradient(135deg, rgba(255,140,0,0.9) 0%, rgba(255,69,0,0.95) 100%);
-    border: 3px solid rgba(255, 215, 0, 0.7);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 
-      0 6px 25px rgba(0,0,0,0.8),
-      inset 0 2px 0 rgba(255,255,255,0.15);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    width: 100%;
-    max-width: 600px;
-    margin-top: 4px;
-  }
-  
-  #autoSpinSelector button {
-    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,250,205,0.95) 100%);
-    border: 3px solid rgba(255, 140, 0, 0.6);
-    color: #ff6b35;
-    padding: 14px 18px;
-    font-weight: 900;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 6px;
-    letter-spacing: 1px;
-    box-shadow: 
-      0 4px 12px rgba(0,0,0,0.6),
-      inset 0 2px 0 rgba(255,255,255,0.4);
-    min-height: 52px;
-    transition: all 0.3s ease;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  }
-  
-  #autoSpinSelector button:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 215, 0, 0.9);
-    box-shadow: 
-      0 6px 16px rgba(0,0,0,0.8),
-      inset 0 2px 0 rgba(255,255,255,0.5);
-  }
-  
-  #autoSpinSelector button:active {
-    transform: scale(0.95);
-  }
-  
-  #stopAutoSpinBtn {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, rgba(255,69,0,0.95) 0%, rgba(220,20,60,0.95) 100%) !important;
-    color: #fff !important;
-    border-color: rgba(139, 0, 0, 0.8) !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  }
-  
-  #stopAutoSpinBtn:hover {
-    background: linear-gradient(135deg, rgba(220,20,60,0.95) 0%, rgba(178,34,34,0.95) 100%) !important;
-  }
-
   @media (max-width: 480px) {
     .fold-top, .fold-bottom {
       padding: 12px;
@@ -886,18 +812,6 @@
       gap: 8px;
     }
     
-    #autoSpinSelector {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      padding: 14px;
-    }
-    
-    #autoSpinSelector button {
-      min-height: 44px;
-      font-size: 0.85rem;
-      padding: 10px 12px;
-    }
-
     .action-buttons button {
       font-size: 0.8rem;
       padding: 10px;
@@ -954,8 +868,7 @@
     </div>
 
     <div class="main-controls">
-      <button id="betBtn">$10 💰 Bet</button>
-      <button id="autoSpinBtn">🔄 Auto</button>
+      <button id="autoSpinBtn">🔄 Start Auto</button>
       <button id="spinBtn">🎰 Spin</button>
     </div>
 
@@ -964,13 +877,6 @@
       <button id="leaveGameBtn">🚪 Exit</button>
     </div>
     
-    <div id="autoSpinSelector" style="display: none;">
-      <button data-autospins="5">5 Spins</button>
-      <button data-autospins="10">10 Spins</button>
-      <button data-autospins="25">25 Spins</button>
-      <button data-autospins="50">50 Spins</button>
-      <button data-autospins="100">100 Spins</button>
-    </div>
   </div>
 </div>
 
@@ -1462,16 +1368,12 @@
   const closePayTableBtn = document.getElementById('closePayTableBtn');
   const leaveGameBtn = document.getElementById('leaveGameBtn');
   const autoSpinBtn = document.getElementById('autoSpinBtn');
-  const autoSpinSelector = document.getElementById('autoSpinSelector');
-  const betBtn = document.getElementById('betBtn');
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
   let bet = 10;
   let spinning = false;
   let multiplierActive = false;
-  let autoSpinCount = 0;
   let autoSpinActive = false;
-  let stopAutoSpin = false;
 
   const cells = [];
   for (let r = 0; r < rows; r++) {
@@ -1803,72 +1705,34 @@
     });
     e.target.classList.add('selected');
     bet = Number(e.target.dataset.bet);
-    betBtn.textContent = `$${bet} 💰 Bet`;
-  });
-
-  // Bet button cycles through bet amounts
-  const betAmounts = [10, 20, 30, 40, 50];
-  let currentBetIndex = 0;
-  
-  betBtn.addEventListener('click', () => {
-    currentBetIndex = (currentBetIndex + 1) % betAmounts.length;
-    bet = betAmounts[currentBetIndex];
-    betBtn.textContent = `$${bet} 💰 Bet`;
-    
-    // Update bet selector visual
-    betSelector.querySelectorAll('button').forEach(b => {
-      b.classList.remove('selected');
-      if (Number(b.dataset.bet) === bet) {
-        b.classList.add('selected');
-      }
-    });
   });
 
   spinBtn.addEventListener('click', spin);
   
-  // Auto Spin functionality
-  autoSpinBtn.addEventListener('click', () => {
+  // Simple Auto Spin functionality - just start/stop toggle
+  autoSpinBtn.addEventListener('click', async () => {
     if (autoSpinActive) {
       // Stop auto spin
-      stopAutoSpin = true;
       autoSpinActive = false;
-      autoSpinBtn.textContent = '🔄 Auto';
+      autoSpinBtn.textContent = '🔄 Start Auto';
       autoSpinBtn.classList.remove('active');
-      autoSpinSelector.style.display = 'none';
     } else {
-      // Show auto spin selector
-      autoSpinSelector.style.display = autoSpinSelector.style.display === 'none' ? 'grid' : 'none';
-    }
-  });
-  
-  autoSpinSelector.addEventListener('click', async (e) => {
-    if (e.target.tagName !== 'BUTTON') return;
-    
-    const spins = Number(e.target.dataset.autospins);
-    if (spins) {
-      autoSpinCount = spins;
+      // Start auto spin
       autoSpinActive = true;
-      stopAutoSpin = false;
-      autoSpinSelector.style.display = 'none';
-      autoSpinBtn.textContent = `⏹ Stop (${autoSpinCount})`;
+      autoSpinBtn.textContent = '⏹ Stop Auto';
       autoSpinBtn.classList.add('active');
       
-      // Start auto spinning
-      while (autoSpinCount > 0 && !stopAutoSpin && balance >= bet) {
+      // Keep spinning until stopped or insufficient funds
+      while (autoSpinActive && balance >= bet) {
         await spin();
-        autoSpinCount--;
-        if (autoSpinActive) {
-          autoSpinBtn.textContent = autoSpinCount > 0 ? `⏹ Stop (${autoSpinCount})` : '🔄 Auto';
-        }
-        if (autoSpinCount > 0 && !stopAutoSpin && balance >= bet) {
+        if (autoSpinActive && balance >= bet) {
           await new Promise(r => setTimeout(r, 500)); // Brief pause between spins
         }
       }
       
       // Auto spin finished
       autoSpinActive = false;
-      stopAutoSpin = false;
-      autoSpinBtn.textContent = '🔄 Auto';
+      autoSpinBtn.textContent = '🔄 Start Auto';
       autoSpinBtn.classList.remove('active');
       
       if (balance < bet) {
@@ -1880,7 +1744,6 @@
   updateBalanceDisplay();
   updateMultiplierDisplay();
   renderGrid(fillGridRandom());
-  betBtn.textContent = `$${bet} 💰 Bet`;
   
   // Start ambient orchard sounds
   function playAmbientSounds() {
