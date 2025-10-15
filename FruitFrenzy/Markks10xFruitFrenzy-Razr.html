@@ -325,7 +325,7 @@
 
   .action-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
     width: 100%;
     max-width: 100%;
@@ -558,6 +558,47 @@
     }
   }
   
+  #autoSpinSelector {
+    background: linear-gradient(135deg, rgba(255,140,0,0.9) 0%, rgba(255,69,0,0.95) 100%);
+    border: 3px solid rgba(255, 215, 0, 0.7);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.8);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 4px;
+  }
+  
+  #autoSpinSelector button {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,250,205,0.95) 100%);
+    border: 2px solid rgba(255, 140, 0, 0.6);
+    color: #ff6b35;
+    padding: 12px 10px;
+    font-weight: 900;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    cursor: pointer;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    min-height: 44px;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  #autoSpinSelector button:active {
+    transform: scale(0.95);
+  }
+  
+  #stopAutoSpinBtn {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(255,69,0,0.95) 0%, rgba(220,20,60,0.95) 100%) !important;
+    color: #fff !important;
+    border-color: rgba(139, 0, 0, 0.8) !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+  
   /* Performance optimizations for all mobile devices */
   @media (max-width: 480px) {
     * {
@@ -606,8 +647,18 @@
 
     <div class="action-buttons">
       <button id="spinBtn">🎰 Spin</button>
+      <button id="autoSpinBtn">🔄 Auto</button>
       <button id="openPayTableBtn">📋 Pay</button>
       <button id="leaveGameBtn">🚪 Exit</button>
+    </div>
+    
+    <div id="autoSpinSelector" style="display: none;">
+      <button data-autospins="5">5 Spins</button>
+      <button data-autospins="10">10 Spins</button>
+      <button data-autospins="25">25 Spins</button>
+      <button data-autospins="50">50 Spins</button>
+      <button data-autospins="100">100 Spins</button>
+      <button id="stopAutoSpinBtn">⏹ Stop</button>
     </div>
   </div>
 </div>
@@ -857,11 +908,17 @@
   const paytableModal = document.getElementById('paytableModal');
   const closePayTableBtn = document.getElementById('closePayTableBtn');
   const leaveGameBtn = document.getElementById('leaveGameBtn');
+  const autoSpinBtn = document.getElementById('autoSpinBtn');
+  const autoSpinSelector = document.getElementById('autoSpinSelector');
+  const stopAutoSpinBtn = document.getElementById('stopAutoSpinBtn');
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
   let bet = 10;
   let spinning = false;
   let multiplierActive = false;
+  let autoSpinCount = 0;
+  let autoSpinActive = false;
+  let stopAutoSpin = false;
   
   // Mobile performance optimization flags
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -1192,6 +1249,59 @@
   });
 
   spinBtn.addEventListener('click', spin);
+  
+  // Auto Spin functionality
+  autoSpinBtn.addEventListener('click', () => {
+    if (autoSpinActive) {
+      stopAutoSpin = true;
+      autoSpinActive = false;
+      autoSpinBtn.textContent = '🔄 Auto';
+      autoSpinSelector.style.display = 'none';
+    } else {
+      autoSpinSelector.style.display = autoSpinSelector.style.display === 'none' ? 'grid' : 'none';
+    }
+  });
+  
+  autoSpinSelector.addEventListener('click', async (e) => {
+    if (e.target.tagName !== 'BUTTON') return;
+    if (e.target.id === 'stopAutoSpinBtn') {
+      stopAutoSpin = true;
+      autoSpinActive = false;
+      autoSpinBtn.textContent = '🔄 Auto';
+      autoSpinSelector.style.display = 'none';
+      return;
+    }
+    
+    const spins = Number(e.target.dataset.autospins);
+    if (spins) {
+      autoSpinCount = spins;
+      autoSpinActive = true;
+      stopAutoSpin = false;
+      autoSpinSelector.style.display = 'none';
+      autoSpinBtn.textContent = `🔄 ${autoSpinCount}`;
+      
+      // Start auto spinning
+      while (autoSpinCount > 0 && !stopAutoSpin && balance >= bet) {
+        await spin();
+        autoSpinCount--;
+        if (autoSpinActive) {
+          autoSpinBtn.textContent = autoSpinCount > 0 ? `🔄 ${autoSpinCount}` : '🔄 Auto';
+        }
+        if (autoSpinCount > 0 && !stopAutoSpin && balance >= bet) {
+          await new Promise(r => setTimeout(r, 400)); // Brief pause between spins (faster on mobile)
+        }
+      }
+      
+      // Auto spin finished
+      autoSpinActive = false;
+      stopAutoSpin = false;
+      autoSpinBtn.textContent = '🔄 Auto';
+      
+      if (balance < bet) {
+        showMessage('⚠️ Auto Spin Stopped - Insufficient Funds ⚠️');
+      }
+    }
+  });
 
   updateBalanceDisplay();
   updateMultiplierDisplay();
