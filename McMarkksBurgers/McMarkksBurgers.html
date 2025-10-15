@@ -894,15 +894,15 @@
   </div>
 
   <div class="fold-bottom">
-    <div id="betSelector">
-      <button id="autoSpinBtn" class="selected">🔄 Auto Spin</button>
-    </div>
-
     <div id="cashRegister">
       <div class="register-label">💵 Cost Per Spin 💵</div>
       <div class="cost-display">
-        <div class="cost-amount">$25.00</div>
+        <div class="cost-amount">$15.00</div>
       </div>
+    </div>
+
+    <div id="betSelector">
+      <button id="autoSpinBtn" class="selected">🔄 Auto Spin</button>
     </div>
 
     <div class="action-buttons">
@@ -995,7 +995,7 @@
 
   const symbols = ["🍔", "🍟", "🥤", "🥗"];
   let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
-  let bet = 25;
+  let bet = 15;
   let spinning = false;
   let autoSpinning = false;
   let autoSpinInterval = null;
@@ -1015,6 +1015,7 @@
   const openPayTableBtn = document.getElementById("openPayTableBtn");
   const paytableModal = document.getElementById("paytableModal");
   const closePayTableBtn = document.getElementById("closePayTableBtn");
+  const costAmountDisplay = document.querySelector(".cost-amount");
   
   balanceDisplay.textContent = `Balance: $${balance}`;
 
@@ -1288,12 +1289,16 @@
     autoSpinning = !autoSpinning;
     
     if (autoSpinning) {
+      bet = 25;
+      costAmountDisplay.textContent = '$25.00';
       autoSpinBtn.textContent = '⏸️ Stop Auto';
       autoSpinBtn.style.background = 'linear-gradient(135deg, rgba(220, 53, 69, 0.95) 0%, rgba(200, 35, 51, 1) 100%)';
       autoSpinBtn.style.color = '#fff';
       messageDisplay.textContent = '🔄 Auto Spin Activated!';
       startAutoSpin();
     } else {
+      bet = 15;
+      costAmountDisplay.textContent = '$15.00';
       autoSpinBtn.textContent = '🔄 Auto Spin';
       autoSpinBtn.style.background = '';
       autoSpinBtn.style.color = '';
@@ -1306,6 +1311,8 @@
     if (balance < bet) {
       messageDisplay.textContent = `❌ Need $${bet} to order!`;
       autoSpinning = false;
+      bet = 15;
+      costAmountDisplay.textContent = '$15.00';
       autoSpinBtn.textContent = '🔄 Auto Spin';
       autoSpinBtn.style.background = '';
       autoSpinBtn.style.color = '';
@@ -1322,6 +1329,8 @@
       } else if (balance < bet) {
         messageDisplay.textContent = `❌ Insufficient funds for auto spin!`;
         autoSpinning = false;
+        bet = 15;
+        costAmountDisplay.textContent = '$15.00';
         autoSpinBtn.textContent = '🔄 Auto Spin';
         autoSpinBtn.style.background = '';
         autoSpinBtn.style.color = '';
@@ -1344,6 +1353,8 @@
       messageDisplay.textContent = `❌ Need $${bet} to order!`;
       if (autoSpinning) {
         autoSpinning = false;
+        bet = 15;
+        costAmountDisplay.textContent = '$15.00';
         autoSpinBtn.textContent = '🔄 Auto Spin';
         autoSpinBtn.style.background = '';
         autoSpinBtn.style.color = '';
