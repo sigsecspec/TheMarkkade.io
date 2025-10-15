@@ -1642,11 +1642,8 @@
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
-        gain.connect(ctx.destination);
-        
-        osc.frequency.value = 440;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.1, now);
+      let balance = Math.max(0, Number(localStorage.getItem('localPlayerCash')) || 1000);
+  let freeSpins = Math.max(0, Number(localStorage.getItem('freeSpins')) || 0);AtTime(0.1, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
         
         osc.start(now);
@@ -1809,31 +1806,44 @@
     return { bonusAmount, comboFound };
   }
 
-  function calculatePayout(matches, gridArr, bet) {
-    let totalPayout = 0;
-    let receiptCount = 0;
+  function calculatePayout(matche  function updateBalanceDisplay() {
+    // Ensure balance never goes negative
+    balance = Math.max(0, balance);
+    walletDisplay.textContent = `Balance: $${balance.toFixed(0)}`;
+    localStorage.setItem('localPlayerCash', balance.toFixed(0));
+  }urn;
+    spinning = true;
+    clearLines();
+    messageEl.textContent = '';
 
-    // Calculate regular matches
-    matches.forEach(group => {
-      const sym = gridArr[group[0]];
-      const count = group.length;
-      if(payouts[sym] && payouts[sym][bet]) {
-        const payoutArray = payouts[sym][bet];
-        if(count >= 3 && count <= 5) {
-          const payoutVal = payoutArray[count - 3];
-          totalPayout += payoutVal;
-        }
-      }
-    });
+    const selectedBetBtn = betSelector.querySelector('button.selected');
+    bet = Number(selectedBetBtn.dataset.bet);
 
-    // Check for special combo bonuses
-    const specialCombo = checkSpecialCombos(gridArr);
-    if (specialCombo.bonusAmount > 0) {
-      totalPayout += specialCombo.bonusAmount;
-      showMessage(`🎉 ${specialCombo.comboFound} COMBO BONUS! +$${specialCombo.bonusAmount} 🎉`);
+    // Prevent betting with insufficient funds (must have enough to cover the bet)
+    if (balance < bet && freeSpins === 0) {
+      showMessage('⚠️ SKREEED! Insufficient Funds - No Free Money! ⚠️');
+      spinning = false;
+      return;
     }
 
-    // Check for free spins (3+ receipts)
+    // Additional check to prevent negative balance
+    if (balance <= 0 && freeSpins === 0) {
+      showMessage('💸 SKREEED! Your wallet is empty! No free burgers! 💸');
+      spinning = false;
+      return;
+    }
+
+    spinBtn.disabled = true;
+
+    if (freeSpins > 0) {
+      freeSpins--;
+      updateFreeSpinsDisplay();
+      showMessage('🍔 Free Meal! 🍔');
+    } else {
+      balance -= bet;
+      updateBalanceDisplay();
+      showMessage(`Order Placed: $${bet}`);
+    }   // Check for free spins (3+ receipts)
     receiptCount = gridArr.filter(s => s === "🧾").length;
     if(freeSpinsAward[receiptCount]) {
       freeSpins += freeSpinsAward[receiptCount];
@@ -1906,49 +1916,56 @@
       return new Promise(resolve => {
         function animate() {
           const now = performance.now();
-          if (now - startTime >= duration) {
-            for (let r = 0; r < rows; r++) {
-              columnCells[r].textContent = finalGrid[r * cols + colIndex];
-              columnCells[r].classList.remove('spinning');
-            }
-            resolve();
-            return;
-          }
-          for (let r = 0; r < rows; r++) {
-            columnCells[r].textContent = weightedRandomSymbol();
-            columnCells[r].classList.add('spinning');
-          }
-          requestAnimationFrame(animate);
+          if (now - startTime >= dura      if (payout > 0) {
+        balance += payout;
+        updateBalanceDisplay();
+        showMessage(`🍔 Delicious! Won $${payout.toFixed(0)}! 🍔`);
+        
+        if (payout > bet * 10) {
+          playSound('bigwin');
+        } else {
+          playSound('win');
         }
-        animate();
-      });
-    }
-
-    const spinPromises = [];
-    for (let col = 0; col < cols; col++) {
+        
+        await new Promise(r => setTimeout(r, 1000));
+      } else if (payout < 0) {
+        // Prevent balance from going negative
+        const actualLoss = Math.min(Math.abs(payout), balance);
+        balance -= actualLoss;
+        updateBalanceDisplay();
+        if (balance <= 0) {
+          showMessage(`💸 SKREEED! Overcharged all remaining funds: $${actualLoss} 💸`);
+        } else {
+          showMessage(`💸 Overcharged: $${actualLoss} 💸`);
+        }
+        await new Promise(r => setTimeout(r, 1000));
+      } else { (let col = 0; col < cols; col++) {
       await new Promise(r => setTimeout(r, columnDelay));
-      spinPromises.push(spinColumn(col, spinDuration));
-    }
-
-    await new Promise(r => setTimeout(r, 800));
-
-    for (let i = 0; i < spinPromises.length; i++) {
-      await spinPromises[i];
-      playSound('reel_stop');
-      await new Promise(r => setTimeout(r, 150));
-    }
-
-    renderGrid(finalGrid);
-    const matches = findMatches(finalGrid);
-
-    if (matches.length === 0) {
-      showMessage('Order Up! Try Again!');
+      spinPromises.push(spi  async function runAutoSpinLoop() {
+    if (spinning || !autoSpinning) return;
+    while (autoSpinning) {
+      const selectedBetBtn = betSelector.querySelector('button.selected');
+      const currentBet = Number(selectedBetBtn.dataset.bet);
+      if (balance < currentBet && freeSpins === 0) {
+        setAutoSpinRunning(false);
+        showMessage('⚠️ SKREEED! Auto Stopped - No Funds! ⚠️');
+        break;
+      }
+      // Additional check for zero balance
+      if (balance <= 0 && freeSpins === 0) {
+        setAutoSpinRunning(false);
+        showMessage('💸 SKREEED! Auto Stopped - Wallet Empty! 💸');
+        break;
+      }
+      await spin();
+      if (freeSpins > 0) {
+        showMessage('Auto Stopped - Free Spins!');
+        setAutoSpinRunning(false);
+        break;
+      }
       await new Promise(r => setTimeout(r, 1000));
-    } else {
-      const winIndices = matches.flat();
-      highlightWinningCells(winIndices);
-      drawWinLines(matches);
-      const payout = calculatePayout(matches, finalGrid, bet);
+    }
+  }tePayout(matches, finalGrid, bet);
       
       if (payout > 0) {
         balance += payout;
@@ -1980,14 +1997,22 @@
   function setAutoSpinRunning(running) {
     autoSpinning = running;
     autoSpinBtn.dataset.running = running ? 'true' : 'false';
-    autoSpinBtn.textContent = running ? '⏹ Stop' : '🔄 Auto';
-  }
-
-  async function runAutoSpinLoop() {
-    if (spinning || !autoSpinning) return;
-    while (autoSpinning) {
-      const selectedBetBtn = betSelector.querySelector('button.selected');
-      const currentBet = Number(selectedBetBtn.dataset.bet);
+    autoSpinBtn.textContent = running ? '⏹ Stop' : '🔄 Aut  betSelector.addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    
+    const selectedBet = Number(e.target.dataset.bet);
+    
+    // Prevent selecting a bet amount higher than balance (unless there are free spins)
+    if (selectedBet > balance && freeSpins === 0) {
+      showMessage(`⚠️ SKREEED! Can't bet $${selectedBet} - Only have $${balance}! ⚠️`);
+      return;
+    }
+    
+    betSelector.querySelectorAll('button').forEach(b => {
+      b.classList.remove('selected');
+    });
+    e.target.classList.add('selected');
+  });n.dataset.bet);
       if (balance < currentBet && freeSpins === 0) {
         setAutoSpinRunning(false);
         showMessage('⚠️ Auto Stopped - No Funds ⚠️');
