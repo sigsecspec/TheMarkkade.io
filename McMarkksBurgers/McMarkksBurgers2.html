@@ -945,6 +945,7 @@
 
 
   let audioContext = null;
+  let restaurantAmbience = null;
 
   function initAudio() {
     if (!audioContext) {
@@ -956,12 +957,56 @@
     return audioContext;
   }
 
+  // Start background restaurant sounds
+  function startRestaurantAmbience() {
+    try {
+      const ctx = initAudio();
+      if (restaurantAmbience) return;
+      
+      // Create kitchen background noise
+      const bufferSize = ctx.sampleRate * 3;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const channelData = buffer.getChannelData(0);
+      
+      for (let i = 0; i < bufferSize; i++) {
+        channelData[i] = (Math.random() * 2 - 1) * 0.015 * Math.sin(i * 0.001);
+      }
+      
+      restaurantAmbience = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+      restaurantAmbience.buffer = buffer;
+      restaurantAmbience.loop = true;
+      restaurantAmbience.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      gainNode.gain.value = 0.025;
+      restaurantAmbience.start();
+    } catch (e) {
+      console.log('Restaurant ambience failed:', e);
+    }
+  }
+
   function playSound(type) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
       if (type === 'spin') {
+        // Kitchen order bell
+        const bellOsc = ctx.createOscillator();
+        const bellGain = ctx.createGain();
+        bellOsc.connect(bellGain);
+        bellGain.connect(ctx.destination);
+        bellOsc.frequency.value = 900;
+        bellOsc.type = 'sine';
+        bellGain.gain.setValueAtTime(0.12, now);
+        bellGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        bellOsc.start(now);
+        bellOsc.stop(now + 0.4);
+        
+        // Grill sizzling during spin
+        setTimeout(() => playGrillSizzle(), 150);
+        
+        // Spinning reel sounds with cooking theme
         for (let i = 0; i < 6; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -969,31 +1014,135 @@
           gain.connect(ctx.destination);
           osc.frequency.value = 180 + (i * 40);
           osc.type = 'sawtooth';
-          gain.gain.setValueAtTime(0.08, now + i * 0.02);
+          gain.gain.setValueAtTime(0.06, now + i * 0.02);
           gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.05);
           osc.start(now + i * 0.02);
           osc.stop(now + i * 0.02 + 0.05);
         }
+        
       } else if (type === 'win') {
-        [523.25, 659.25, 783.99].forEach((freq, i) => {
+        // Cash register cha-ching
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.15, now + i * 0.1);
+          gain.gain.setValueAtTime(0.12, now + i * 0.1);
           gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
           osc.start(now + i * 0.1);
           osc.stop(now + i * 0.1 + 0.4);
         });
+        
+        // Add cooking completion sound
+        setTimeout(() => playOrderComplete(), 500);
       }
     } catch (e) {
       console.log('Audio failed:', e);
     }
   }
 
-  document.addEventListener('click', () => initAudio(), { once: true });
+  // Grill sizzling effect
+  function playGrillSizzle() {
+    try {
+      const ctx = initAudio();
+      const bufferSize = ctx.sampleRate * 0.8;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const channelData = buffer.getChannelData(0);
+      
+      // Generate realistic sizzling
+      for (let i = 0; i < bufferSize; i++) {
+        const noise = (Math.random() * 2 - 1) * 0.25;
+        const crackle = Math.sin(i * 0.02) * 0.1;
+        channelData[i] = noise * crackle;
+      }
+      
+      const source = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      
+      source.buffer = buffer;
+      filter.type = 'bandpass';
+      filter.frequency.value = 3000;
+      filter.Q.value = 2;
+      
+      source.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      gainNode.gain.value = 0.1;
+      
+      source.start();
+      source.stop(ctx.currentTime + 0.8);
+    } catch (e) {
+      console.log('Grill sizzle failed:', e);
+    }
+  }
+
+  // Order completion sound
+  function playOrderComplete() {
+    try {
+      const ctx = initAudio();
+      // Microwave beep
+      const beepOsc = ctx.createOscillator();
+      const beepGain = ctx.createGain();
+      beepOsc.connect(beepGain);
+      beepGain.connect(ctx.destination);
+      beepOsc.frequency.value = 1200;
+      beepOsc.type = 'square';
+      beepGain.gain.setValueAtTime(0.15, ctx.currentTime);
+      beepGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      beepOsc.start();
+      beepOsc.stop(ctx.currentTime + 0.2);
+    } catch (e) {
+      console.log('Order complete sound failed:', e);
+    }
+  }
+
+  // Kitchen preparation sounds
+  function playKitchenPrep() {
+    try {
+      const ctx = initAudio();
+      
+      // Chopping vegetables
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => {
+          const chopOsc = ctx.createOscillator();
+          const chopGain = ctx.createGain();
+          chopOsc.connect(chopGain);
+          chopGain.connect(ctx.destination);
+          chopOsc.frequency.value = 180 + Math.random() * 80;
+          chopOsc.type = 'square';
+          chopGain.gain.setValueAtTime(0.05, ctx.currentTime);
+          chopGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+          chopOsc.start();
+          chopOsc.stop(ctx.currentTime + 0.1);
+        }, i * 150);
+      }
+      
+      // Mixing/stirring sounds
+      setTimeout(() => {
+        const stirOsc = ctx.createOscillator();
+        const stirGain = ctx.createGain();
+        stirOsc.connect(stirGain);
+        stirGain.connect(ctx.destination);
+        stirOsc.frequency.value = 120;
+        stirOsc.type = 'triangle';
+        stirGain.gain.setValueAtTime(0.04, ctx.currentTime);
+        stirGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        stirOsc.start();
+        stirOsc.stop(ctx.currentTime + 0.5);
+      }, 800);
+      
+    } catch (e) {
+      console.log('Kitchen prep failed:', e);
+    }
+  }
+
+  document.addEventListener('click', () => {
+    initAudio();
+    startRestaurantAmbience();
+  }, { once: true });
 
   const walletDisplay = document.getElementById('walletDisplay');
   const betSelector = document.getElementById('betSelector');
@@ -1210,6 +1359,9 @@
     }
 
     playSound('spin');
+    
+    // Add kitchen prep sounds during cooking
+    setTimeout(() => playKitchenPrep(), 400);
 
     const finalGrid = fillGridRandom();
     const spinDuration = 2500;

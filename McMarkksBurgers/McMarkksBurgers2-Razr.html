@@ -950,6 +950,8 @@
   const freeSpinsAward = { 3: 3, 4: 5, 5: 10 };
 
   let audioContext = null;
+  let kitchenAmbience = null;
+  let grillLoop = null;
 
   function initAudio() {
     if (!audioContext) {
@@ -961,44 +963,294 @@
     return audioContext;
   }
 
+  // Immersive restaurant kitchen ambience
+  function startKitchenAmbience() {
+    try {
+      const ctx = initAudio();
+      if (kitchenAmbience) return;
+      
+      // Create realistic kitchen background
+      const bufferSize = ctx.sampleRate * 4;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const channelData = buffer.getChannelData(0);
+      
+      // Layer different kitchen sounds
+      for (let i = 0; i < bufferSize; i++) {
+        const baseNoise = (Math.random() * 2 - 1) * 0.01;
+        const ventilation = Math.sin(i * 0.0005) * 0.005;
+        const equipment = Math.sin(i * 0.003) * 0.003;
+        channelData[i] = baseNoise + ventilation + equipment;
+      }
+      
+      kitchenAmbience = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+      kitchenAmbience.buffer = buffer;
+      kitchenAmbience.loop = true;
+      kitchenAmbience.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      gainNode.gain.value = 0.02;
+      kitchenAmbience.start();
+    } catch (e) {
+      console.log('Kitchen ambience failed:', e);
+    }
+  }
+
   function playSound(type) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
       if (type === 'spin') {
-        for (let i = 0; i < 6; i++) {
+        // Order up bell with echo
+        const bellOsc = ctx.createOscillator();
+        const bellGain = ctx.createGain();
+        const delay = ctx.createDelay();
+        const feedback = ctx.createGain();
+        
+        bellOsc.connect(bellGain);
+        bellGain.connect(delay);
+        delay.connect(feedback);
+        feedback.connect(delay);
+        bellGain.connect(ctx.destination);
+        delay.connect(ctx.destination);
+        
+        bellOsc.frequency.value = 1000;
+        bellOsc.type = 'sine';
+        delay.delayTime.value = 0.2;
+        feedback.gain.value = 0.3;
+        bellGain.gain.setValueAtTime(0.15, now);
+        bellGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        
+        bellOsc.start(now);
+        bellOsc.stop(now + 0.5);
+        
+        // Intense grill action
+        setTimeout(() => playIntenseGrilling(), 100);
+        
+        // Enhanced spinning sounds
+        for (let i = 0; i < 8; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.connect(gain);
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
           gain.connect(ctx.destination);
-          osc.frequency.value = 180 + (i * 40);
+          
+          osc.frequency.value = 160 + (i * 35);
           osc.type = 'sawtooth';
-          gain.gain.setValueAtTime(0.08, now + i * 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.05);
-          osc.start(now + i * 0.02);
-          osc.stop(now + i * 0.02 + 0.05);
+          filter.type = 'lowpass';
+          filter.frequency.value = 800 + (i * 100);
+          
+          gain.gain.setValueAtTime(0.05, now + i * 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.015 + 0.06);
+          
+          osc.start(now + i * 0.015);
+          osc.stop(now + i * 0.015 + 0.06);
         }
+        
       } else if (type === 'win') {
-        [523.25, 659.25, 783.99].forEach((freq, i) => {
+        // Multi-layered cash register
+        [440, 523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.connect(gain);
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
           gain.connect(ctx.destination);
+          
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.15, now + i * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
-          osc.start(now + i * 0.1);
-          osc.stop(now + i * 0.1 + 0.4);
+          filter.type = 'bandpass';
+          filter.frequency.value = freq;
+          filter.Q.value = 5;
+          
+          gain.gain.setValueAtTime(0.1, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.5);
+          
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.5);
         });
+        
+        // Food ready notification
+        setTimeout(() => playFoodReady(), 600);
       }
     } catch (e) {
       console.log('Audio failed:', e);
     }
   }
 
-  document.addEventListener('click', () => initAudio(), { once: true });
+  // Intense grilling with multiple layers
+  function playIntenseGrilling() {
+    try {
+      const ctx = initAudio();
+      
+      // Main sizzle
+      const bufferSize = ctx.sampleRate * 1.2;
+      const buffer = ctx.createBuffer(2, bufferSize, ctx.sampleRate);
+      
+      for (let channel = 0; channel < 2; channel++) {
+        const channelData = buffer.getChannelData(channel);
+        for (let i = 0; i < bufferSize; i++) {
+          const noise = (Math.random() * 2 - 1) * 0.3;
+          const sizzle = Math.sin(i * 0.01 + channel) * 0.15;
+          const pop = Math.random() > 0.998 ? 0.5 : 0;
+          channelData[i] = (noise + sizzle + pop) * 0.6;
+        }
+      }
+      
+      const source = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      
+      source.buffer = buffer;
+      filter.type = 'highpass';
+      filter.frequency.value = 1500;
+      
+      source.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      gainNode.gain.value = 0.12;
+      
+      source.start();
+      source.stop(ctx.currentTime + 1.2);
+      
+      // Add bubbling fryer sounds
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const bubbleOsc = ctx.createOscillator();
+          const bubbleGain = ctx.createGain();
+          bubbleOsc.connect(bubbleGain);
+          bubbleGain.connect(ctx.destination);
+          bubbleOsc.frequency.value = 60 + Math.random() * 80;
+          bubbleOsc.type = 'triangle';
+          bubbleGain.gain.setValueAtTime(0.03, ctx.currentTime);
+          bubbleGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+          bubbleOsc.start();
+          bubbleOsc.stop(ctx.currentTime + 0.15);
+        }, i * 40);
+      }
+      
+    } catch (e) {
+      console.log('Intense grilling failed:', e);
+    }
+  }
+
+  // Food ready notification with timer beeps
+  function playFoodReady() {
+    try {
+      const ctx = initAudio();
+      
+      // Timer beeps
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          const beepOsc = ctx.createOscillator();
+          const beepGain = ctx.createGain();
+          beepOsc.connect(beepGain);
+          beepGain.connect(ctx.destination);
+          beepOsc.frequency.value = 1400;
+          beepOsc.type = 'square';
+          beepGain.gain.setValueAtTime(0.12, ctx.currentTime);
+          beepGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+          beepOsc.start();
+          beepOsc.stop(ctx.currentTime + 0.15);
+        }, i * 200);
+      }
+      
+      // Plate clinking
+      setTimeout(() => {
+        const clinkOsc = ctx.createOscillator();
+        const clinkGain = ctx.createGain();
+        clinkOsc.connect(clinkGain);
+        clinkGain.connect(ctx.destination);
+        clinkOsc.frequency.value = 2000;
+        clinkOsc.type = 'triangle';
+        clinkGain.gain.setValueAtTime(0.08, ctx.currentTime);
+        clinkGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+        clinkOsc.start();
+        clinkOsc.stop(ctx.currentTime + 0.3);
+      }, 900);
+      
+    } catch (e) {
+      console.log('Food ready sound failed:', e);
+    }
+  }
+
+  // Enhanced kitchen activity sounds
+  function playKitchenActivity() {
+    try {
+      const ctx = initAudio();
+      
+      // Rapid chopping sequence
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const chopOsc = ctx.createOscillator();
+          const chopGain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          
+          chopOsc.connect(filter);
+          filter.connect(chopGain);
+          chopGain.connect(ctx.destination);
+          
+          chopOsc.frequency.value = 200 + Math.random() * 150;
+          chopOsc.type = 'square';
+          filter.type = 'highpass';
+          filter.frequency.value = 300;
+          
+          chopGain.gain.setValueAtTime(0.04, ctx.currentTime);
+          chopGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+          
+          chopOsc.start();
+          chopOsc.stop(ctx.currentTime + 0.08);
+        }, i * 100);
+      }
+      
+      // Blender/mixer sounds
+      setTimeout(() => {
+        const mixerOsc = ctx.createOscillator();
+        const mixerGain = ctx.createGain();
+        const mixerFilter = ctx.createBiquadFilter();
+        
+        mixerOsc.connect(mixerFilter);
+        mixerFilter.connect(mixerGain);
+        mixerGain.connect(ctx.destination);
+        
+        mixerOsc.frequency.value = 80;
+        mixerOsc.type = 'sawtooth';
+        mixerFilter.type = 'lowpass';
+        mixerFilter.frequency.value = 400;
+        
+        mixerGain.gain.setValueAtTime(0.06, ctx.currentTime);
+        mixerGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+        
+        mixerOsc.start();
+        mixerOsc.stop(ctx.currentTime + 0.6);
+      }, 900);
+      
+      // Soda fountain sounds
+      setTimeout(() => {
+        const sodaOsc = ctx.createOscillator();
+        const sodaGain = ctx.createGain();
+        sodaOsc.connect(sodaGain);
+        sodaGain.connect(ctx.destination);
+        sodaOsc.frequency.value = 1500;
+        sodaOsc.type = 'sine';
+        sodaGain.gain.setValueAtTime(0.03, ctx.currentTime);
+        sodaGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        sodaOsc.start();
+        sodaOsc.stop(ctx.currentTime + 0.4);
+      }, 1200);
+      
+    } catch (e) {
+      console.log('Kitchen activity failed:', e);
+    }
+  }
+
+  document.addEventListener('click', () => {
+    initAudio();
+    startKitchenAmbience();
+  }, { once: true });
 
   const walletDisplay = document.getElementById('walletDisplay');
   const betSelector = document.getElementById('betSelector');
@@ -1214,6 +1466,9 @@
     }
 
     playSound('spin');
+    
+    // Enhanced kitchen activity during spin
+    setTimeout(() => playKitchenActivity(), 300);
 
     const finalGrid = fillGridRandom();
     const spinDuration = 2500;
