@@ -325,18 +325,17 @@ body{
 </div>
 
 <script>
-let localPlayerCash = Number(localStorage.getItem('localPlayerCash')) || 0;
-let localPlayerCoins = Number(localStorage.getItem('localPlayerCoins')) || 0;
-let selectedOption = null;
-
-function updateCurrencyDisplay() {
+let localPlayerCash = Number(localStorage.getItem('localPlayerCash')) || 0;function gfunction goBack() {
+    showPageTransition();
+    setTimeout(() => window.location.href = 'emoji-slots.html', 500);
+}tion updateCurrencyDisplay() {
     document.getElementById('playerCash').textContent = localPlayerCash.toLocaleString();
     document.getElementById('playerCoins').textContent = localPlayerCoins.toLocaleString();
 }
 
 function goBack() {
     showPageTransition();
-    setTimeout(() => window.location.href = 'index.html', 500);
+    setTimeout(() => window.location.href = 'emoji-slots.html', 500);
 }
 
 function showPageTransition() {
