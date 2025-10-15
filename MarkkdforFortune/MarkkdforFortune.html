@@ -167,16 +167,7 @@
       margin-bottom: 15px;
       font-size: 1.3em;
       color: #00ff88;
-      text-align: center;
-      text-shadow: 0 0 10px #00ff88;
-    }
-    #paytable ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      font-size: 1em;
-    }
-    #paytable li {
+          #paytable li {
       margin: 6px 0;
       line-height: 1.3em;
     }
@@ -188,6 +179,50 @@
       background: rgba(212, 175, 55, 0.9);
       color: #1d1f27;
       padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1.4em;
+      font-weight: bold;
+      z-index: 9999;
+      display: none;
+      box-shadow: 0 0 15px gold;
+      user-select: none;
+    }
+    /* Performance optimizations for mobile */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    .scratch-slot {
+      will-change: transform;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+    /* Particle effects */
+    @keyframes particleFade {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -150%) scale(0.5); }
+    }
+    @keyframes sparkle {
+      0% { opacity: 1; transform: scale(0) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1) rotate(180deg); }
+      100% { opacity: 0; transform: scale(0) rotate(360deg); }
+    }
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      animation: particleFade 0.8s ease-out forwards;
+    }
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      animation: sparkle 0.6s ease-out forwards;
+    }
+    @keyframes winGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+      50% { box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 50px rgba(255, 215, 0, 0.5); }
+    }
+    .winning-slot {
+      animation: winGlow 1s ease-in-out infinite;
+    }x 30px;
       border-radius: 10px;
       font-size: 1.4em;
       font-weight: bold;
@@ -263,17 +298,140 @@
   let bonus = null;
   let countdownInterval = null;
   
-  let ticketsBought = parseInt(localStorage.getItem('ticketsBought')) || 0;
-let ticketsScratched = parseInt(localStorage.getItem('ticketsScratched')) || 0;
-let ticketsWon = parseInt(localStorage.getItem('ticketsWon')) || 0;
-let ticketsLost = parseInt(localStorage.getItem('ticketsLost')) || 0;
-
-
-  const bonuses = ["2x", "5x", "10x", "100x", "Free Ticket"];
+  let ticketsBought = parseInt(localStorage.getItem  const bonuses = ["2x", "5x", "10x", "100x", "Free Ticket"];
 
   const statusEl = document.getElementById('status');
   const balanceDisplay = document.getElementById('paytable-balance');
   const resultDiv = document.getElementById('result');
+  const popup = document.getElementById('popup');
+
+  const buyBtn = document.getElementById('buy-ticket-btn');
+  const playBtn = document.getElementById('play-ticket-btn');
+  const freeBtn = document.getElementById('free-ticket-btn');
+
+  // Sound system using Web Audio API for instant playback
+  let audioContext = null;
+  let soundsInitialized = false;
+
+  function initializeSounds() {
+    if (soundsInitialized) return;
+    
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    soundsInitialized = true;
+
+    // Scratch sound effect
+    window.playScratchSound = function() {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+      
+      oscillator.type = 'sawtooth';
+      oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.15);
+      
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(800, audioContext.currentTime);
+      filter.Q.setValueAtTime(2, audioContext.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+      
+      oscillator.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.15);
+
+      // Add a second layer for texture
+      const noise = audioContext.createOscillator();
+      const noiseGain = audioContext.createGain();
+      
+      noise.type = 'triangle';
+      noise.frequency.setValueAtTime(2000, audioContext.currentTime);
+      noise.frequency.exponentialRampToValueAtTime(500, audioContext.currentTime + 0.1);
+      
+      noiseGain.gain.setValueAtTime(0.1, audioContext.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      
+      noise.connect(noiseGain);
+      noiseGain.connect(audioContext.destination);
+      
+      noise.start(audioContext.currentTime);
+      noise.stop(audioContext.currentTime + 0.1);
+    };
+
+    // Button click sound
+    window.playButtonSound = function() {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.025);
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.05);
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.08);
+    };
+
+    // Win sound
+    window.playWinSound = function() {
+      const notes = [392, 440, 523, 659, 783]; // G, A, C, E, G
+      notes.forEach((freq, index) => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + index * 0.12);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + index * 0.12);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.12 + 0.4);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.start(audioContext.currentTime + index * 0.12);
+        oscillator.stop(audioContext.currentTime + index * 0.12 + 0.4);
+      });
+    };
+
+    // Jackpot sound
+    window.playJackpotSound = function() {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          const duration = 0.5;
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          const filter = audioContext.createBiquadFilter();
+          
+          oscillator.type = 'sawtooth';
+          oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(1600, audioContext.currentTime + duration);
+          
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(2000, audioContext.currentTime);
+          filter.Q.setValueAtTime(10, audioContext.currentTime);
+          
+          gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+          
+          oscillator.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + duration);
+        }, i * 200);
+      }
+    };
+  }ementById('result');
   const popup = document.getElementById('popup');
 
   const buyBtn = document.getElementById('buy-ticket-btn');
@@ -354,33 +512,60 @@ let ticketsLost = parseInt(localStorage.getItem('ticketsLost')) || 0;
       text.classList.add('grayed');
     }
 
-    text.innerText = revealed ? value : '?';
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 300;
-    canvas.height = 300;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#999';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    canvas.addEventListener('click', () => {
+    text.inne    canvas.addEventListener('click', () => {
       if (!gameStarted || ctx.globalAlpha === 0) return;
 
-      // In free ticket mode, only reveal the slot, no impact except for free ticket prize
-      text.innerText = value;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = 0;
+      // Initialize sounds on first interaction
+      if (!soundsInitialized) {
+        initializeSounds();
+      }
 
-      if (!isWinning) {
-        if (!freeTicketMode) {
-          // Real ticket game logic
-          if (bonuses.includes(value)) {
-            bonus = value;
+      // Play scratch sound
+      if (window.playScratchSound) window.playScratchSound();
+
+      // Create scratch particle effect
+      createScratchParticle(slot);
+
+      // Scratch animation
+      let progress = 0;
+      const scratchAnimation = setInterval(() => {
+        progress += 0.1;
+        ctx.globalAlpha = Math.max(0, 1 - progress);
+        ctx.fillStyle = '#999';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        if (progress >= 1) {
+          clearInterval(scratchAnimation);
+          text.innerText = value;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.globalAlpha = 0;
+
+          if (!isWinning) {
+            if (!freeTicketMode) {
+              // Real ticket game logic
+              if (bonuses.includes(value)) {
+                bonus = value;
+                createBonusEffect(slot, value);
+              }
+              if (playerNumbers.includes(value)) {
+                matches++;
+                createMatchEffect(slot);
+              }
+            } else {
+              // Free ticket game: only free ticket wins tickets, others do nothing
+              if (value === "Free Ticket") {
+                tickets++;
+                updateDisplay();
+                showPopup('🎟️ You won a Free Ticket!', 1500);
+                createBonusEffect(slot, 'Free Ticket');
+              }
+            }
           }
-          if (playerNumbers.includes(value)) {
+
+          checkIfAllScratched();
+        }
+      }, 30);
+    });
             matches++;
           }
         } else {
@@ -393,21 +578,7 @@ let ticketsLost = parseInt(localStorage.getItem('ticketsLost')) || 0;
         }
       }
 
-      checkIfAllScratched();
-    });
-
-    slot.appendChild(text);
-    slot.appendChild(canvas);
-    return slot;
-  }
-
-  function checkIfAllScratched() {
-    const canvases = document.querySelectorAll('#scratch-grid canvas');
-    const allCleared = Array.from(canvases).every(c => c.getContext('2d').globalAlpha === 0);
-    if (allCleared) endGame();
-  }
-
-function endGame() {
+      checkIfAllfunction endGame() {
   clearInterval(countdownInterval);
 
   if (freeTicketMode) {
@@ -421,7 +592,27 @@ function endGame() {
     win = base * multi;
     if (bonus === "Free Ticket") tickets++;
 
-    if (win > 0) balance += win;
+    if (win > 0) {
+      balance += win;
+      // Play win sound and effects
+      if (win >= 100 && window.playJackpotSound) {
+        window.playJackpotSound();
+        createConfetti();
+      } else if (window.playWinSound) {
+        window.playWinSound();
+        if (win >= 10) createConfetti();
+      }
+    }
+
+    let resultText = '';
+    if (win > 0) resultText += `💰 You matched ${matches} for $${win.toFixed(2)}`;
+    else if (bonus === "Free Ticket") resultText += '🎟️ You won a Free Ticket!';
+    else resultText = '😢 No matches';
+
+    if (bonus && bonus !== "Free Ticket") resultText += ` + Bonus ${bonus}`;
+
+    resultDiv.innerText = resultText;
+  } balance += win;
 
     let resultText = '';
     if (win > 0) resultText += `💰 You matched ${matches} for $${win.toFixed(2)}`;
@@ -532,21 +723,10 @@ function endGame() {
     yourNumbersDiv.innerHTML = '';
     scratchGrid.innerHTML = '';
 
-    const placeholderNumbers = generateUniqueNumbers(3);
-    const placeholderScratch = generateScratchNumbers(true);
-
-    placeholderNumbers.forEach(num => {
-      yourNumbersDiv.appendChild(createScratchSlot(num, true, false));
-    });
-    placeholderScratch.forEach(val => {
-      scratchGrid.appendChild(createScratchSlot(val, false, false));
-    });
-
-    yourNumbersDiv.classList.add('disabled-grid');
-    scratchGrid.classList.add('disabled-grid');
-  }
-
-  buyBtn.addEventListener('click', () => {
+    const   buyBtn.addEventListener('click', () => {
+    if (!soundsInitialized) initializeSounds();
+    if (window.playButtonSound) window.playButtonSound();
+    
     if (balance >= 5) {
       balance -= 5;
       tickets++;
@@ -559,12 +739,154 @@ function endGame() {
   });
 
   playBtn.addEventListener('click', () => {
+    if (!soundsInitialized) initializeSounds();
+    if (window.playButtonSound) window.playButtonSound();
+    
     if (tickets > 0) {
       freeTicketMode = false;
       gameStarted = true;
       buildBoard();
       showPopup('🎟️ Game started! Scratch your ticket.', 2000);
       updateButtonStates();
+    } else {
+      showPopup('❌ You need tickets to play.');
+    }
+  });
+
+  freeBtn.addEventListener('click', () => {
+    if (!soundsInitialized) initializeSounds();
+    if (window.playButtonSound) window.playButtonSound();
+    
+    freeTicketMode = true;
+    gameStarted = true;
+    buildFreeTicketBoard();
+    showPopup('🎟️ Free Ticket scratch started! Win a Free Ticket or see what you could have won!', 3000);
+    updateButtonStates();
+  });se;
+      gameStarted = true;  // Visual effects functions
+  function createScratchParticle(slot) {
+    const rect = slot.getBoundingClientRect();
+    const gameRect = document.getElementById('game').getBoundingClientRect();
+    
+    // Create dust particles
+    for (let i = 0; i < 5; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = (rect.left - gameRect.left + rect.width / 2 + (Math.random() - 0.5) * 20) + 'px';
+      particle.style.top = (rect.top - gameRect.top + rect.height / 2) + 'px';
+      particle.style.width = '4px';
+      particle.style.height = '4px';
+      particle.style.backgroundColor = '#ccc';
+      particle.style.borderRadius = '50%';
+      particle.style.zIndex = '1000';
+      
+      document.getElementById('game').appendChild(particle);
+      setTimeout(() => particle.remove(), 800);
+    }
+  }
+
+  function createMatchEffect(slot) {
+    const rect = slot.getBoundingClientRect();
+    const gameRect = document.getElementById('game').getBoundingClientRect();
+    
+    // Create sparkles
+    for (let i = 0; i < 8; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.textContent = '✨';
+      sparkle.style.left = (rect.left - gameRect.left + rect.width / 2) + 'px';
+      sparkle.style.top = (rect.top - gameRect.top + rect.height / 2) + 'px';
+      sparkle.style.fontSize = '20px';
+      sparkle.style.zIndex = '1000';
+      sparkle.style.animationDelay = (i * 0.05) + 's';
+      
+      document.getElementById('game').appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 600);
+    }
+
+    // Add glow to slot
+    slot.classList.add('winning-slot');
+    setTimeout(() => slot.classList.remove('winning-slot'), 2000);
+  }
+
+  function createBonusEffect(slot, bonusType) {
+    const rect = slot.getBoundingClientRect();
+    const gameRect = document.getElementById('game').getBoundingClientRect();
+    
+    // Create bonus text popup
+    const bonusText = document.createElement('div');
+    bonusText.style.position = 'absolute';
+    bonusText.style.left = (rect.left - gameRect.left + rect.width / 2) + 'px';
+    bonusText.style.top = (rect.top - gameRect.top) + 'px';
+    bonusText.style.transform = 'translate(-50%, -50%)';
+    bonusText.style.fontSize = '24px';
+    bonusText.style.fontWeight = 'bold';
+    bonusText.style.color = '#ffd700';
+    bonusText.style.textShadow = '0 0 10px #ffd700';
+    bonusText.style.zIndex = '1001';
+    bonusText.style.pointerEvents = 'none';
+    bonusText.textContent = bonusType;
+    
+    document.getElementById('game').appendChild(bonusText);
+    
+    bonusText.animate([
+      { transform: 'translate(-50%, -50%) scale(0.5)', opacity: 0 },
+      { transform: 'translate(-50%, -50%) scale(1.5)', opacity: 1, offset: 0.5 },
+      { transform: 'translate(-50%, -100%) scale(1)', opacity: 0 }
+    ], {
+      duration: 1500,
+      easing: 'ease-out'
+    }).onfinish = () => bonusText.remove();
+
+    // Play bonus sound
+    if (bonusType === '100x' && window.playJackpotSound) {
+      window.playJackpotSound();
+    } else if (window.playWinSound) {
+      window.playWinSound();
+    }
+  }
+
+  function createConfetti() {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#ffd700'];
+    const confettiCount = 40;
+    
+    for (let i = 0; i < confettiCount; i++) {
+      setTimeout(() => {
+        const confetti = document.createElement('div');
+        confetti.style.position = 'fixed';
+        confetti.style.width = '10px';
+        confetti.style.height = '10px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-20px';
+        confetti.style.opacity = '1';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confetti.style.pointerEvents = 'none';
+        confetti.style.zIndex = '9999';
+        
+        document.body.appendChild(confetti);
+        
+        const duration = 2 + Math.random() * 2;
+        const horizontalMovement = (Math.random() - 0.5) * 100;
+        const rotations = Math.floor(Math.random() * 4) + 1;
+        
+        confetti.animate([
+          { transform: `translateY(0) translateX(0) rotate(0deg)`, opacity: 1 },
+          { transform: `translateY(100vh) translateX(${horizontalMovement}px) rotate(${rotations * 360}deg)`, opacity: 0 }
+        ], {
+          duration: duration * 1000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => confetti.remove();
+      }, i * 30);
+    }
+  }
+
+  // Initial setup
+  updateDisplay();
+  showEmptyGrid();
+  updateButtonStates();
+})();
+</script>pdateButtonStates();
     } else {
       showPopup('❌ You need tickets to play.');
     }
