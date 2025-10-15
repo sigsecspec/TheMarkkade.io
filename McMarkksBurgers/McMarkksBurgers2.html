@@ -430,7 +430,7 @@
       inset 0 0 25px rgba(0,0,0,0.5),
       0 4px 20px rgba(0,0,0,0.8);
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 1fr;
     gap: 6px;
     width: 100%;
     max-width: 100%;
@@ -491,14 +491,6 @@
   .action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .auto-spin-row {
-    display: grid;
-    grid-template-columns: 1fr;
     gap: 8px;
     width: 100%;
     max-width: 100%;
@@ -585,55 +577,6 @@
     animation: none;
   }
 
-  #autoSpinBtn {
-    background: 
-      linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #8B0000 100%);
-    color: #FFD700;
-    font-weight: 900;
-    border: 2px solid #FFD700;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 
-      0 0 20px rgba(255,215,0,0.3),
-      0 4px 15px rgba(0,0,0,0.8);
-    font-family: 'Oswald', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.2s ease;
-    animation: autoSpinPulse 2s ease-in-out infinite;
-    padding: 12px;
-    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-    min-height: 46px;
-  }
-
-  @keyframes autoSpinPulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 4px 15px rgba(0,0,0,0.8); }
-    50% { box-shadow: 0 0 30px rgba(255,215,0,0.5), 0 6px 20px rgba(0,0,0,0.9); }
-  }
-
-  #autoSpinBtn:active {
-    transform: scale(0.95);
-  }
-
-  #autoSpinBtn.active {
-    background: 
-      linear-gradient(135deg, #00FF00 0%, #32CD32 50%, #00FF00 100%);
-    color: #000;
-    animation: autoSpinActive 1s ease-in-out infinite;
-  }
-
-  @keyframes autoSpinActive {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-
-  #autoSpinBtn:disabled {
-    background: linear-gradient(135deg, #666 0%, #444 100%);
-    color: #999;
-    cursor: not-allowed;
-    border-color: #555;
-    animation: none;
-  }
 
   /* Modal Styles */
   #paytableModal {
@@ -900,17 +843,9 @@
 
   <div class="fold-bottom">
     <div id="betSelector">
-      <button data-bet="25" class="selected">$25</button>
-      <button data-bet="50">$50</button>
-      <button data-bet="75">$75</button>
-      <button data-bet="100">$100</button>
-      <button data-bet="125">$125</button>
-      <button data-bet="250">$250</button>
+      <button data-bet="250" class="selected">$250</button>
     </div>
 
-    <div class="auto-spin-row">
-      <button id="autoSpinBtn">🔄 AUTO SPIN</button>
-    </div>
     
     <div class="spin-row">
       <button id="spinBtn"><span class="spin-text">ORDER UP!</span></button>
@@ -934,68 +869,42 @@
         <p>★ WINNING COMBINATIONS ★</p>
       </div>
       
-      <div class="menu-section-title">🍔 ALL SYMBOLS PAY THE SAME!</div>
+      <div class="menu-section-title">🍔 ALL SYMBOLS PAY THE SAME! ($250 BET ONLY)</div>
       <div class="menu-item">
         <div class="menu-item-name">🍔/🍟/🥤/🥗 Triple (3 in a row/column)</div>
-        <div class="menu-price">2x Bet</div>
+        <div class="menu-price">$500</div>
       </div>
       <div class="menu-item">
         <div class="menu-item-name">🍔/🍟/🥤/🥗 Quad (4 in a row/column)</div>
-        <div class="menu-price">3x Bet</div>
+        <div class="menu-price">$750</div>
       </div>
       <div class="menu-item">
         <div class="menu-item-name">🍔/🍟/🥤/🥗 Full (5 in a row/column)</div>
-        <div class="menu-price">5x Bet</div>
+        <div class="menu-price">$1250</div>
       </div>
 
       <div class="menu-section-title">🧾 RECEIPTS (PENALTY)</div>
       <div class="menu-item">
         <div class="menu-item-name">🧾🧾🧾 Triple (3 in a row/column)</div>
-        <div class="menu-price">-2x Bet</div>
+        <div class="menu-price">-$500</div>
       </div>
       <div class="menu-item">
         <div class="menu-item-name">🧾🧾🧾🧾 Quad (4 in a row/column)</div>
-        <div class="menu-price">-3x Bet</div>
+        <div class="menu-price">-$750</div>
       </div>
       <div class="menu-item">
         <div class="menu-item-name">🧾🧾🧾🧾🧾 Full (5 in a row/column)</div>
-        <div class="menu-price">-5x Bet</div>
+        <div class="menu-price">-$1250</div>
       </div>
       
-      <div class="menu-section-title">💰 EXACT PAYOUTS BY BET LEVEL</div>
-      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; font-size: 0.6rem; margin: 8px 0;">
-        <div style="font-weight: bold; color: #FFD700;">Symbol</div>
-        <div style="font-weight: bold; color: #FFD700;">$25</div>
-        <div style="font-weight: bold; color: #FFD700;">$50</div>
-        <div style="font-weight: bold; color: #FFD700;">$75</div>
-        <div style="font-weight: bold; color: #FFD700;">$100</div>
-        <div style="font-weight: bold; color: #FFD700;">$125</div>
-        <div style="font-weight: bold; color: #FFD700;">$250</div>
-        
-        <div style="color: #FFA500;">ANY×3</div>
-        <div>$50</div><div>$100</div><div>$150</div><div>$200</div><div>$250</div><div>$500</div>
-        <div style="color: #FFA500;">ANY×4</div>
-        <div>$75</div><div>$150</div><div>$225</div><div>$300</div><div>$375</div><div>$750</div>
-        <div style="color: #FFA500;">ANY×5</div>
-        <div>$125</div><div>$250</div><div>$375</div><div>$500</div><div>$625</div><div>$1250</div>
-        
-        <div style="color: #FF6666;">🧾×3</div>
-        <div>-$50</div><div>-$100</div><div>-$150</div><div>-$200</div><div>-$250</div><div>-$500</div>
-        <div style="color: #FF6666;">🧾×4</div>
-        <div>-$75</div><div>-$150</div><div>-$225</div><div>-$300</div><div>-$375</div><div>-$750</div>
-        <div style="color: #FF6666;">🧾×5</div>
-        <div>-$125</div><div>-$250</div><div>-$375</div><div>-$500</div><div>-$625</div><div>-$1250</div>
-      </div>
 
       <div class="menu-footer">
         <p class="special">🎁 SPECIAL COMBOS 🎁</p>
         <p>🍔🍟🥤🥗🧾 GRAND SLAM +$500</p>
         <p>🍔🍟🥤🧾 CLASSIC +$300</p>
         <p>🍔🍟🧾 VALUE MEAL +$200</p>
-        <p>🎰 FREE SPINS: 3 RECEIPTS = 3 SPINS</p>
-        <p>🎰 FREE SPINS: 4 RECEIPTS = 5 SPINS</p>
-        <p>🎰 FREE SPINS: 5 RECEIPTS = 10 SPINS</p>
-        <p style="color: #FFD700; font-weight: bold;">AUTO SPIN COSTS 2X BET AMOUNT</p>
+        <p style="color: #FFD700; font-weight: bold;">ONLY $250 BETS ALLOWED</p>
+        <p style="color: #FF6666; font-weight: bold;">NO FREE SPINS - RECEIPTS ARE BAD!</p>
       </div>
     </div>
   </div>
@@ -1021,11 +930,11 @@
   };
 
   const payouts = {
-    "🍔": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
-    "🍟": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
-    "🥤": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
-    "🥗": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
-    "🧾": { 25: [-50, -75, -125], 50: [-100, -150, -250], 75: [-150, -225, -375], 100: [-200, -300, -500], 125: [-250, -375, -625], 250: [-500, -750, -1250] }
+    "🍔": { 250: [500, 750, 1250] },
+    "🍟": { 250: [500, 750, 1250] },
+    "🥤": { 250: [500, 750, 1250] },
+    "🥗": { 250: [500, 750, 1250] },
+    "🧾": { 250: [-500, -750, -1250] }
   };
 
   const comboBonuses = {
@@ -1034,7 +943,6 @@
     "🍔🍟🧾": 200
   };
 
-  const freeSpinsAward = { 3: 3, 4: 5, 5: 10 };
 
   let audioContext = null;
 
@@ -1098,14 +1006,17 @@
   const paytableModal = document.getElementById('paytableModal');
   const closePayTableBtn = document.getElementById('closePayTableBtn');
   const leaveGameBtn = document.getElementById('leaveGameBtn');
-  const autoSpinBtn = document.getElementById('autoSpinBtn');
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
+  
+  // Auto payout of 1000 if player is broke
+  if (balance <= 0) {
+    balance = 1000;
+    localStorage.setItem('localPlayerCash', '1000');
+  }
   let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
-  let bet = 25;
+  let bet = 250;
   let spinning = false;
-  let autoSpinning = false;
-  let autoSpinInterval = null;
 
   const cells = [];
   for (let r = 0; r < rows; r++) {
@@ -1248,11 +1159,6 @@
       totalPayout += combo.bonusAmount;
     }
 
-    receiptCount = gridArr.filter(s => s === "🧾").length;
-    if(freeSpinsAward[receiptCount]) {
-      freeSpins += freeSpinsAward[receiptCount];
-      updateFreeSpinsDisplay();
-    }
 
     return totalPayout;
   }
@@ -1276,7 +1182,7 @@
     localStorage.setItem('freeSpins', freeSpins);
   }
 
-  async function spin(isAutoSpin = false) {
+  async function spin() {
     if (spinning) return;
     spinning = true;
     clearLines();
@@ -1284,16 +1190,10 @@
 
     const selectedBetBtn = betSelector.querySelector('button.selected');
     bet = Number(selectedBetBtn.dataset.bet);
-    
-    // Double the cost for auto spin
-    const actualBet = isAutoSpin ? bet * 2 : bet;
 
-    if (actualBet > balance && freeSpins === 0) {
+    if (bet > balance && freeSpins === 0) {
       showMessage('⚠️ Insufficient Funds ⚠️');
       spinning = false;
-      if (isAutoSpin) {
-        stopAutoSpin();
-      }
       return;
     }
 
@@ -1302,11 +1202,11 @@
     if (freeSpins > 0) {
       freeSpins--;
       updateFreeSpinsDisplay();
-      showMessage(isAutoSpin ? '🍔 Auto Free Meal! 🍔' : '🍔 Free Meal! 🍔');
+      showMessage('🍔 Free Meal! 🍔');
     } else {
-      balance -= actualBet;
+      balance -= bet;
       updateBalanceDisplay();
-      showMessage(isAutoSpin ? `Auto Order: $${actualBet} (2x)` : `Order Placed: $${actualBet}`);
+      showMessage(`Order Placed: $${bet}`);
     }
 
     playSound('spin');
@@ -1399,44 +1299,6 @@
     document.body.style.overflow = '';
   }
 
-  function startAutoSpin() {
-    if (autoSpinning) return;
-    autoSpinning = true;
-    autoSpinBtn.classList.add('active');
-    autoSpinBtn.textContent = '⏹️ STOP AUTO';
-    
-    // Start auto spinning with 3 second intervals
-    autoSpinInterval = setInterval(async () => {
-      if (!spinning) {
-        await spin(true);
-      }
-    }, 3000);
-    
-    // Trigger first spin immediately
-    if (!spinning) {
-      spin(true);
-    }
-  }
-
-  function stopAutoSpin() {
-    if (!autoSpinning) return;
-    autoSpinning = false;
-    autoSpinBtn.classList.remove('active');
-    autoSpinBtn.textContent = '🔄 AUTO SPIN';
-    
-    if (autoSpinInterval) {
-      clearInterval(autoSpinInterval);
-      autoSpinInterval = null;
-    }
-  }
-
-  function toggleAutoSpin() {
-    if (autoSpinning) {
-      stopAutoSpin();
-    } else {
-      startAutoSpin();
-    }
-  }
 
   openPayTableBtn.addEventListener('click', openPaytable);
   closePayTableBtn.addEventListener('click', closePaytable);
@@ -1461,8 +1323,7 @@
     e.target.classList.add('selected');
   });
 
-  spinBtn.addEventListener('click', () => spin(false));
-  autoSpinBtn.addEventListener('click', toggleAutoSpin);
+  spinBtn.addEventListener('click', spin);
 
   updateBalanceDisplay();
   updateFreeSpinsDisplay();
