@@ -928,32 +928,18 @@
     { sym: "💷", name: "Pound" },
     { sym: "💳", name: "Credit Card" },
     { sym: "💱", name: "Currency Exchange" },
-    { sym: "💲", name: "Wild" },
-    { sym: "🧾", name: "ATM" }
-  ];
-
-  const weights = {
-    "💴": 20, "💵": 20, "💶": 15, "💷": 10,
-    "💳": 5, "💱": 15, "💲": 10, "🧾": 5
-  };
-
-  const payouts = {
-    "💴": { 10: [11, 22, 33], 20: [22, 44, 66], 30: [33, 66, 99], 40: [44, 88, 132], 50: [55, 110, 165] },
-    "💵": { 10: [22, 44, 66], 20: [44, 88, 132], 30: [66, 132, 198], 40: [88, 176, 264], 50: [110, 220, 330] },
-    "💶": { 10: [33, 66, 99], 20: [66, 132, 198], 30: [99, 198, 297], 40: [132, 264, 396], 50: [165, 330, 495] },
-    "💷": { 10: [44, 88, 132], 20: [88, 176, 264], 30: [132, 264, 396], 40: [176, 352, 528], 50: [220, 440, 660] },
-    "💳": { 10: [110, 220, 330], 20: [220, 440, 660], 30: [330, 660, 990], 40: [440, 880, 1320], 50: [550, 1100, 1650] },
-    "💱": { 10: [-11, -22, -33], 20: [-22, -44, -66], 30: [-33, -66, -99], 40: [-44, -88, -132], 50: [-55, -110, -165] }
-  };
-
-  const freeSpinsAward = { 3: 5, 5: 10 };
-
-  // Enhanced Sound System - Reliable Web Audio API
+    { sym: "  // Enhanced Immersive Sound System - Professional Casino Audio
   let audioContext = null;
+  let ambientGainNode = null;
+  let isAmbientPlaying = false;
 
   function initAudio() {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      // Create ambient gain node for background sounds
+      ambientGainNode = audioContext.createGain();
+      ambientGainNode.connect(audioContext.destination);
+      ambientGainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
     }
     // Resume context if suspended (iOS/Safari requirement)
     if (audioContext.state === 'suspended') {
@@ -962,85 +948,286 @@
     return audioContext;
   }
 
-  function playSound(type) {
+  function playAmbientCasinoSound() {
+    if (isAmbientPlaying) return;
+    isAmbientPlaying = true;
+    
+    try {
+      const ctx = initAudio();
+      
+      // Subtle ambient casino hum with periodic variations
+      function createAmbientLoop() {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ambientGainNode);
+        
+        osc.frequency.value = 60 + Math.random() * 40;
+        osc.type = 'sawtooth';
+        filter.type = 'lowpass';
+        filter.frequency.value = 200;
+        
+        gain.gain.setValueAtTime(0.5, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.8, ctx.currentTime + 2);
+        gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 8);
+        
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 8);
+        
+        // Schedule next ambient sound
+        setTimeout(createAmbientLoop, 6000 + Math.random() * 4000);
+      }
+      
+      createAmbientLoop();
+    } catch (e) {
+      console.log('Ambient sound failed:', e);
+    }
+  }
+
+  function playSound(type, intensity = 1, columnIndex = 0) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
-      if (type === 'spin') {
-        // Money counter rapid clicks
-        for (let i = 0; i < 4; i++) {
+      if (type === 'money_counter_spin') {
+        // Rapid money counting machine during spin - very immersive
+        for (let i = 0; i < 8; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.connect(gain);
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
           gain.connect(ctx.destination);
           
-          osc.frequency.value = 200 + (i * 50);
+          osc.frequency.value = 180 + (i * 25) + Math.random() * 20;
           osc.type = 'square';
-          gain.gain.setValueAtTime(0.12, now + i * 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.03 + 0.04);
+          filter.type = 'bandpass';
+          filter.frequency.value = 300 + (i * 50);
+          filter.Q.value = 2;
           
-          osc.start(now + i * 0.03);
-          osc.stop(now + i * 0.03 + 0.04);
+          gain.gain.setValueAtTime(0.08 * intensity, now + i * 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.025 + 0.06);
+          
+          osc.start(now + i * 0.025);
+          osc.stop(now + i * 0.025 + 0.06);
         }
-      } else if (type === 'reel_stop') {
-        // Heavy vault mechanism clunk
+      } else if (type === 'mechanical_reel_spin') {
+        // Mechanical reel spinning sound - continuous during spin
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.connect(gain);
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
         gain.connect(ctx.destination);
         
-        osc.frequency.value = 100;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.18, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.frequency.value = 120 + Math.random() * 30;
+        osc.type = 'sawtooth';
+        filter.type = 'highpass';
+        filter.frequency.value = 150;
+        
+        gain.gain.setValueAtTime(0.06 * intensity, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
         
         osc.start(now);
-        osc.stop(now + 0.1);
-      } else if (type === 'win') {
-        // Cash register bell
-        [800, 1000, 1200].forEach((freq, i) => {
+        osc.stop(now + 0.3);
+      } else if (type === 'vault_reel_stop') {
+        // Heavy vault mechanism clunk with metallic resonance
+        const baseFreq = 80 + (columnIndex * 15);
+        
+        // Main mechanical thud
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        
+        osc1.frequency.value = baseFreq;
+        osc1.type = 'square';
+        gain1.gain.setValueAtTime(0.2 * intensity, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        
+        osc1.start(now);
+        osc1.stop(now + 0.15);
+        
+        // Metallic resonance
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc2.connect(filter);
+        filter.connect(gain2);
+        gain2.connect(ctx.destination);
+        
+        osc2.frequency.value = baseFreq * 3;
+        osc2.type = 'sine';
+        filter.type = 'bandpass';
+        filter.frequency.value = baseFreq * 2;
+        filter.Q.value = 5;
+        
+        gain2.gain.setValueAtTime(0.1 * intensity, now + 0.02);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        
+        osc2.start(now + 0.02);
+        osc2.stop(now + 0.25);
+      } else if (type === 'cash_register_win') {
+        // Classic cash register bell sequence
+        const frequencies = [659.25, 783.99, 987.77, 1174.66];
+        frequencies.forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
+          
           osc.connect(gain);
           gain.connect(ctx.destination);
           
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.2, now + i * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.25);
+          gain.gain.setValueAtTime(0.18 * intensity, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
           
-          osc.start(now + i * 0.08);
-          osc.stop(now + i * 0.08 + 0.25);
+          osc.start(now + i * 0.1);
+          osc.stop(now + i * 0.1 + 0.4);
         });
-      } else if (type === 'bigwin') {
-        // Vault door opening sequence
-        for (let i = 0; i < 10; i++) {
+      } else if (type === 'vault_jackpot') {
+        // Epic vault opening with ascending tones
+        for (let i = 0; i < 15; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.connect(gain);
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
           gain.connect(ctx.destination);
           
-          osc.frequency.value = 400 + (i * 120);
+          osc.frequency.value = 261.63 * Math.pow(2, i / 7); // Musical scale
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.15, now + i * 0.07);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.2);
+          filter.type = 'lowpass';
+          filter.frequency.value = 2000 + (i * 200);
           
-          osc.start(now + i * 0.07);
-          osc.stop(now + i * 0.07 + 0.2);
+          gain.gain.setValueAtTime(0.12 * intensity, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+          
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.3);
         }
-      } else if (type === 'button') {
-        // Tactile button press
+        
+        // Add dramatic reverb-like effect
+        setTimeout(() => {
+          for (let i = 0; i < 5; i++) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.frequency.value = 1046.50; // High C
+            osc.type = 'sine';
+            gain.gain.setValueAtTime(0.08 * intensity, ctx.currentTime + i * 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.5);
+            
+            osc.start(ctx.currentTime + i * 0.2);
+            osc.stop(ctx.currentTime + i * 0.2 + 0.5);
+          }
+        }, 800);
+      } else if (type === 'metal_button_press') {
+        // Satisfying metallic button click
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.connect(gain);
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
         gain.connect(ctx.destination);
         
-        osc.frequency.value = 600;
+        osc.frequency.value = 800 + Math.random() * 200;
         osc.type = 'square';
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        filter.type = 'bandpass';
+        filter.frequency.value = 1000;
+        filter.Q.value = 3;
         
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } else if (type === 'coin_cascade') {
+        // Multiple coins falling into metal tray
+        const coinCount = Math.floor(3 + Math.random() * 5);
+        for (let i = 0; i < coinCount; i++) {
+          setTimeout(() => {
+            const frequencies = [1200, 900, 700, 1100, 800];
+            frequencies.forEach((freq, j) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              
+              osc.frequency.value = freq + Math.random() * 100;
+              osc.type = 'sine';
+              gain.gain.setValueAtTime(0.1 * intensity, ctx.currentTime + j * 0.03);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + j * 0.03 + 0.15);
+              
+              osc.start(ctx.currentTime + j * 0.03);
+              osc.stop(ctx.currentTime + j * 0.03 + 0.15);
+            });
+          }, i * 80);
+        }
+      } else if (type === 'vault_door_creak') {
+        // Ominous vault door opening sound
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.setValueAtTime(50, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 1.5);
+        osc.type = 'sawtooth';
+        filter.type = 'lowpass';
+        filter.frequency.value = 200;
+        
+        gain.gain.setValueAtTime(0.15 * intensity, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+        
+        osc.start(now);
+        osc.stop(now + 1.5);
+      } else if (type === 'electric_hum') {
+        // Subtle electrical hum for ambiance
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ambientGainNode);
+        
+        osc.frequency.value = 60; // 60Hz electrical hum
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 3);
+        
+        osc.start(now);
+        osc.stop(now + 3);
+      }
+    } catch (e) {
+      console.log('Audio playback failed:', e);
+    }
+  });
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destinat  // Initialize audio and ambient sounds on first user interaction
+  document.addEventListener('click', () => {
+    initAudio();
+    startAmbientSounds();
+  }, { once: true });
+  document.addEventListener('touchstart', () => {
+    initAudio();
+    startAmbientSounds();
+  }, { once: true });      
         osc.start(now);
         osc.stop(now + 0.04);
       } else if (type === 'coin') {
@@ -1072,10 +1259,34 @@
   const walletDisplay = document.getElementById('walletDisplay');
   const betSelector = document.getElementById('betSelector');
   const spinBtn = document.getElementById('spinBtn');
-  const autoSpinBtn = document.getElementById('autoSpinBtn');
-  const slotGrid = document.getElementById('slotGrid');
-  const linesSvg = document.getElementById('linesSvg');
-  const messageEl = document.getElementById('message');
+  const autoSpinBtn = document.getElementById('autoSpinBtn  // Enhanced button sound effects
+  document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.id === 'spinBtn') {
+        playSound('metal_button_press');
+        setTimeout(() => playSound('electric_hum'), 50);
+      } else {
+        playSound('metal_button_press');
+      }
+    });
+  });
+
+  // Start ambient casino sounds after first interaction
+  let ambientStarted = false;
+  function startAmbientSounds() {
+    if (!ambientStarted) {
+      ambientStarted = true;
+      setTimeout(() => {
+        playAmbientCasinoSound();
+        // Periodic electrical hums
+        setInterval(() => {
+          if (Math.random() < 0.3) {
+            playSound('electric_hum');
+          }
+        }, 8000 + Math.random() * 12000);
+      }, 1000);
+    }
+  }getElementById('message');
   const freeSpinCounterEl = document.getElementById('freeSpinCounter');
   const openPayTableBtn = document.getElementById('openPayTableBtn');
   const paytableModal = document.getElementById('paytableModal');
@@ -1229,52 +1440,18 @@
   }
 
   function showMessage(msg) {
-    messageEl.textContent = msg;
-  }
-
-  function updateBalanceDisplay() {
-    walletDisplay.textContent = `Balance: ${balance.toFixed(2)}`;
-    localStorage.setItem('localPlayerCash', balance.toFixed(2));
-  }
-
-  function updateFreeSpinsDisplay() {
-    if(freeSpins > 0) {
-      freeSpinCounterEl.style.display = 'block';
-      freeSpinCounterEl.textContent = `Free Spins: ${freeSpins}`;
-    } else {
-      freeSpinCounterEl.style.display = 'none';
-    }
-    localStorage.setItem('freeSpins', freeSpins);
-  }
-
-  async function spin() {
-    if (spinning) return;
-    spinning = true;
-    clearLines();
-    messageEl.textContent = '';
-
-    const selectedBetBtn = betSelector.querySelector('button.selected');
-    bet = Number(selectedBetBtn.dataset.bet);
-
-    if (bet > balance && freeSpins === 0) {
-      showMessage('⚠️ Insufficient Funds ⚠️');
-      spinning = false;
-      return;
-    }
-
-    spinBtn.disabled = true;
-
-    if (freeSpins > 0) {
-      freeSpins--;
-      updateFreeSpinsDisplay();
-      showMessage('🎰 Free Spin! 🎰');
-    } else {
-      balance -= bet;
-      updateBalanceDisplay();
-      showMessage(`Bet: ${bet}`);
-    }
-
-    playSound('spin');
+    messageE    // Start immersive spinning sounds
+    playSound('vault_door_creak', 0.8);
+    
+    // Start continuous money counter sound during spin
+    const moneyCounterInterval = setInterval(() => {
+      playSound('money_counter_spin', 0.7);
+    }, 120);
+    
+    // Mechanical reel spinning sounds
+    const mechanicalInterval = setInterval(() => {
+      playSound('mechanical_reel_spin', 0.5);
+    }, 200);
 
     const finalGrid = fillGridRandom();
     const spinDuration = 2500;
@@ -1311,6 +1488,76 @@
     const spinPromises = [];
     for (let col = 0; col < cols; col++) {
       await new Promise(r => setTimeout(r, columnDelay));
+      spinPromises.push(spinColumn(col, spinDuration));
+    }
+
+    await new Promise(r => setTimeout(r, 800));
+
+    // Stop continuous sounds
+    clearInterval(moneyCounterInterval);
+    clearInterval(mechanicalInterval);
+
+    for (let i = 0; i < spinPromises.length; i++) {
+      await spinPromises[i];
+      playSound('vault_reel_stop', 1, i);
+      await new Promise(r => setTimeout(r, 150));
+    }) {
+        columnCells.push(cells[r * cols + colIndex]);
+      }
+      const startTime = performance.now();
+
+      return new Promise(resolve => {
+        function animate() {
+          const now = performance.now();
+          if (now - startTime >= duration) {
+            for (let r = 0; r < rows; r++) {
+              columnCells[r].textContent = finalGrid[r * cols + colIndex];
+              columnCells[r].classList.remove('spinni      if (payout > 0) {
+        balance += payout;
+        updateBalanceDisplay();
+        showMessage(`💰 Win: ${payout.toFixed(2)} 💰`);
+        
+        // Tiered win celebration sounds
+        if (payout > bet * 15) {
+          // Massive jackpot
+          playSound('vault_jackpot', 1.2);
+          setTimeout(() => playSound('coin_cascade', 1.5), 400);
+          setTimeout(    if (matches.length === 0) {
+      showMessage('No Match - Try Again');
+      // Disappointed vault closing sound
+      setTimeout(() => {
+        const ctx = audioContext;
+        if (ctx) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.setValueAtTime(200, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.8);
+          osc.type = 'sawtooth';
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+          osc.start(ctx.currentTime);
+          osc.stop(ctx.currentTime + 0.8);
+        }
+      }, 200);
+      await new Promise(r => setTimeout(r, 1000));
+    } else {bet * 8) {
+          // Big win
+          playSound('vault_jackpot', 0.9);
+          setTimeout(() => playSound('coin_cascade', 1.2), 300);
+          setTimeout(() => playSound('coin_cascade', 1.0), 600);
+        } else if (payout > bet * 3) {
+          // Good win
+          playSound('cash_register_win', 1.0);
+          setTimeout(() => playSound('coin_cascade', 0.9), 200);
+        } else {
+          // Small win
+          playSound('cash_register_win', 0.7);
+          setTimeout(() => playSound('coin_cascade', 0.6), 150);
+        }
+        
+        await new Promise(r => setTimeout(r, 1000));mise(r => setTimeout(r, columnDelay));
       spinPromises.push(spinColumn(col, spinDuration));
     }
 
@@ -1377,16 +1624,31 @@
       const currentBet = Number(selectedBetBtn.dataset.bet);
       if (balance < currentBet && freeSpins === 0) {
         setAutoSpinRunning(false);
-        showMessage('⚠️ Auto Stopped - No Funds ⚠️');
-        break;
+          betSelector.addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    betSelector.querySelectorAll('button').forEach(b => {
+      b.classList.remove('selected');
+    });
+    e.target.classList.add('selected');
+    
+    // Special bet selection sound
+    playSound('metal_button_press');
+    setTimeout(() => {
+      // Coin insertion sound for bet changes
+      const osc = audioContext?.createOscillator();
+      const gain = audioContext?.createGain();
+      if (osc && gain) {
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.frequency.value = 1000;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.1);
       }
-      await spin();
-      if (freeSpins > 0) {
-        showMessage('Auto Stopped - Free Spins!');
-        setAutoSpinRunning(false);
-        break;
-      }
-      await new Promise(r => setTimeout(r, 1000));
+    }, 50);
+  });it new Promise(r => setTimeout(r, 1000));
     }
   }
 
