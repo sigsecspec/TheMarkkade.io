@@ -490,7 +490,23 @@
 
   .action-buttons {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .auto-spin-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .spin-row {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 8px;
     width: 100%;
     max-width: 100%;
@@ -537,7 +553,6 @@
     text-transform: uppercase;
     position: relative;
     transition: all 0.2s ease;
-    grid-column: 1 / -1;
     animation: orderButton 3s ease-in-out infinite;
   }
 
@@ -586,6 +601,9 @@
     letter-spacing: 1px;
     transition: all 0.2s ease;
     animation: autoSpinPulse 2s ease-in-out infinite;
+    padding: 12px;
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    min-height: 46px;
   }
 
   @keyframes autoSpinPulse {
@@ -887,11 +905,18 @@
       <button data-bet="75">$75</button>
       <button data-bet="100">$100</button>
       <button data-bet="125">$125</button>
+      <button data-bet="250">$250</button>
     </div>
 
-    <div class="action-buttons">
-      <button id="spinBtn"><span class="spin-text">ORDER UP!</span></button>
+    <div class="auto-spin-row">
       <button id="autoSpinBtn">🔄 AUTO SPIN</button>
+    </div>
+    
+    <div class="spin-row">
+      <button id="spinBtn"><span class="spin-text">ORDER UP!</span></button>
+    </div>
+    
+    <div class="action-buttons">
       <button id="openPayTableBtn">📜 MENU</button>
       <button id="leaveGameBtn">🚪 EXIT</button>
     </div>
@@ -909,91 +934,57 @@
         <p>★ WINNING COMBINATIONS ★</p>
       </div>
       
-      <div class="menu-section-title">🍔 BURGER MEALS</div>
+      <div class="menu-section-title">🍔 ALL SYMBOLS PAY THE SAME!</div>
       <div class="menu-item">
-        <div class="menu-item-name">🍔🍔🍔 Triple (3 in a row/column)</div>
+        <div class="menu-item-name">🍔/🍟/🥤/🥗 Triple (3 in a row/column)</div>
         <div class="menu-price">2x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🍔🍔🍔🍔 Quad (4 in a row/column)</div>
-        <div class="menu-price">4x Bet</div>
+        <div class="menu-item-name">🍔/🍟/🥤/🥗 Quad (4 in a row/column)</div>
+        <div class="menu-price">3x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🍔🍔🍔🍔🍔 Mega (5 in a row/column)</div>
-        <div class="menu-price">10x Bet</div>
-      </div>
-
-      <div class="menu-section-title">🍟 FRIES COMBOS</div>
-      <div class="menu-item">
-        <div class="menu-item-name">🍟🍟🍟 Triple (3 in a row/column)</div>
-        <div class="menu-price">1.6x Bet</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-name">🍟🍟🍟🍟 Quad (4 in a row/column)</div>
-        <div class="menu-price">3.2x Bet</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-name">🍟🍟🍟🍟🍟 Mega (5 in a row/column)</div>
-        <div class="menu-price">8x Bet</div>
+        <div class="menu-item-name">🍔/🍟/🥤/🥗 Full (5 in a row/column)</div>
+        <div class="menu-price">5x Bet</div>
       </div>
 
-      <div class="menu-section-title">🥤 DRINKS & MORE</div>
+      <div class="menu-section-title">🧾 RECEIPTS (PENALTY)</div>
       <div class="menu-item">
-        <div class="menu-item-name">🥤🥤🥤 Drinks (3+ in a row/column)</div>
-        <div class="menu-price">1.2x/2.4x/6x Bet</div>
+        <div class="menu-item-name">🧾🧾🧾 Triple (3 in a row/column)</div>
+        <div class="menu-price">-2x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🥗🥗🥗 Salads (3+ in a row/column)</div>
-        <div class="menu-price">1x/2x/5x Bet</div>
+        <div class="menu-item-name">🧾🧾🧾🧾 Quad (4 in a row/column)</div>
+        <div class="menu-price">-3x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🧾🧾🧾 Receipts (3+ in a row/column)</div>
-        <div class="menu-price">-1x/-2x/-5x Bet</div>
+        <div class="menu-item-name">🧾🧾🧾🧾🧾 Full (5 in a row/column)</div>
+        <div class="menu-price">-5x Bet</div>
       </div>
       
       <div class="menu-section-title">💰 EXACT PAYOUTS BY BET LEVEL</div>
-      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; font-size: 0.65rem; margin: 8px 0;">
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; font-size: 0.6rem; margin: 8px 0;">
         <div style="font-weight: bold; color: #FFD700;">Symbol</div>
         <div style="font-weight: bold; color: #FFD700;">$25</div>
         <div style="font-weight: bold; color: #FFD700;">$50</div>
         <div style="font-weight: bold; color: #FFD700;">$75</div>
         <div style="font-weight: bold; color: #FFD700;">$100</div>
         <div style="font-weight: bold; color: #FFD700;">$125</div>
+        <div style="font-weight: bold; color: #FFD700;">$250</div>
         
-        <div style="color: #FFA500;">🍔×3</div>
-        <div>$50</div><div>$100</div><div>$150</div><div>$200</div><div>$250</div>
-        <div style="color: #FFA500;">🍔×4</div>
-        <div>$100</div><div>$200</div><div>$300</div><div>$400</div><div>$500</div>
-        <div style="color: #FFA500;">🍔×5</div>
-        <div>$250</div><div>$500</div><div>$750</div><div>$1000</div><div>$1250</div>
-        
-        <div style="color: #FFA500;">🍟×3</div>
-        <div>$40</div><div>$80</div><div>$120</div><div>$160</div><div>$200</div>
-        <div style="color: #FFA500;">🍟×4</div>
-        <div>$80</div><div>$160</div><div>$240</div><div>$320</div><div>$400</div>
-        <div style="color: #FFA500;">🍟×5</div>
-        <div>$200</div><div>$400</div><div>$600</div><div>$800</div><div>$1000</div>
-        
-        <div style="color: #FFA500;">🥤×3</div>
-        <div>$30</div><div>$60</div><div>$90</div><div>$120</div><div>$150</div>
-        <div style="color: #FFA500;">🥤×4</div>
-        <div>$60</div><div>$120</div><div>$180</div><div>$240</div><div>$300</div>
-        <div style="color: #FFA500;">🥤×5</div>
-        <div>$150</div><div>$300</div><div>$450</div><div>$600</div><div>$750</div>
-        
-        <div style="color: #FFA500;">🥗×3</div>
-        <div>$25</div><div>$50</div><div>$75</div><div>$100</div><div>$125</div>
-        <div style="color: #FFA500;">🥗×4</div>
-        <div>$50</div><div>$100</div><div>$150</div><div>$200</div><div>$250</div>
-        <div style="color: #FFA500;">🥗×5</div>
-        <div>$125</div><div>$250</div><div>$375</div><div>$500</div><div>$625</div>
+        <div style="color: #FFA500;">ANY×3</div>
+        <div>$50</div><div>$100</div><div>$150</div><div>$200</div><div>$250</div><div>$500</div>
+        <div style="color: #FFA500;">ANY×4</div>
+        <div>$75</div><div>$150</div><div>$225</div><div>$300</div><div>$375</div><div>$750</div>
+        <div style="color: #FFA500;">ANY×5</div>
+        <div>$125</div><div>$250</div><div>$375</div><div>$500</div><div>$625</div><div>$1250</div>
         
         <div style="color: #FF6666;">🧾×3</div>
-        <div>-$25</div><div>-$50</div><div>-$75</div><div>-$100</div><div>-$125</div>
+        <div>-$50</div><div>-$100</div><div>-$150</div><div>-$200</div><div>-$250</div><div>-$500</div>
         <div style="color: #FF6666;">🧾×4</div>
-        <div>-$50</div><div>-$100</div><div>-$150</div><div>-$200</div><div>-$250</div>
+        <div>-$75</div><div>-$150</div><div>-$225</div><div>-$300</div><div>-$375</div><div>-$750</div>
         <div style="color: #FF6666;">🧾×5</div>
-        <div>-$125</div><div>-$250</div><div>-$375</div><div>-$500</div><div>-$625</div>
+        <div>-$125</div><div>-$250</div><div>-$375</div><div>-$500</div><div>-$625</div><div>-$1250</div>
       </div>
 
       <div class="menu-footer">
@@ -1030,11 +1021,11 @@
   };
 
   const payouts = {
-    "🍔": { 25: [50, 100, 250], 50: [100, 200, 500], 75: [150, 300, 750], 100: [200, 400, 1000], 125: [250, 500, 1250] },
-    "🍟": { 25: [40, 80, 200], 50: [80, 160, 400], 75: [120, 240, 600], 100: [160, 320, 800], 125: [200, 400, 1000] },
-    "🥤": { 25: [30, 60, 150], 50: [60, 120, 300], 75: [90, 180, 450], 100: [120, 240, 600], 125: [150, 300, 750] },
-    "🥗": { 25: [25, 50, 125], 50: [50, 100, 250], 75: [75, 150, 375], 100: [100, 200, 500], 125: [125, 250, 625] },
-    "🧾": { 25: [-25, -50, -125], 50: [-50, -100, -250], 75: [-75, -150, -375], 100: [-100, -200, -500], 125: [-125, -250, -625] }
+    "🍔": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
+    "🍟": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
+    "🥤": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
+    "🥗": { 25: [50, 75, 125], 50: [100, 150, 250], 75: [150, 225, 375], 100: [200, 300, 500], 125: [250, 375, 625], 250: [500, 750, 1250] },
+    "🧾": { 25: [-50, -75, -125], 50: [-100, -150, -250], 75: [-150, -225, -375], 100: [-200, -300, -500], 125: [-250, -375, -625], 250: [-500, -750, -1250] }
   };
 
   const comboBonuses = {
@@ -1109,7 +1100,7 @@
   const leaveGameBtn = document.getElementById('leaveGameBtn');
   const autoSpinBtn = document.getElementById('autoSpinBtn');
 
-  let balance = Number(localStorage.getItem('localPlayerCash')) || 1000;
+  let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
   let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
   let bet = 25;
   let spinning = false;
