@@ -950,6 +950,8 @@
   const freeSpinsAward = { 3: 3, 4: 5, 5: 10 };
 
   let audioContext = null;
+  let grillSizzleOsc = null;
+  let ambientGain = null;
 
   function initAudio() {
     if (!audioContext) {
@@ -961,44 +963,204 @@
     return audioContext;
   }
 
+  function createNoise(ctx, type = 'white') {
+    const bufferSize = 2 * ctx.sampleRate;
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      if (type === 'pink') {
+        output[i] = (Math.random() * 2 - 1) * Math.pow(Math.random(), 0.5);
+      } else {
+        output[i] = Math.random() * 2 - 1;
+      }
+    }
+    
+    const whiteNoise = ctx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    whiteNoise.loop = true;
+    return whiteNoise;
+  }
+
+  function startAmbientSounds() {
+    try {
+      const ctx = initAudio();
+      
+      if (!ambientGain) {
+        const noise = createNoise(ctx, 'pink');
+        ambientGain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        filter.type = 'lowpass';
+        filter.frequency.value = 200;
+        filter.Q.value = 1;
+        
+        noise.connect(filter);
+        filter.connect(ambientGain);
+        ambientGain.connect(ctx.destination);
+        
+        ambientGain.gain.setValueAtTime(0.01, ctx.currentTime);
+        noise.start();
+      }
+    } catch (e) {
+      console.log('Ambient audio failed:', e);
+    }
+  }
+
   function playSound(type) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
-      if (type === 'spin') {
-        for (let i = 0; i < 6; i++) {
-          const osc = ctx.createOscillator();
+      if (type === 'orderBell') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+        
+      } else if (type === 'grillSizzle') {
+        if (!grillSizzleOsc) {
+          const noise = createNoise(ctx);
+          const filter = ctx.createBiquadFilter();
           const gain = ctx.createGain();
-          osc.connect(gain);
+          
+          filter.type = 'bandpass';
+          filter.frequency.value = 2000;
+          filter.Q.value = 2;
+          
+          noise.connect(filter);
+          filter.connect(gain);
           gain.connect(ctx.destination);
-          osc.frequency.value = 180 + (i * 40);
-          osc.type = 'sawtooth';
-          gain.gain.setValueAtTime(0.08, now + i * 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.05);
-          osc.start(now + i * 0.02);
-          osc.stop(now + i * 0.02 + 0.05);
+          
+          gain.gain.setValueAtTime(0.05, now);
+          noise.start();
+          
+          grillSizzleOsc = { source: noise, gain: gain };
         }
-      } else if (type === 'win') {
-        [523.25, 659.25, 783.99].forEach((freq, i) => {
+        
+      } else if (type === 'stopGrillSizzle') {
+        if (grillSizzleOsc) {
+          grillSizzleOsc.gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          setTimeout(() => {
+            if (grillSizzleOsc) {
+              grillSizzleOsc.source.stop();
+              grillSizzleOsc = null;
+            }
+          }, 500);
+        }
+        
+      } else if (type === 'burgerFlip') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+        osc.type = 'square';
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
+        
+      } else if (type === 'cashRegister') {
+        [440, 523.25, 659.25].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.frequency.value = freq;
-          osc.type = 'sine';
-          gain.gain.setValueAtTime(0.15, now + i * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
-          osc.start(now + i * 0.1);
-          osc.stop(now + i * 0.1 + 0.4);
+          osc.type = 'triangle';
+          gain.gain.setValueAtTime(0.15, now + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.3);
+          osc.start(now + i * 0.05);
+          osc.stop(now + i * 0.05 + 0.3);
         });
+        
+        setTimeout(() => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.setValueAtTime(800, now + 0.2);
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0.2, now + 0.2);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          osc.start(now + 0.2);
+          osc.stop(now + 0.5);
+        }, 200);
+        
+      } else if (type === 'receiptPrint') {
+        const noise = createNoise(ctx);
+        const filter = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+        
+        filter.type = 'highpass';
+        filter.frequency.value = 3000;
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        noise.start(now);
+        noise.stop(now + 0.4);
+        
+      } else if (type === 'kitchenTimer') {
+        for (let i = 0; i < 3; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = 1000;
+          osc.type = 'square';
+          gain.gain.setValueAtTime(0.1, now + i * 0.15);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 0.1);
+          osc.start(now + i * 0.15);
+          osc.stop(now + i * 0.15 + 0.1);
+        }
+        
+      } else if (type === 'crowdCheer') {
+        const noise = createNoise(ctx, 'pink');
+        const filter = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+        
+        filter.type = 'bandpass';
+        filter.frequency.value = 1000;
+        filter.Q.value = 0.5;
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2);
+        noise.start(now);
+        noise.stop(now + 2);
+        
+      } else if (type === 'spin') {
+        playSound('orderBell');
+        setTimeout(() => playSound('grillSizzle'), 100);
+        
+      } else if (type === 'win') {
+        playSound('cashRegister');
       }
     } catch (e) {
       console.log('Audio failed:', e);
     }
   }
 
-  document.addEventListener('click', () => initAudio(), { once: true });
+  document.addEventListener('click', () => {
+    initAudio();
+    startAmbientSounds();
+  }, { once: true });
 
   const walletDisplay = document.getElementById('walletDisplay');
   const betSelector = document.getElementById('betSelector');
@@ -1162,6 +1324,7 @@
     if(freeSpinsAward[receiptCount]) {
       freeSpins += freeSpinsAward[receiptCount];
       updateFreeSpinsDisplay();
+      playSound('kitchenTimer');
     }
 
     return totalPayout;
@@ -1257,8 +1420,11 @@
 
     for (let i = 0; i < spinPromises.length; i++) {
       await spinPromises[i];
+      playSound('burgerFlip');
       await new Promise(r => setTimeout(r, 150));
     }
+    
+    playSound('stopGrillSizzle');
 
     renderGrid(finalGrid);
     const matches = findMatches(finalGrid);
@@ -1276,12 +1442,18 @@
         balance += payout;
         updateBalanceDisplay();
         showMessage(`🍔 Delicious! Won $${payout.toFixed(0)}! 🍔`);
-        playSound('win');
+        
+        if (payout >= bet * 10) {
+          playSound('crowdCheer');
+        } else {
+          playSound('win');
+        }
         await new Promise(r => setTimeout(r, 1000));
       } else if (payout < 0) {
         balance += payout;
         updateBalanceDisplay();
         showMessage(`💸 Overcharged: $${Math.abs(payout).toFixed(0)} 💸`);
+        playSound('receiptPrint');
         await new Promise(r => setTimeout(r, 1000));
       } else {
         showMessage('Combo Found!');

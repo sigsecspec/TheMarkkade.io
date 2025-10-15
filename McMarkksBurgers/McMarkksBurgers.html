@@ -1020,6 +1020,8 @@
 
   // Enhanced Sound System
   let audioContext = null;
+  let grillSizzleOsc = null;
+  let ambientGain = null;
 
   function initAudio() {
     if (!audioContext) {
@@ -1031,26 +1033,106 @@
     return audioContext;
   }
 
+  function createNoise(ctx, type = 'white') {
+    const bufferSize = 2 * ctx.sampleRate;
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      if (type === 'pink') {
+        output[i] = (Math.random() * 2 - 1) * Math.pow(Math.random(), 0.5);
+      } else {
+        output[i] = Math.random() * 2 - 1;
+      }
+    }
+    
+    const whiteNoise = ctx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    whiteNoise.loop = true;
+    return whiteNoise;
+  }
+
+  function startAmbientSounds() {
+    try {
+      const ctx = initAudio();
+      
+      if (!ambientGain) {
+        const noise = createNoise(ctx, 'pink');
+        ambientGain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        filter.type = 'lowpass';
+        filter.frequency.value = 200;
+        filter.Q.value = 1;
+        
+        noise.connect(filter);
+        filter.connect(ambientGain);
+        ambientGain.connect(ctx.destination);
+        
+        ambientGain.gain.setValueAtTime(0.01, ctx.currentTime);
+        noise.start();
+      }
+    } catch (e) {
+      console.log('Ambient audio failed:', e);
+    }
+  }
+
   function playSound(type) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
-      if (type === 'spin') {
-        for (let i = 0; i < 4; i++) {
-          const osc = ctx.createOscillator();
+      if (type === 'orderBell') {
+        // Restaurant order bell sound
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+        
+      } else if (type === 'grillSizzle') {
+        // Grill sizzling sound during spin
+        if (!grillSizzleOsc) {
+          const noise = createNoise(ctx);
+          const filter = ctx.createBiquadFilter();
           const gain = ctx.createGain();
-          osc.connect(gain);
+          
+          filter.type = 'bandpass';
+          filter.frequency.value = 2000;
+          filter.Q.value = 2;
+          
+          noise.connect(filter);
+          filter.connect(gain);
           gain.connect(ctx.destination);
           
-          osc.frequency.value = 250 + (i * 80);
-          osc.type = 'square';
-          gain.gain.setValueAtTime(0.12, now + i * 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.08);
+          gain.gain.setValueAtTime(0.05, now);
+          noise.start();
           
-          osc.start(now + i * 0.05);
-          osc.stop(now + i * 0.05 + 0.08);
+          grillSizzleOsc = { source: noise, gain: gain };
         }
+        
+      } else if (type === 'stopGrillSizzle') {
+        // Stop grill sizzling
+        if (grillSizzleOsc) {
+          grillSizzleOsc.gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          setTimeout(() => {
+            if (grillSizzleOsc) {
+              grillSizzleOsc.source.stop();
+              grillSizzleOsc = null;
+            }
+          }, 500);
+        }
+        
+      } else if (type === 'spin') {
+        playSound('orderBell');
+        setTimeout(() => playSound('grillSizzle'), 100);
+        
       } else if (type === 'reel_stop') {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
