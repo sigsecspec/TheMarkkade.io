@@ -460,9 +460,39 @@
     transform: translateY(-2px) scale(1.03);
   }
 
+  .main-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .main-controls button {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,250,205,0.95) 100%);
+    border: 3px solid rgba(255, 140, 0, 0.6);
+    color: #ff6b35;
+    padding: 14px;
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    letter-spacing: 1px;
+    box-shadow: 
+      0 4px 12px rgba(0,0,0,0.6),
+      inset 0 2px 0 rgba(255,255,255,0.4);
+    min-height: 56px;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+
+  .main-controls button:active {
+    transform: scale(0.95);
+  }
+
   .action-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
     width: 100%;
     max-width: 600px;
@@ -490,12 +520,40 @@
     transform: scale(0.95);
   }
 
+  #betBtn {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,250,205,0.95) 100%);
+    border: 3px solid rgba(255, 140, 0, 0.6);
+    color: #ff6b35;
+  }
+
+  #betBtn.selected {
+    background: linear-gradient(135deg, rgba(255,215,0,1) 0%, rgba(255,255,0,1) 100%);
+    color: #000;
+    border-color: rgba(255, 69, 0, 1);
+    box-shadow: 
+      0 6px 20px rgba(255,215,0,0.6),
+      inset 0 2px 0 rgba(255,255,255,0.6),
+      0 0 20px rgba(255,215,0,0.5);
+  }
+
+  #autoSpinBtn {
+    background: linear-gradient(135deg, rgba(255,215,0,1) 0%, rgba(255,255,0,1) 100%);
+    color: #000;
+    border: 3px solid rgba(255, 69, 0, 0.8);
+  }
+
+  #autoSpinBtn.active {
+    background: linear-gradient(135deg, rgba(255,69,0,0.95) 0%, rgba(220,20,60,0.95) 100%);
+    color: #fff;
+    border-color: rgba(139, 0, 0, 0.8);
+  }
+
   #spinBtn {
     background: linear-gradient(135deg, rgba(255,215,0,1) 0%, rgba(255,255,0,1) 100%);
     color: #000;
     font-weight: 900;
-    font-size: 1.6rem;
-    padding: 20px 50px;
+    font-size: 1.1rem;
+    padding: 14px;
     border: 4px solid rgba(255, 69, 0, 0.8);
     border-radius: 8px;
     cursor: pointer;
@@ -503,13 +561,11 @@
       0 8px 30px rgba(255,215,0,0.6),
       inset 0 3px 0 rgba(255,255,255,0.5),
       inset 0 -3px 0 rgba(0,0,0,0.2);
-    letter-spacing: 3px;
-    min-width: 280px;
+    letter-spacing: 2px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     text-transform: uppercase;
     position: relative;
     transition: all 0.3s ease;
-    grid-column: 1 / -1;
     animation: spinGlow 2s ease-in-out infinite;
   }
 
@@ -528,14 +584,14 @@
 
   #spinBtn::before {
     content: '🍇';
-    margin-right: 12px;
-    font-size: 1.8rem;
+    margin-right: 8px;
+    font-size: 1.2rem;
   }
 
   #spinBtn::after {
     content: '🍇';
-    margin-left: 12px;
-    font-size: 1.8rem;
+    margin-left: 8px;
+    font-size: 1.2rem;
   }
 
   #spinBtn:hover {
@@ -816,8 +872,17 @@
       padding: 10px 12px;
     }
     
+    .main-controls {
+      gap: 8px;
+    }
+
+    .main-controls button {
+      min-height: 50px;
+      font-size: 0.9rem;
+      padding: 12px;
+    }
+
     .action-buttons {
-      grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
     
@@ -837,14 +902,6 @@
       font-size: 0.8rem;
       padding: 10px;
       min-height: 44px;
-    }
-    
-    #spinBtn {
-      padding: 16px 36px;
-      min-width: 90%;
-      font-size: 1.3rem;
-      letter-spacing: 2px;
-      grid-column: 1 / -1;
     }
     
     #message {
@@ -896,11 +953,14 @@
       <button data-bet="50">$50</button>
     </div>
 
-    <div class="action-buttons">
-      <button id="spinBtn">🎰 Spin</button>
+    <div class="main-controls">
+      <button id="betBtn">$10 💰 Bet</button>
       <button id="autoSpinBtn">🔄 Auto</button>
+      <button id="spinBtn">🎰 Spin</button>
+    </div>
+
+    <div class="action-buttons">
       <button id="openPayTableBtn">📋 Pay</button>
-      <button id="volumeBtn">🔊 Sound</button>
       <button id="leaveGameBtn">🚪 Exit</button>
     </div>
     
@@ -910,7 +970,6 @@
       <button data-autospins="25">25 Spins</button>
       <button data-autospins="50">50 Spins</button>
       <button data-autospins="100">100 Spins</button>
-      <button id="stopAutoSpinBtn">⏹ Stop</button>
     </div>
   </div>
 </div>
@@ -1401,11 +1460,10 @@
   const openPayTableBtn = document.getElementById('openPayTableBtn');
   const paytableModal = document.getElementById('paytableModal');
   const closePayTableBtn = document.getElementById('closePayTableBtn');
-  const volumeBtn = document.getElementById('volumeBtn');
   const leaveGameBtn = document.getElementById('leaveGameBtn');
   const autoSpinBtn = document.getElementById('autoSpinBtn');
   const autoSpinSelector = document.getElementById('autoSpinSelector');
-  const stopAutoSpinBtn = document.getElementById('stopAutoSpinBtn');
+  const betBtn = document.getElementById('betBtn');
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
   let bet = 10;
@@ -1744,6 +1802,26 @@
       b.classList.remove('selected');
     });
     e.target.classList.add('selected');
+    bet = Number(e.target.dataset.bet);
+    betBtn.textContent = `$${bet} 💰 Bet`;
+  });
+
+  // Bet button cycles through bet amounts
+  const betAmounts = [10, 20, 30, 40, 50];
+  let currentBetIndex = 0;
+  
+  betBtn.addEventListener('click', () => {
+    currentBetIndex = (currentBetIndex + 1) % betAmounts.length;
+    bet = betAmounts[currentBetIndex];
+    betBtn.textContent = `$${bet} 💰 Bet`;
+    
+    // Update bet selector visual
+    betSelector.querySelectorAll('button').forEach(b => {
+      b.classList.remove('selected');
+      if (Number(b.dataset.bet) === bet) {
+        b.classList.add('selected');
+      }
+    });
   });
 
   spinBtn.addEventListener('click', spin);
@@ -1751,24 +1829,20 @@
   // Auto Spin functionality
   autoSpinBtn.addEventListener('click', () => {
     if (autoSpinActive) {
+      // Stop auto spin
       stopAutoSpin = true;
       autoSpinActive = false;
       autoSpinBtn.textContent = '🔄 Auto';
+      autoSpinBtn.classList.remove('active');
       autoSpinSelector.style.display = 'none';
     } else {
+      // Show auto spin selector
       autoSpinSelector.style.display = autoSpinSelector.style.display === 'none' ? 'grid' : 'none';
     }
   });
   
   autoSpinSelector.addEventListener('click', async (e) => {
     if (e.target.tagName !== 'BUTTON') return;
-    if (e.target.id === 'stopAutoSpinBtn') {
-      stopAutoSpin = true;
-      autoSpinActive = false;
-      autoSpinBtn.textContent = '🔄 Auto';
-      autoSpinSelector.style.display = 'none';
-      return;
-    }
     
     const spins = Number(e.target.dataset.autospins);
     if (spins) {
@@ -1776,14 +1850,15 @@
       autoSpinActive = true;
       stopAutoSpin = false;
       autoSpinSelector.style.display = 'none';
-      autoSpinBtn.textContent = `🔄 ${autoSpinCount}`;
+      autoSpinBtn.textContent = `⏹ Stop (${autoSpinCount})`;
+      autoSpinBtn.classList.add('active');
       
       // Start auto spinning
       while (autoSpinCount > 0 && !stopAutoSpin && balance >= bet) {
         await spin();
         autoSpinCount--;
         if (autoSpinActive) {
-          autoSpinBtn.textContent = autoSpinCount > 0 ? `🔄 ${autoSpinCount}` : '🔄 Auto';
+          autoSpinBtn.textContent = autoSpinCount > 0 ? `⏹ Stop (${autoSpinCount})` : '🔄 Auto';
         }
         if (autoSpinCount > 0 && !stopAutoSpin && balance >= bet) {
           await new Promise(r => setTimeout(r, 500)); // Brief pause between spins
@@ -1794,6 +1869,7 @@
       autoSpinActive = false;
       stopAutoSpin = false;
       autoSpinBtn.textContent = '🔄 Auto';
+      autoSpinBtn.classList.remove('active');
       
       if (balance < bet) {
         showMessage('⚠️ Auto Spin Stopped - Insufficient Funds ⚠️');
@@ -1804,6 +1880,7 @@
   updateBalanceDisplay();
   updateMultiplierDisplay();
   renderGrid(fillGridRandom());
+  betBtn.textContent = `$${bet} 💰 Bet`;
   
   // Start ambient orchard sounds
   function playAmbientSounds() {
@@ -1819,30 +1896,10 @@
   let masterVolume = parseFloat(localStorage.getItem('fruitFrenzyVolume')) || 0.7;
   let soundEnabled = localStorage.getItem('fruitFreezySoundEnabled') !== 'false';
   
-  function updateVolumeButton() {
-    volumeBtn.textContent = soundEnabled ? '🔊 Sound' : '🔇 Mute';
-  }
-  
-  volumeBtn.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    localStorage.setItem('fruitFreezySoundEnabled', soundEnabled);
-    updateVolumeButton();
-    
-    if (soundEnabled) {
-      playFruitSound('fruit_cut');
-    }
-  });
-  
-  updateVolumeButton();
-  
   // Welcome sound when game loads
   setTimeout(() => {
     if (soundEnabled) {
       playFruitSound('tree_shake');
-      showMessage('🎵 Immersive Fruit Sounds Activated! 🎵');
-      setTimeout(() => {
-        showMessage('Pick Your Bet & Spin!');
-      }, 2000);
     }
   }, 500);
 
