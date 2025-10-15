@@ -490,7 +490,7 @@
 
   .action-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 8px;
     width: 100%;
     max-width: 100%;
@@ -563,6 +563,53 @@
   }
   
   #spinBtn:disabled {
+    background: linear-gradient(135deg, #666 0%, #444 100%);
+    color: #999;
+    cursor: not-allowed;
+    border-color: #555;
+    animation: none;
+  }
+
+  #autoSpinBtn {
+    background: 
+      linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #8B0000 100%);
+    color: #FFD700;
+    font-weight: 900;
+    border: 2px solid #FFD700;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 
+      0 0 20px rgba(255,215,0,0.3),
+      0 4px 15px rgba(0,0,0,0.8);
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    animation: autoSpinPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes autoSpinPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 4px 15px rgba(0,0,0,0.8); }
+    50% { box-shadow: 0 0 30px rgba(255,215,0,0.5), 0 6px 20px rgba(0,0,0,0.9); }
+  }
+
+  #autoSpinBtn:active {
+    transform: scale(0.95);
+  }
+
+  #autoSpinBtn.active {
+    background: 
+      linear-gradient(135deg, #00FF00 0%, #32CD32 50%, #00FF00 100%);
+    color: #000;
+    animation: autoSpinActive 1s ease-in-out infinite;
+  }
+
+  @keyframes autoSpinActive {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  #autoSpinBtn:disabled {
     background: linear-gradient(135deg, #666 0%, #444 100%);
     color: #999;
     cursor: not-allowed;
@@ -844,6 +891,7 @@
 
     <div class="action-buttons">
       <button id="spinBtn"><span class="spin-text">ORDER UP!</span></button>
+      <button id="autoSpinBtn">🔄 AUTO SPIN</button>
       <button id="openPayTableBtn">📜 MENU</button>
       <button id="leaveGameBtn">🚪 EXIT</button>
     </div>
@@ -863,52 +911,100 @@
       
       <div class="menu-section-title">🍔 BURGER MEALS</div>
       <div class="menu-item">
-        <div class="menu-item-name">🍔🍔🍔 Triple</div>
-        <div class="menu-price">2x-10x Bet</div>
+        <div class="menu-item-name">🍔🍔🍔 Triple (3 in a row/column)</div>
+        <div class="menu-price">2x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🍔🍔🍔🍔 Quad</div>
-        <div class="menu-price">4x-16x Bet</div>
+        <div class="menu-item-name">🍔🍔🍔🍔 Quad (4 in a row/column)</div>
+        <div class="menu-price">4x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🍔🍔🍔🍔🍔 Mega</div>
-        <div class="menu-price">10x-50x Bet</div>
+        <div class="menu-item-name">🍔🍔🍔🍔🍔 Mega (5 in a row/column)</div>
+        <div class="menu-price">10x Bet</div>
       </div>
 
       <div class="menu-section-title">🍟 FRIES COMBOS</div>
       <div class="menu-item">
-        <div class="menu-item-name">🍟🍟🍟 Triple</div>
-        <div class="menu-price">1.6x-8x Bet</div>
+        <div class="menu-item-name">🍟🍟🍟 Triple (3 in a row/column)</div>
+        <div class="menu-price">1.6x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🍟🍟🍟🍟 Quad</div>
-        <div class="menu-price">3.2x-12.8x Bet</div>
+        <div class="menu-item-name">🍟🍟🍟🍟 Quad (4 in a row/column)</div>
+        <div class="menu-price">3.2x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🍟🍟🍟🍟🍟 Mega</div>
-        <div class="menu-price">8x-40x Bet</div>
+        <div class="menu-item-name">🍟🍟🍟🍟🍟 Mega (5 in a row/column)</div>
+        <div class="menu-price">8x Bet</div>
       </div>
 
       <div class="menu-section-title">🥤 DRINKS & MORE</div>
       <div class="menu-item">
-        <div class="menu-item-name">🥤 Drinks</div>
-        <div class="menu-price">1.2x-6x Bet</div>
+        <div class="menu-item-name">🥤🥤🥤 Drinks (3+ in a row/column)</div>
+        <div class="menu-price">1.2x/2.4x/6x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🥗 Salads</div>
-        <div class="menu-price">1x-5x Bet</div>
+        <div class="menu-item-name">🥗🥗🥗 Salads (3+ in a row/column)</div>
+        <div class="menu-price">1x/2x/5x Bet</div>
       </div>
       <div class="menu-item">
-        <div class="menu-item-name">🧾 Receipts</div>
-        <div class="menu-price">-1x to -5x Bet</div>
+        <div class="menu-item-name">🧾🧾🧾 Receipts (3+ in a row/column)</div>
+        <div class="menu-price">-1x/-2x/-5x Bet</div>
       </div>
       
+      <div class="menu-section-title">💰 EXACT PAYOUTS BY BET LEVEL</div>
+      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; font-size: 0.65rem; margin: 8px 0;">
+        <div style="font-weight: bold; color: #FFD700;">Symbol</div>
+        <div style="font-weight: bold; color: #FFD700;">$25</div>
+        <div style="font-weight: bold; color: #FFD700;">$50</div>
+        <div style="font-weight: bold; color: #FFD700;">$75</div>
+        <div style="font-weight: bold; color: #FFD700;">$100</div>
+        <div style="font-weight: bold; color: #FFD700;">$125</div>
+        
+        <div style="color: #FFA500;">🍔×3</div>
+        <div>$50</div><div>$100</div><div>$150</div><div>$200</div><div>$250</div>
+        <div style="color: #FFA500;">🍔×4</div>
+        <div>$100</div><div>$200</div><div>$300</div><div>$400</div><div>$500</div>
+        <div style="color: #FFA500;">🍔×5</div>
+        <div>$250</div><div>$500</div><div>$750</div><div>$1000</div><div>$1250</div>
+        
+        <div style="color: #FFA500;">🍟×3</div>
+        <div>$40</div><div>$80</div><div>$120</div><div>$160</div><div>$200</div>
+        <div style="color: #FFA500;">🍟×4</div>
+        <div>$80</div><div>$160</div><div>$240</div><div>$320</div><div>$400</div>
+        <div style="color: #FFA500;">🍟×5</div>
+        <div>$200</div><div>$400</div><div>$600</div><div>$800</div><div>$1000</div>
+        
+        <div style="color: #FFA500;">🥤×3</div>
+        <div>$30</div><div>$60</div><div>$90</div><div>$120</div><div>$150</div>
+        <div style="color: #FFA500;">🥤×4</div>
+        <div>$60</div><div>$120</div><div>$180</div><div>$240</div><div>$300</div>
+        <div style="color: #FFA500;">🥤×5</div>
+        <div>$150</div><div>$300</div><div>$450</div><div>$600</div><div>$750</div>
+        
+        <div style="color: #FFA500;">🥗×3</div>
+        <div>$25</div><div>$50</div><div>$75</div><div>$100</div><div>$125</div>
+        <div style="color: #FFA500;">🥗×4</div>
+        <div>$50</div><div>$100</div><div>$150</div><div>$200</div><div>$250</div>
+        <div style="color: #FFA500;">🥗×5</div>
+        <div>$125</div><div>$250</div><div>$375</div><div>$500</div><div>$625</div>
+        
+        <div style="color: #FF6666;">🧾×3</div>
+        <div>-$25</div><div>-$50</div><div>-$75</div><div>-$100</div><div>-$125</div>
+        <div style="color: #FF6666;">🧾×4</div>
+        <div>-$50</div><div>-$100</div><div>-$150</div><div>-$200</div><div>-$250</div>
+        <div style="color: #FF6666;">🧾×5</div>
+        <div>-$125</div><div>-$250</div><div>-$375</div><div>-$500</div><div>-$625</div>
+      </div>
+
       <div class="menu-footer">
         <p class="special">🎁 SPECIAL COMBOS 🎁</p>
         <p>🍔🍟🥤🥗🧾 GRAND SLAM +$500</p>
         <p>🍔🍟🥤🧾 CLASSIC +$300</p>
         <p>🍔🍟🧾 VALUE MEAL +$200</p>
-        <p>🎰 FREE SPINS WITH 3+ RECEIPTS</p>
+        <p>🎰 FREE SPINS: 3 RECEIPTS = 3 SPINS</p>
+        <p>🎰 FREE SPINS: 4 RECEIPTS = 5 SPINS</p>
+        <p>🎰 FREE SPINS: 5 RECEIPTS = 10 SPINS</p>
+        <p style="color: #FFD700; font-weight: bold;">AUTO SPIN COSTS 2X BET AMOUNT</p>
       </div>
     </div>
   </div>
@@ -1011,11 +1107,14 @@
   const paytableModal = document.getElementById('paytableModal');
   const closePayTableBtn = document.getElementById('closePayTableBtn');
   const leaveGameBtn = document.getElementById('leaveGameBtn');
+  const autoSpinBtn = document.getElementById('autoSpinBtn');
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 1000;
   let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
   let bet = 25;
   let spinning = false;
+  let autoSpinning = false;
+  let autoSpinInterval = null;
 
   const cells = [];
   for (let r = 0; r < rows; r++) {
@@ -1186,7 +1285,7 @@
     localStorage.setItem('freeSpins', freeSpins);
   }
 
-  async function spin() {
+  async function spin(isAutoSpin = false) {
     if (spinning) return;
     spinning = true;
     clearLines();
@@ -1194,10 +1293,16 @@
 
     const selectedBetBtn = betSelector.querySelector('button.selected');
     bet = Number(selectedBetBtn.dataset.bet);
+    
+    // Double the cost for auto spin
+    const actualBet = isAutoSpin ? bet * 2 : bet;
 
-    if (bet > balance && freeSpins === 0) {
+    if (actualBet > balance && freeSpins === 0) {
       showMessage('⚠️ Insufficient Funds ⚠️');
       spinning = false;
+      if (isAutoSpin) {
+        stopAutoSpin();
+      }
       return;
     }
 
@@ -1206,11 +1311,11 @@
     if (freeSpins > 0) {
       freeSpins--;
       updateFreeSpinsDisplay();
-      showMessage('🍔 Free Meal! 🍔');
+      showMessage(isAutoSpin ? '🍔 Auto Free Meal! 🍔' : '🍔 Free Meal! 🍔');
     } else {
-      balance -= bet;
+      balance -= actualBet;
       updateBalanceDisplay();
-      showMessage(`Order Placed: $${bet}`);
+      showMessage(isAutoSpin ? `Auto Order: $${actualBet} (2x)` : `Order Placed: $${actualBet}`);
     }
 
     playSound('spin');
@@ -1303,6 +1408,45 @@
     document.body.style.overflow = '';
   }
 
+  function startAutoSpin() {
+    if (autoSpinning) return;
+    autoSpinning = true;
+    autoSpinBtn.classList.add('active');
+    autoSpinBtn.textContent = '⏹️ STOP AUTO';
+    
+    // Start auto spinning with 3 second intervals
+    autoSpinInterval = setInterval(async () => {
+      if (!spinning) {
+        await spin(true);
+      }
+    }, 3000);
+    
+    // Trigger first spin immediately
+    if (!spinning) {
+      spin(true);
+    }
+  }
+
+  function stopAutoSpin() {
+    if (!autoSpinning) return;
+    autoSpinning = false;
+    autoSpinBtn.classList.remove('active');
+    autoSpinBtn.textContent = '🔄 AUTO SPIN';
+    
+    if (autoSpinInterval) {
+      clearInterval(autoSpinInterval);
+      autoSpinInterval = null;
+    }
+  }
+
+  function toggleAutoSpin() {
+    if (autoSpinning) {
+      stopAutoSpin();
+    } else {
+      startAutoSpin();
+    }
+  }
+
   openPayTableBtn.addEventListener('click', openPaytable);
   closePayTableBtn.addEventListener('click', closePaytable);
   paytableModal.addEventListener('click', (e) => {
@@ -1326,7 +1470,8 @@
     e.target.classList.add('selected');
   });
 
-  spinBtn.addEventListener('click', spin);
+  spinBtn.addEventListener('click', () => spin(false));
+  autoSpinBtn.addEventListener('click', toggleAutoSpin);
 
   updateBalanceDisplay();
   updateFreeSpinsDisplay();
