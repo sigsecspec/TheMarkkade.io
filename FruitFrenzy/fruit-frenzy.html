@@ -829,6 +829,7 @@
     <div class="action-buttons">
       <button id="spinBtn">🎰 Spin</button>
       <button id="openPayTableBtn">📋 Pay</button>
+      <button id="volumeBtn">🔊 Sound</button>
       <button id="leaveGameBtn">🚪 Exit</button>
     </div>
   </div>
@@ -942,7 +943,7 @@
     "🍓": { 10: [-15, -30, -50], 20: [-30, -60, -100], 30: [-45, -90, -150], 40: [-60, -120, -200], 50: [-75, -150, -250] }
   };
 
-  // Enhanced Sound System
+  // Enhanced Fruit-Themed Sound System
   let audioContext = null;
 
   function initAudio() {
@@ -955,85 +956,355 @@
     return audioContext;
   }
 
-  function playSound(type) {
+  function playFruitSound(type, symbol = null) {
+    if (!soundEnabled) return;
+    
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
-      if (type === 'spin') {
-        for (let i = 0; i < 5; i++) {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          
-          osc.frequency.value = 300 + (i * 100);
-          osc.type = 'sine';
-          gain.gain.setValueAtTime(0.1, now + i * 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.06);
-          
-          osc.start(now + i * 0.04);
-          osc.stop(now + i * 0.04 + 0.06);
-        }
-      } else if (type === 'reel_stop') {
-        const osc = ctx.createOscillator();
+      // Helper function to set volume-adjusted gain
+      const setGain = (gainNode, value, time) => {
+        gainNode.gain.setValueAtTime(value * masterVolume, time);
+      };
+      
+      const rampGain = (gainNode, value, time) => {
+        gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, value * masterVolume), time);
+      };
+      
+      if (type === 'fruit_cut') {
+        // Fruit cutting sound - sharp attack with quick decay
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.connect(gain);
+        const filter = ctx.createBiquadFilter();
+        
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
         gain.connect(ctx.destination);
         
-        osc.frequency.value = 120;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.15, now);
+        osc1.frequency.value = 800;
+        osc2.frequency.value = 1200;
+        osc1.type = 'sawtooth';
+        osc2.type = 'square';
+        
+        filter.type = 'highpass';
+        filter.frequency.value = 400;
+        
+        setGain(gain, 0.15, now);
+        rampGain(gain, 0.001, now + 0.08);
+        
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.08);
+        osc2.stop(now + 0.08);
+        
+      } else if (type === 'tree_shake') {
+        // Tree shaking sound for button hover/click
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 150;
+        osc.type = 'sawtooth';
+        filter.type = 'lowpass';
+        filter.frequency.value = 300;
+        
+        gain.gain.setValueAtTime(0.1, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
         
+        // Add slight frequency modulation for rustling effect
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+        lfo.frequency.value = 8;
+        lfoGain.gain.value = 20;
+        
         osc.start(now);
+        lfo.start(now);
         osc.stop(now + 0.12);
-      } else if (type === 'win') {
-        [600, 750, 900, 1200].forEach((freq, i) => {
+        lfo.stop(now + 0.12);
+        
+      } else if (type === 'fruit_drop') {
+        // Fruit dropping into basket sound
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+        osc.type = 'triangle';
+        
+        filter.type = 'lowpass';
+        filter.frequency.value = 800;
+        
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        
+        osc.start(now);
+        osc.stop(now + 0.2);
+        
+      } else if (type === 'spin') {
+        // Fruit machine spinning with orchard ambience
+        for (let i = 0; i < 3; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.frequency.value = 200 + (i * 80);
+          osc.type = 'sine';
+          filter.type = 'bandpass';
+          filter.frequency.value = 400 + (i * 200);
+          
+          gain.gain.setValueAtTime(0.08, now + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.15);
+          
+          osc.start(now + i * 0.05);
+          osc.stop(now + i * 0.05 + 0.15);
+        }
+        
+      } else if (type === 'reel_stop') {
+        // Fruit landing with a soft thud
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.15);
+        osc.type = 'triangle';
+        
+        filter.type = 'lowpass';
+        filter.frequency.value = 400;
+        
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        
+        osc.start(now);
+        osc.stop(now + 0.15);
+        
+      } else if (type === 'win') {
+        // Joyful fruit harvest celebration
+        const frequencies = [523, 659, 784, 1047]; // C, E, G, C octave
+        frequencies.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
           osc.connect(gain);
           gain.connect(ctx.destination);
           
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.18, now + i * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3);
+          gain.gain.setValueAtTime(0.15, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
           
           osc.start(now + i * 0.1);
-          osc.stop(now + i * 0.1 + 0.3);
+          osc.stop(now + i * 0.1 + 0.4);
         });
+        
       } else if (type === 'bigwin') {
-        for (let i = 0; i < 15; i++) {
+        // Massive fruit harvest celebration with bells
+        for (let i = 0; i < 12; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.connect(gain);
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
           gain.connect(ctx.destination);
           
-          osc.frequency.value = 500 + (i * 150);
-          osc.type = 'triangle';
-          gain.gain.setValueAtTime(0.12, now + i * 0.06);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.25);
+          osc.frequency.value = 400 + (i * 120);
+          osc.type = 'sine';
+          filter.type = 'bandpass';
+          filter.frequency.value = 800 + (i * 100);
           
-          osc.start(now + i * 0.06);
-          osc.stop(now + i * 0.06 + 0.25);
+          gain.gain.setValueAtTime(0.1, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+          
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.3);
         }
-      } else if (type === 'button') {
+        
+      } else if (type === 'fruit_match') {
+        // Specific fruit matching sounds based on symbol
+        let baseFreq = 440;
+        let timbre = 'sine';
+        
+        switch(symbol) {
+          case '🍒': baseFreq = 880; timbre = 'sine'; break; // Cherry - high pitched
+          case '🍋': baseFreq = 660; timbre = 'triangle'; break; // Lemon - bright
+          case '🍊': baseFreq = 523; timbre = 'sine'; break; // Orange - warm
+          case '🍇': baseFreq = 392; timbre = 'triangle'; break; // Grapes - rich
+          case '🍉': baseFreq = 294; timbre = 'sine'; break; // Watermelon - deep
+          case '🍓': baseFreq = 740; timbre = 'square'; break; // Strawberry - sharp
+          default: baseFreq = 440; timbre = 'sine';
+        }
+        
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
+        
         osc.connect(gain);
         gain.connect(ctx.destination);
         
-        osc.frequency.value = 700;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.frequency.value = baseFreq;
+        osc.type = timbre;
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
         
         osc.start(now);
-        osc.stop(now + 0.05);
+        osc.stop(now + 0.2);
+        
+      } else if (type === 'juice_splash') {
+        // Juicy fruit splash sound for wins
+        const noise = ctx.createBufferSource();
+        const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.1, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.1;
+        }
+        
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        filter.type = 'bandpass';
+        filter.frequency.value = 2000;
+        filter.Q.value = 5;
+        
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        
+        noise.start(now);
+        
+      } else if (type === 'multiplier_magic') {
+        // Magical multiplier activation sound
+        const frequencies = [440, 554, 659, 880, 1109]; // Pentatonic scale
+        frequencies.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.frequency.value = freq;
+          osc.type = 'sine';
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(freq * 2, now + i * 0.08);
+          filter.frequency.exponentialRampToValueAtTime(freq * 4, now + i * 0.08 + 0.3);
+          
+          gain.gain.setValueAtTime(0.12, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.4);
+          
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.4);
+        });
+        
+      } else if (type === 'super_magic') {
+        // Super magical sound for 5 wilds
+        for (let i = 0; i < 8; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.frequency.value = 880 + (i * 220);
+          osc.type = 'triangle';
+          filter.type = 'bandpass';
+          filter.frequency.value = 1760 + (i * 440);
+          filter.Q.value = 10;
+          
+          gain.gain.setValueAtTime(0.08, now + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.5);
+          
+          osc.start(now + i * 0.05);
+          osc.stop(now + i * 0.05 + 0.5);
+        }
+        
+      } else if (type === 'multiplier_use') {
+        // Multiplier being used sound
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc1.frequency.setValueAtTime(659, now); // E
+        osc1.frequency.exponentialRampToValueAtTime(1318, now + 0.2); // E octave
+        osc2.frequency.setValueAtTime(523, now); // C
+        osc2.frequency.exponentialRampToValueAtTime(1046, now + 0.2); // C octave
+        
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.25);
+        osc2.stop(now + 0.25);
+        
+      } else if (type === 'orchard_ambience') {
+        // Subtle background orchard sounds
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 80 + Math.random() * 40;
+        osc.type = 'triangle';
+        filter.type = 'lowpass';
+        filter.frequency.value = 200;
+        
+        gain.gain.setValueAtTime(0.02, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2);
+        
+        osc.start(now);
+        osc.stop(now + 2);
       }
     } catch (e) {
       console.log('Audio playback failed:', e);
+    }
+  }
+
+  // Legacy function for backward compatibility
+  function playSound(type) {
+    if (type === 'button') {
+      playFruitSound('fruit_cut');
+    } else {
+      playFruitSound(type);
     }
   }
 
@@ -1050,6 +1321,7 @@
   const openPayTableBtn = document.getElementById('openPayTableBtn');
   const paytableModal = document.getElementById('paytableModal');
   const closePayTableBtn = document.getElementById('closePayTableBtn');
+  const volumeBtn = document.getElementById('volumeBtn');
   const leaveGameBtn = document.getElementById('leaveGameBtn');
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
@@ -1067,8 +1339,20 @@
     }
   }
 
+  // Add immersive fruit sounds to all buttons
   document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => playSound('button'));
+    btn.addEventListener('click', () => {
+      if (btn.id === 'spinBtn') {
+        playFruitSound('tree_shake');
+      } else {
+        playFruitSound('fruit_cut');
+      }
+    });
+    
+    // Add hover sound for better interaction feedback
+    btn.addEventListener('mouseenter', () => {
+      playFruitSound('fruit_drop');
+    });
   });
 
   function weightedRandomSymbol() {
@@ -1175,13 +1459,28 @@
       multiplierActive = true;
       updateMultiplierDisplay();
       showMessage('🎯 10x MULTIPLIER ACTIVATED! 🎯');
+      
+      // Special multiplier activation sound
+      setTimeout(() => {
+        playFruitSound('multiplier_magic');
+      }, 100);
+      
       if (wildCount === 5) {
         totalPayout *= 10;
+        // Extra celebration for 5 wilds
+        setTimeout(() => {
+          playFruitSound('super_magic');
+        }, 300);
       }
     } else if (multiplierActive && totalPayout > 0) {
       totalPayout *= 10;
       multiplierActive = false;
       updateMultiplierDisplay();
+      
+      // Multiplier usage sound
+      setTimeout(() => {
+        playFruitSound('multiplier_use');
+      }, 150);
     }
 
     return totalPayout;
@@ -1225,7 +1524,7 @@
     updateBalanceDisplay();
     showMessage(`Bet: $${bet}`);
 
-    playSound('spin');
+    playFruitSound('spin');
 
     const finalGrid = fillGridRandom();
     const spinDuration = 2500;
@@ -1269,7 +1568,7 @@
 
     for (let i = 0; i < spinPromises.length; i++) {
       await spinPromises[i];
-      playSound('reel_stop');
+      playFruitSound('reel_stop');
       await new Promise(r => setTimeout(r, 150));
     }
 
@@ -1283,6 +1582,15 @@
       const winIndices = matches.flat();
       highlightWinningCells(winIndices);
       drawWinLines(matches);
+      
+      // Play fruit-specific matching sounds
+      matches.forEach((match, index) => {
+        const symbol = finalGrid[match[0]];
+        setTimeout(() => {
+          playFruitSound('fruit_match', symbol);
+        }, index * 150);
+      });
+      
       const payout = calculatePayout(matches, finalGrid, bet);
       
       if (payout > 0) {
@@ -1290,10 +1598,19 @@
         updateBalanceDisplay();
         showMessage(`🍎 Fruity Win: $${payout.toFixed(2)}! 🍊`);
         
+        // Enhanced win celebration sounds
+        setTimeout(() => {
+          playFruitSound('juice_splash');
+        }, 200);
+        
         if (payout > bet * 15) {
-          playSound('bigwin');
+          setTimeout(() => {
+            playFruitSound('bigwin');
+          }, 400);
         } else {
-          playSound('win');
+          setTimeout(() => {
+            playFruitSound('win');
+          }, 400);
         }
         
         await new Promise(r => setTimeout(r, 1000));
@@ -1348,6 +1665,47 @@
   updateBalanceDisplay();
   updateMultiplierDisplay();
   renderGrid(fillGridRandom());
+  
+  // Start ambient orchard sounds
+  function playAmbientSounds() {
+    if (Math.random() < 0.3) { // 30% chance every interval
+      playFruitSound('orchard_ambience');
+    }
+  }
+  
+  // Play ambient sounds every 8-12 seconds
+  setInterval(playAmbientSounds, 8000 + Math.random() * 4000);
+  
+  // Volume control system
+  let masterVolume = parseFloat(localStorage.getItem('fruitFrenzyVolume')) || 0.7;
+  let soundEnabled = localStorage.getItem('fruitFreezySoundEnabled') !== 'false';
+  
+  function updateVolumeButton() {
+    volumeBtn.textContent = soundEnabled ? '🔊 Sound' : '🔇 Mute';
+  }
+  
+  volumeBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('fruitFreezySoundEnabled', soundEnabled);
+    updateVolumeButton();
+    
+    if (soundEnabled) {
+      playFruitSound('fruit_cut');
+    }
+  });
+  
+  updateVolumeButton();
+  
+  // Welcome sound when game loads
+  setTimeout(() => {
+    if (soundEnabled) {
+      playFruitSound('tree_shake');
+      showMessage('🎵 Immersive Fruit Sounds Activated! 🎵');
+      setTimeout(() => {
+        showMessage('Pick Your Bet & Spin!');
+      }, 2000);
+    }
+  }, 500);
 
 })();
 </script>
