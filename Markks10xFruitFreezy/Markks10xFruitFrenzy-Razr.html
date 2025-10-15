@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#ff6b35" />
 <title>Markk's Fruit Frenzy - Razr Edition</title>
 <style>
@@ -19,31 +22,21 @@
   }
   
   body {
-    background: 
-      radial-gradient(circle at 30% 40%, rgba(255, 107, 53, 0.15) 0%, transparent 60%),
-      radial-gradient(circle at 70% 60%, rgba(196, 69, 105, 0.12) 0%, transparent 55%),
-      linear-gradient(145deg, #ff6b35 0%, #f7931e 25%, #fdc830 50%, #f37335 75%, #ff6b35 100%);
+    background: linear-gradient(145deg, #ff6b35 0%, #f7931e 50%, #fdc830 100%);
     color: #fff;
     font-family: 'Comic Sans MS', cursive, sans-serif;
     user-select: none;
     overflow: hidden;
     position: relative;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-      repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px);
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* Removed heavy background pattern for performance */
 
   .game-container {
     width: 100%;
@@ -75,14 +68,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 450px;
-    height: 450px;
+    width: 300px;
+    height: 300px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-    border: 6px solid rgba(255,165,0,0.15);
+    background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+    border: 3px solid rgba(255,165,0,0.1);
     pointer-events: none;
     z-index: 0;
-    animation: rotateFruit 30s linear infinite;
+    will-change: transform;
+    animation: rotateFruit 60s linear infinite;
   }
 
   @keyframes rotateFruit {
@@ -207,28 +201,28 @@
   }
 
   .slotCell.spinning {
-    animation: fruitSpin 0.1s linear infinite;
+    animation: fruitSpin 0.2s linear infinite;
     border-color: rgba(255, 215, 0, 0.9);
+    will-change: transform;
   }
 
   @keyframes fruitSpin {
-    0% { transform: scale(0.95) rotateY(0deg); }
-    50% { filter: brightness(1.3); }
-    100% { transform: scale(0.95) rotateY(360deg); }
+    0% { transform: scale(0.98); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(0.98); }
   }
   
   .winning {
     background: linear-gradient(135deg, rgba(255,215,0,0.95) 0%, rgba(255,255,0,1) 100%);
     border-color: rgba(255, 69, 0, 1);
-    box-shadow: 
-      0 0 30px rgba(255,215,0,1),
-      0 4px 15px rgba(0,0,0,0.9);
-    animation: fruitWin 0.6s ease-in-out infinite alternate;
+    box-shadow: 0 0 15px rgba(255,215,0,0.8);
+    animation: fruitWin 1s ease-in-out infinite alternate;
+    will-change: transform;
   }
 
   @keyframes fruitWin {
-    0% { transform: scale(1); filter: brightness(1.2); }
-    100% { transform: scale(1.08); filter: brightness(1.5); }
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
   }
   
   #linesSvg {
@@ -365,22 +359,15 @@
     border: 3px solid rgba(255, 69, 0, 0.8);
     border-radius: 8px;
     cursor: pointer;
-    box-shadow: 
-      0 8px 30px rgba(255,215,0,0.6),
-      inset 0 3px 0 rgba(255,255,255,0.5);
+    box-shadow: 0 6px 20px rgba(255,215,0,0.4);
     letter-spacing: 2.5px;
     min-width: 100%;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     text-transform: uppercase;
     position: relative;
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease;
     grid-column: 1 / -1;
-    animation: spinGlow 2s ease-in-out infinite;
-  }
-
-  @keyframes spinGlow {
-    0%, 100% { box-shadow: 0 8px 30px rgba(255,215,0,0.6); }
-    50% { box-shadow: 0 10px 40px rgba(255,215,0,0.9); }
+    will-change: transform;
   }
 
   #spinBtn::before {
@@ -497,55 +484,93 @@
     text-align: center;
   }
 
-  /* Razr optimizations for small screens */
+  /* Motorola Razr 2024 Optimizations */
   @media (max-width: 420px) {
+    /* Disable heavy animations on mobile */
+    .fruit-wheel {
+      animation: none;
+      opacity: 0.3;
+    }
+    
     .fold-top, .fold-bottom {
-      padding: 10px 8px;
+      padding: 8px 6px;
     }
     
     h1 {
-      font-size: clamp(1rem, 4vw, 1.3rem);
+      font-size: clamp(0.9rem, 3.5vw, 1.2rem);
       padding: 6px 12px;
     }
     
     #slotContainer {
-      padding: 10px;
+      padding: 8px;
     }
     
     #slotGrid {
-      gap: 3px;
+      gap: 2px;
     }
     
     .slotCell {
-      font-size: clamp(1.6rem, 5vw, 2rem);
+      font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+      border-width: 2px;
     }
     
     #betSelector {
       grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      padding: 10px;
+      gap: 4px;
+      padding: 8px;
     }
     
     #betSelector button {
-      min-height: 42px;
-      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
-      padding: 10px 8px;
+      min-height: 40px;
+      font-size: clamp(0.75rem, 2.2vw, 0.85rem);
+      padding: 8px 6px;
     }
     
     #spinBtn {
-      padding: 14px 32px;
-      font-size: clamp(1.2rem, 4vw, 1.4rem);
+      padding: 12px 28px;
+      font-size: clamp(1.1rem, 3.8vw, 1.3rem);
+    }
+    
+    /* Reduce visual effects for performance */
+    .slotCell {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    
+    #walletDisplay, #multiplierDisplay {
+      box-shadow: 0 3px 12px rgba(0,0,0,0.5);
     }
   }
 
+  /* Ultra-small screens (Razr inner screen when folded) */
   @media (max-width: 360px) {
     #betSelector {
       grid-template-columns: repeat(3, 1fr);
     }
     
     .fruit-wheel {
-      width: 320px;
-      height: 320px;
+      width: 200px;
+      height: 200px;
+      display: none; /* Hide on very small screens */
+    }
+    
+    .slotCell {
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+    }
+  }
+  
+  /* Performance optimizations for all mobile devices */
+  @media (max-width: 480px) {
+    * {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+    
+    .slotCell.spinning {
+      animation-duration: 0.3s; /* Slower animation for better performance */
+    }
+    
+    .winning {
+      animation-duration: 1.5s; /* Slower win animation */
     }
   }
 </style>
@@ -693,36 +718,37 @@
     return audioContext;
   }
 
+  // Optimized audio system for mobile performance
   function playSound(type) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
       if (type === 'spin') {
-        for (let i = 0; i < 5; i++) {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.frequency.value = 300 + (i * 100);
-          osc.type = 'sine';
-          gain.gain.setValueAtTime(0.1, now + i * 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.06);
-          osc.start(now + i * 0.04);
-          osc.stop(now + i * 0.04 + 0.06);
-        }
+        // Simplified spin sound - single oscillator
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 400;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
       } else if (type === 'win') {
-        [600, 750, 900].forEach((freq, i) => {
+        // Simplified win sound - fewer oscillators
+        [600, 800].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.15, now + i * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3);
+          gain.gain.setValueAtTime(0.08, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.2);
           osc.start(now + i * 0.1);
-          osc.stop(now + i * 0.1 + 0.3);
+          osc.stop(now + i * 0.1 + 0.2);
         });
       }
     } catch (e) {
@@ -748,6 +774,10 @@
   let bet = 10;
   let spinning = false;
   let multiplierActive = false;
+  
+  // Mobile performance optimization flags
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isRazr = /Motorola|razr/i.test(navigator.userAgent) || window.innerWidth <= 420;
 
   const cells = [];
   for (let r = 0; r < rows; r++) {
@@ -775,6 +805,18 @@
       arr.push(weightedRandomSymbol());
     }
     return arr;
+  }
+  
+  // Optimized render function for mobile
+  function fastRenderGrid(arr) {
+    // Use DocumentFragment for better performance
+    const fragment = document.createDocumentFragment();
+    for(let i=0; i < arr.length; i++) {
+      if (cells[i].textContent !== arr[i]) {
+        cells[i].textContent = arr[i];
+      }
+      cells[i].classList.remove('winning');
+    }
   }
 
   function renderGrid(arr) {
@@ -916,8 +958,8 @@
     playSound('spin');
 
     const finalGrid = fillGridRandom();
-    const spinDuration = 2500;
-    const columnDelay = 200;
+    const spinDuration = 2000; // Reduced duration for better performance
+    const columnDelay = 150; // Faster column delays
 
     async function spinColumn(colIndex, duration) {
       const columnCells = [];
@@ -925,6 +967,8 @@
         columnCells.push(cells[r * cols + colIndex]);
       }
       const startTime = performance.now();
+      const frameInterval = 100; // Reduced update frequency for better performance
+      let lastUpdate = 0;
 
       return new Promise(resolve => {
         function animate() {
@@ -937,9 +981,14 @@
             resolve();
             return;
           }
-          for (let r = 0; r < rows; r++) {
-            columnCells[r].textContent = weightedRandomSymbol();
-            columnCells[r].classList.add('spinning');
+          
+          // Throttle updates for better performance
+          if (now - lastUpdate >= frameInterval) {
+            for (let r = 0; r < rows; r++) {
+              columnCells[r].textContent = weightedRandomSymbol();
+              columnCells[r].classList.add('spinning');
+            }
+            lastUpdate = now;
           }
           requestAnimationFrame(animate);
         }
@@ -953,14 +1002,18 @@
       spinPromises.push(spinColumn(col, spinDuration));
     }
 
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 500)); // Reduced delay
 
     for (let i = 0; i < spinPromises.length; i++) {
       await spinPromises[i];
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise(r => setTimeout(r, 100)); // Faster reel stops
     }
 
-    renderGrid(finalGrid);
+    if (isMobile) {
+      fastRenderGrid(finalGrid);
+    } else {
+      renderGrid(finalGrid);
+    }
     const matches = findMatches(finalGrid);
 
     if (matches.length === 0) {
@@ -1029,6 +1082,12 @@
   updateBalanceDisplay();
   updateMultiplierDisplay();
   renderGrid(fillGridRandom());
+
+  // Performance monitoring for Razr optimization
+  if (window.performance && window.performance.mark) {
+    window.performance.mark('game-loaded');
+    console.log('🍎 Fruit Frenzy optimized for Motorola Razr 2024 loaded successfully!');
+  }
 
 })();
 </script>
