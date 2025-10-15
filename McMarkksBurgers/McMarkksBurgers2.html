@@ -306,15 +306,142 @@
       box-shadow: 
         0 0 35px rgba(255,165,0,0.5),
         0 4px 10px rgba(0,0,0,0.8);
-    }
-  }
-
-  #freeSpinCounter::before {
+    }  #freeSpinCounter::before {
     content: '🎆';
     margin-right: 6px;
     font-size: 1.1em;
-  }filter: drop-shadow(0 0 8px rgba(255, 228, 181, 0.4));
-  #slotContainer {
+  }
+
+  /* Old Cash Register Display */
+  #cashRegister {
+    background: 
+      linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    border: 4px solid #8B4513;
+    border-radius: 12px;
+    padding: 12px 20px;
+    box-shadow: 
+      0 0 30px rgba(139,69,19,0.4),
+      0 6px 20px rgba(0,0,0,0.9),
+      inset 0 0 20px rgba(0,0,0,0.8),
+      inset 0 2px 4px rgba(255,215,0,0.1);
+    position: relative;
+    margin: 8px auto;
+    max-width: 90%;
+    z-index: 2;
+  }
+
+  #cashRegister::before {
+    content: 'CASH REGISTER';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #8B4513;
+    color: #FFD700;
+    padding: 2px 15px;
+    font-size: 0.6rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', cursive;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .register-display {
+    background: #0a0a0a;
+    border: 3px solid #4a4a4a;
+    border-radius: 8px;
+    padding: 10px 15px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+      inset 0 0 30px rgba(0,0,0,0.9),
+      inset 0 0 10px rgba(255,0,0,0.3);
+  }
+
+  .register-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,0,0,0.03) 2px,
+        rgba(255,0,0,0.03) 4px
+      );
+    pointer-events: none;
+  }
+
+  .register-label {
+    color: #FF4500;
+    font-size: 0.7rem;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .register-amount {
+    color: #FF0000;
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-shadow: 
+      0 0 20px rgba(255,0,0,0.8),
+      0 0 40px rgba(255,0,0,0.5),
+      0 0 60px rgba(255,0,0,0.3);
+    animation: registerGlow 2s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes registerGlow {
+    0%, 100% { 
+      text-shadow: 
+        0 0 20px rgba(255,0,0,0.8),
+        0 0 40px rgba(255,0,0,0.5),
+        0 0 60px rgba(255,0,0,0.3);
+    }
+    50% { 
+      text-shadow: 
+        0 0 30px rgba(255,0,0,1),
+        0 0 50px rgba(255,0,0,0.7),
+        0 0 70px rgba(255,0,0,0.5);
+    }
+  }
+
+  .register-buttons {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+    justify-content: center;
+  }
+
+  .register-button {
+    width: 12px;
+    height: 12px;
+    background: #4a4a4a;
+    border: 1px solid #666;
+    border-radius: 50%;
+    box-shadow: 
+      inset 0 2px 4px rgba(0,0,0,0.5),
+      0 1px 2px rgba(255,215,0,0.2);
+  }
+
+  .register-button:nth-child(1) { background: #8B0000; }
+  .register-button:nth-child(2) { background: #006400; }
+  .register-button:nth-child(3) { background: #00008B; }
+
+  filter: drop-shadow(0 0 8px rgba(255, 228, 181, 0.4));
+  #slotContainer {ainer {
     position: relative;
     width: 100%;
     max-width: 100%;
@@ -1379,27 +1506,37 @@
       <h1>McMarkk's Burgers</h1>
       <div class="tagline">★ Premium Slots & Grills ★</div>
     </div>n"></div>
-    <h1>McMarkk's Burgers</h1>
-    
-    <div class="game-stats">
+       <div class="game-stats">
       <div id="walletDisplay">Balance: $0</div>
       <div id="freeSpinCounter" style="display:none;">Free Spins: 0</div>
     </div>
+    
+    <div id="cashRegister">
+      <div class="register-display">
+        <div class="register-label">GAME COST</div>
+        <div class="register-amount" id="registerAmount">$15.00</div>
+      </div>
+      <div class="register-buttons">
+        <div class="register-button"></div>
+        <div class="register-button"></div>
+        <div class="register-button"></div>
+      </div>
+    </div>
+    
+    <div id="slotContainer">div>
     
     <div id="slotContainer">
       <div id="slotGrid"></div>
       <svg id="linesSvg"></svg>
     </div>
     
-    <div id="message"></div>
-  </div>
-
-  <div class="fold-bottom">
-    <div id="betSelector">
-      <button data-bet="25" class="selected">$25</button>
+    <div id="message"    <div id="betSelector">
+      <button data-bet="15" class="selected">$15</button>
+      <button data-bet="25">$25</button>
       <button data-bet="50">$50</button>
       <button data-bet="75">$75</button>
       <button data-bet="100">$100</button>
+    </div>
       <button data-bet="125">$125</button>
     </div>
 
@@ -1535,17 +1672,14 @@
     { sym: "🧾", name: "Receipt" }
   ];
 
-  const weights = {
-    "🍔": 25, "🍟": 25, "🥤": 25, "🥗": 20, "🧾": 5
-  };
-
-  // Updated payouts for fast food theme
+    // Updated payouts for fast food theme
   const payouts = {
-    "🍔": { 25: [50, 100, 250], 50: [100, 200, 500], 75: [150, 300, 750], 100: [200, 400, 1000], 125: [250, 500, 1250] },
-    "🍟": { 25: [40, 80, 200], 50: [80, 160, 400], 75: [120, 240, 600], 100: [160, 320, 800], 125: [200, 400, 1000] },
-    "🥤": { 25: [30, 60, 150], 50: [60, 120, 300], 75: [90, 180, 450], 100: [120, 240, 600], 125: [150, 300, 750] },
-    "🥗": { 25: [25, 50, 125], 50: [50, 100, 250], 75: [75, 150, 375], 100: [100, 200, 500], 125: [125, 250, 625] },
-    "🧾": { 25: [-25, -50, -125], 50: [-50, -100, -250], 75: [-75, -150, -375], 100: [-100, -200, -500], 125: [-125, -250, -625] }
+    "🍔": { 15: [30, 60, 150], 25: [50, 100, 250], 50: [100, 200, 500], 75: [150, 300, 750], 100: [200, 400, 1000] },
+    "🍟": { 15: [24, 48, 120], 25: [40, 80, 200], 50: [80, 160, 400], 75: [120, 240, 600], 100: [160, 320, 800] },
+    "🥤": { 15: [18, 36, 90], 25: [30, 60, 150], 50: [60, 120, 300], 75: [90, 180, 450], 100: [120, 240, 600] },
+    "🥗": { 15: [15, 30, 75], 25: [25, 50, 125], 50: [50, 100, 250], 75: [75, 150, 375], 100: [100, 200, 500] },
+    "🧾": { 15: [-15, -30, -75], 25: [-25, -50, -125], 50: [-50, -100, -250], 75: [-75, -150, -375], 100: [-100, -200, -500] }
+  }; -250], 75: [-75, -150, -375], 100: [-100, -200, -500], 125: [-125, -250, -625] }
   };
 
   // Special combo bonuses
@@ -1666,10 +1800,9 @@
   const linesSvg = document.getElementById('linesSvg');
   const messageEl = document.getElementById('message');
   const freeSpinCounterEl = document.getElementById('freeSpinCounter');
-  const openPayTableBtn = document.getElementById('openPayTableBtn');
-  const paytableModal = document.getElementById('paytableModal');
-  const closePayTableBtn = document.getElementById('closePayTableBtn');
-  const leaveGameBtn = document.getElementById('leaveGameBtn');
+  const openPayTableBtn = document.getElementById('openPayTableBtn'  let balance = Number(localStorage.getItem('localPlayerCash')) || 1000;
+  let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
+  let bet = 15;aveGameBtn = document.getElementById('leaveGameBtn');
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 1000;
   let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
@@ -1963,7 +2096,8 @@
         setAutoSpinRunning(false);
         break;
       }
-      await new Promise(r => setTimeout(r, 1000));
+      // Longer pause between auto spins so player can see results
+      await new Promise(r => setTimeout(r, 2500));
     }
   }tePayout(matches, finalGrid, bet);
       
@@ -1997,23 +2131,32 @@
   function setAutoSpinRunning(running) {
     autoSpinning = running;
     autoSpinBtn.dataset.running = running ? 'true' : 'false';
-    autoSpinBtn.textContent = running ? '⏹ Stop' : '🔄 Aut  betSelector.addEventListener('click', e => {
+    autoSpinBtn.textContent = running ? '⏹ Stop' : '🔄 Aut  function updateCashRegister(amount) {
+    const registerAmount = document.getElementById('registerAmount');
+    if (registerAmount) {
+      registerAmount.textContent = `$${amount}.00`;
+    }
+  }
+
+  betSelector.addEventListener('click', e => {
     if (e.target.tagName !== 'BUTTON') return;
     
     const selectedBet = Number(e.target.dataset.bet);
     
     // Prevent selecting a bet amount higher than balance (unless there are free spins)
     if (selectedBet > balance && freeSpins === 0) {
-      showMessage(`⚠️ SKREEED! Can't bet $${selectedBet} - Only have $${balance}! ⚠️`);
-      return;
+      showMessage(`⚠️ SKREEED! Can't bet $${se      await spin();
+      if (freeSpins > 0) {
+        showMessage('Auto Stopped - Free Spins!');
+        setAutoSpinRunning(false);
+        break;
+      }
+      // Longer pause between auto spins so player can see results
+      await new Promise(r => setTimeout(r, 2500));
     }
-    
-    betSelector.querySelectorAll('button').forEach(b => {
-      b.classList.remove('selected');
-    });
-    e.target.classList.add('selected');
-  });n.dataset.bet);
-      if (balance < currentBet && freeSpins === 0) {
+  }
+
+  autoSpinBtn.addEventListener('click', async () => {     if (balance < currentBet && freeSpins === 0) {
         setAutoSpinRunning(false);
         showMessage('⚠️ Auto Stopped - No Funds ⚠️');
         break;
@@ -2055,10 +2198,13 @@
     }
   });
 
-  leaveGameBtn.addEventListener('click', () => {
-    if(confirm('Leave McMarkk\'s? Your balance will be saved.')) {
-      localStorage.setItem('localPlayerCash', balance.toFixed(0));
-      window.location.href = '../index.html';
+  leaveGam  spinBtn.addEventListener('click', spin);
+
+  updateBalanceDisplay();
+  updateFreeSpinsDisplay();
+  updateCashRegister(bet);
+  renderGrid(fillGridRandom());
+  showMessage('Welcome to McMarkk\'s Burgers!');    window.location.href = '../index.html';
     }
   });
 
