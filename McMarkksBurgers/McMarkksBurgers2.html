@@ -1037,6 +1037,8 @@
   const freeSpinsAward = { 3: 3, 4: 5, 5: 10 };
 
   let audioContext = null;
+  let backgroundAmbience = null;
+  let isAmbiencePlaying = false;
 
   function initAudio() {
     if (!audioContext) {
@@ -1048,36 +1050,209 @@
     return audioContext;
   }
 
+  function createRestaurantSounds(ctx, startTime, duration) {
+    // Create immersive restaurant cooking sounds
+    
+    // Grill sizzling
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.25;
+    }
+    
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    
+    source.buffer = buffer;
+    filter.type = 'bandpass';
+    filter.frequency.value = 1800 + Math.random() * 400;
+    filter.Q.value = 4;
+    
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.12, startTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    
+    source.start(startTime);
+    source.stop(startTime + duration);
+  }
+
+  function createFryerSounds(ctx, startTime) {
+    // Deep fryer bubbling
+    for (let i = 0; i < 12; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.value = 60 + Math.random() * 80;
+      osc.type = 'sawtooth';
+      filter.type = 'lowpass';
+      filter.frequency.value = 300 + Math.random() * 200;
+      
+      const bubbleStart = startTime + (i * 0.15) + Math.random() * 0.1;
+      const bubbleDuration = 0.08 + Math.random() * 0.12;
+      
+      gain.gain.setValueAtTime(0, bubbleStart);
+      gain.gain.linearRampToValueAtTime(0.06, bubbleStart + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, bubbleStart + bubbleDuration);
+      
+      osc.start(bubbleStart);
+      osc.stop(bubbleStart + bubbleDuration);
+    }
+  }
+
+  function createOrderBell(ctx, startTime) {
+    // Kitchen order bell
+    const frequencies = [800, 1000, 800];
+    frequencies.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.1, startTime + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + i * 0.1 + 0.3);
+      
+      osc.start(startTime + i * 0.1);
+      osc.stop(startTime + i * 0.1 + 0.3);
+    });
+  }
+
+  function createChoppingSound(ctx, startTime) {
+    // Knife chopping vegetables
+    for (let i = 0; i < 4; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.value = 2000 + Math.random() * 1000;
+      osc.type = 'square';
+      filter.type = 'highpass';
+      filter.frequency.value = 1500;
+      
+      const chopStart = startTime + i * 0.2;
+      
+      gain.gain.setValueAtTime(0.08, chopStart);
+      gain.gain.exponentialRampToValueAtTime(0.001, chopStart + 0.05);
+      
+      osc.start(chopStart);
+      osc.stop(chopStart + 0.05);
+    }
+  }
+
+  function startKitchenAmbience() {
+    if (isAmbiencePlaying) return;
+    
+    try {
+      const ctx = initAudio();
+      isAmbiencePlaying = true;
+      
+      function playKitchenLoop() {
+        if (!isAmbiencePlaying) return;
+        
+        const now = ctx.currentTime;
+        
+        // Base kitchen hum
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 50;
+        osc.type = 'sine';
+        filter.type = 'lowpass';
+        filter.frequency.value = 150;
+        
+        gain.gain.setValueAtTime(0.02, now);
+        gain.gain.linearRampToValueAtTime(0.04, now + 2);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 10);
+        
+        osc.start(now);
+        osc.stop(now + 10);
+        
+        // Random kitchen activities
+        const activities = [
+          () => createRestaurantSounds(ctx, now + Math.random() * 8, 1 + Math.random() * 2),
+          () => createFryerSounds(ctx, now + Math.random() * 6),
+          () => createChoppingSound(ctx, now + Math.random() * 7),
+        ];
+        
+        if (Math.random() < 0.4) {
+          const activity = activities[Math.floor(Math.random() * activities.length)];
+          activity();
+        }
+        
+        setTimeout(playKitchenLoop, 8000 + Math.random() * 4000);
+      }
+      
+      playKitchenLoop();
+    } catch (e) {
+      console.log('Kitchen ambience failed:', e);
+    }
+  }
+
+  function stopKitchenAmbience() {
+    isAmbiencePlaying = false;
+  }
+
   function playSound(type) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
       if (type === 'spin') {
-        for (let i = 0; i < 6; i++) {
+        // Multi-layered cooking sounds during spin
+        createRestaurantSounds(ctx, now, 2.8);
+        createFryerSounds(ctx, now + 0.3);
+        
+        // Enhanced slot machine sounds
+        for (let i = 0; i < 8; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.frequency.value = 180 + (i * 40);
+          osc.frequency.value = 160 + (i * 35);
           osc.type = 'sawtooth';
-          gain.gain.setValueAtTime(0.08, now + i * 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.05);
+          gain.gain.setValueAtTime(0.06, now + i * 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.08);
           osc.start(now + i * 0.02);
-          osc.stop(now + i * 0.02 + 0.05);
+          osc.stop(now + i * 0.02 + 0.08);
         }
       } else if (type === 'win') {
-        [523.25, 659.25, 783.99].forEach((freq, i) => {
+        // Victory cooking celebration
+        createOrderBell(ctx, now);
+        createChoppingSound(ctx, now + 0.5);
+        
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.15, now + i * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
+          gain.gain.setValueAtTime(0.12, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.5);
           osc.start(now + i * 0.1);
-          osc.stop(now + i * 0.1 + 0.4);
+          osc.stop(now + i * 0.1 + 0.5);
         });
       }
     } catch (e) {
@@ -1404,6 +1579,7 @@
     autoSpinning = true;
     autoSpinBtn.classList.add('active');
     autoSpinBtn.textContent = '⏹️ STOP AUTO';
+    startKitchenAmbience();
     
     // Start auto spinning with 3 second intervals
     autoSpinInterval = setInterval(async () => {
@@ -1423,6 +1599,7 @@
     autoSpinning = false;
     autoSpinBtn.classList.remove('active');
     autoSpinBtn.textContent = '🔄 AUTO SPIN';
+    stopKitchenAmbience();
     
     if (autoSpinInterval) {
       clearInterval(autoSpinInterval);

@@ -1018,8 +1018,10 @@
   
   balanceDisplay.textContent = `Balance: $${balance}`;
 
-  // Enhanced Sound System
+  // Enhanced Food Cooking Sound System
   let audioContext = null;
+  let backgroundAmbience = null;
+  let isAmbiencePlaying = false;
 
   function initAudio() {
     if (!audioContext) {
@@ -1031,40 +1033,211 @@
     return audioContext;
   }
 
+  function createGrillSizzle(ctx, startTime, duration) {
+    // Create sizzling sound using noise and filtering
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.3;
+    }
+    
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    
+    source.buffer = buffer;
+    filter.type = 'bandpass';
+    filter.frequency.value = 2000;
+    filter.Q.value = 5;
+    
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.15, startTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    
+    source.start(startTime);
+    source.stop(startTime + duration);
+  }
+
+  function createFryerBubble(ctx, startTime, duration) {
+    // Create bubbling fryer sound
+    for (let i = 0; i < 8; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.value = 80 + Math.random() * 40;
+      osc.type = 'sawtooth';
+      filter.type = 'lowpass';
+      filter.frequency.value = 400;
+      
+      const bubbleStart = startTime + (i * duration / 8) + Math.random() * 0.1;
+      const bubbleDuration = 0.1 + Math.random() * 0.1;
+      
+      gain.gain.setValueAtTime(0, bubbleStart);
+      gain.gain.linearRampToValueAtTime(0.08, bubbleStart + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, bubbleStart + bubbleDuration);
+      
+      osc.start(bubbleStart);
+      osc.stop(bubbleStart + bubbleDuration);
+    }
+  }
+
+  function createDrinkPour(ctx, startTime) {
+    // Create drink pouring sound
+    const bufferSize = ctx.sampleRate * 0.8;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      const t = i / ctx.sampleRate;
+      data[i] = (Math.random() * 2 - 1) * 0.2 * Math.exp(-t * 2);
+    }
+    
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    
+    source.buffer = buffer;
+    filter.type = 'highpass';
+    filter.frequency.value = 1000;
+    
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    
+    gain.gain.setValueAtTime(0.12, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.8);
+    
+    source.start(startTime);
+  }
+
+  function createCashRegister(ctx, startTime) {
+    // Create cash register "cha-ching" sound
+    const frequencies = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C
+    frequencies.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.value = freq;
+      osc.type = 'triangle';
+      gain.gain.setValueAtTime(0.15, startTime + i * 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + i * 0.05 + 0.3);
+      
+      osc.start(startTime + i * 0.05);
+      osc.stop(startTime + i * 0.05 + 0.3);
+    });
+  }
+
+  function startBackgroundAmbience() {
+    if (isAmbiencePlaying) return;
+    
+    try {
+      const ctx = initAudio();
+      isAmbiencePlaying = true;
+      
+      function playAmbienceLoop() {
+        if (!isAmbiencePlaying) return;
+        
+        const now = ctx.currentTime;
+        
+        // Kitchen ambience - low frequency hum
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 60;
+        osc.type = 'sine';
+        filter.type = 'lowpass';
+        filter.frequency.value = 200;
+        
+        gain.gain.setValueAtTime(0.03, now);
+        gain.gain.linearRampToValueAtTime(0.05, now + 1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 8);
+        
+        osc.start(now);
+        osc.stop(now + 8);
+        
+        // Random kitchen sounds
+        if (Math.random() < 0.3) {
+          createGrillSizzle(ctx, now + Math.random() * 6, 1 + Math.random());
+        }
+        
+        setTimeout(playAmbienceLoop, 6000 + Math.random() * 4000);
+      }
+      
+      playAmbienceLoop();
+    } catch (e) {
+      console.log('Ambience failed:', e);
+    }
+  }
+
+  function stopBackgroundAmbience() {
+    isAmbiencePlaying = false;
+  }
+
   function playSound(type) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
       if (type === 'spin') {
-        for (let i = 0; i < 4; i++) {
+        // Grill sizzling while spinning
+        createGrillSizzle(ctx, now, 2.5);
+        createFryerBubble(ctx, now + 0.5, 2);
+        
+        // Original slot machine sounds mixed in
+        for (let i = 0; i < 3; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
           
-          osc.frequency.value = 250 + (i * 80);
+          osc.frequency.value = 200 + (i * 60);
           osc.type = 'square';
-          gain.gain.setValueAtTime(0.12, now + i * 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.08);
+          gain.gain.setValueAtTime(0.08, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.15);
           
-          osc.start(now + i * 0.05);
-          osc.stop(now + i * 0.05 + 0.08);
+          osc.start(now + i * 0.1);
+          osc.stop(now + i * 0.1 + 0.15);
         }
       } else if (type === 'reel_stop') {
+        // Order ready bell
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
         
-        osc.frequency.value = 140;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.16, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+        osc.frequency.value = 800;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
         
         osc.start(now);
-        osc.stop(now + 0.13);
+        osc.stop(now + 0.4);
       } else if (type === 'win') {
+        // Happy cooking sounds
+        createDrinkPour(ctx, now);
+        setTimeout(() => {
+          const ctx2 = initAudio();
+          createCashRegister(ctx2, ctx2.currentTime);
+        }, 300);
+        
         [500, 650, 800, 1000].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -1073,13 +1246,19 @@
           
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.2, now + i * 0.09);
+          gain.gain.setValueAtTime(0.15, now + i * 0.09);
           gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.28);
           
           osc.start(now + i * 0.09);
           osc.stop(now + i * 0.09 + 0.28);
         });
       } else if (type === 'bigwin') {
+        // Kitchen celebration - multiple cooking sounds
+        createGrillSizzle(ctx, now, 1.5);
+        createFryerBubble(ctx, now + 0.2, 1.8);
+        createDrinkPour(ctx, now + 0.5);
+        createCashRegister(ctx, now + 1);
+        
         for (let i = 0; i < 12; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -1088,33 +1267,43 @@
           
           osc.frequency.value = 450 + (i * 130);
           osc.type = 'triangle';
-          gain.gain.setValueAtTime(0.14, now + i * 0.07);
+          gain.gain.setValueAtTime(0.12, now + i * 0.07);
           gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.23);
           
           osc.start(now + i * 0.07);
           osc.stop(now + i * 0.07 + 0.23);
         }
       } else if (type === 'button') {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        
-        osc.frequency.value = 650;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.09, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-        
-        osc.start(now);
-        osc.stop(now + 0.06);
+        // Cash register button press
+        createCashRegister(ctx, now);
       }
     } catch (e) {
       console.log('Audio playback failed:', e);
     }
   }
 
-  document.addEventListener('click', () => initAudio(), { once: true });
-  document.addEventListener('touchstart', () => initAudio(), { once: true });
+  document.addEventListener('click', () => {
+    initAudio();
+    // Play welcome kitchen sound
+    setTimeout(() => {
+      try {
+        const ctx = initAudio();
+        createCashRegister(ctx, ctx.currentTime);
+        messageDisplay.textContent = '🍔 Welcome to McMarkk\'s Kitchen! 🍔';
+      } catch (e) {}
+    }, 100);
+  }, { once: true });
+  
+  document.addEventListener('touchstart', () => {
+    initAudio();
+    setTimeout(() => {
+      try {
+        const ctx = initAudio();
+        createCashRegister(ctx, ctx.currentTime);
+        messageDisplay.textContent = '🍔 Welcome to McMarkk\'s Kitchen! 🍔';
+      } catch (e) {}
+    }, 100);
+  }, { once: true });
 
   document.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => playSound('button'));
@@ -1147,13 +1336,15 @@
       autoSpinBtn.textContent = '⏸️ Stop Auto';
       autoSpinBtn.style.background = 'linear-gradient(135deg, rgba(220, 53, 69, 0.95) 0%, rgba(200, 35, 51, 1) 100%)';
       autoSpinBtn.style.color = '#fff';
-      messageDisplay.textContent = '🔄 Auto Spin Activated!';
+      messageDisplay.textContent = '🔄 Auto Kitchen Mode!';
+      startBackgroundAmbience();
       startAutoSpin();
     } else {
       autoSpinBtn.textContent = '🔄 Auto Spin';
       autoSpinBtn.style.background = '';
       autoSpinBtn.style.color = '';
-      messageDisplay.textContent = '⏹️ Auto Spin Stopped!';
+      messageDisplay.textContent = '⏹️ Kitchen Closed!';
+      stopBackgroundAmbience();
       stopAutoSpin();
     }
   });
@@ -1232,6 +1423,27 @@
     triggerSpin();
   });
 
+  // Add hover sound effect for spin button
+  spinBtn.addEventListener('mouseenter', () => {
+    if (!spinning) {
+      try {
+        const ctx = initAudio();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 400;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+        
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.2);
+      } catch (e) {}
+    }
+  });
+
   function spinReels() {
     const duration = 2500 + Math.random() * 1500;
     const interval = 80;
@@ -1265,9 +1477,21 @@
     if (combo === '🍔🍟🥤') {
       payout = 500;
       reels.forEach(r => r.classList.add('winning'));
-      messageDisplay.textContent = '🍔🍟🥤 COMBO MEAL! +$500';
+      messageDisplay.textContent = '🍔🍟🥤 PERFECT COMBO MEAL! +$500';
       comboDisplay.style.display = 'block';
       playSound('bigwin');
+      
+      // Special combo meal cooking celebration
+      setTimeout(() => {
+        try {
+          const ctx = initAudio();
+          createGrillSizzle(ctx, ctx.currentTime, 2);
+          createFryerBubble(ctx, ctx.currentTime + 0.3, 2);
+          createDrinkPour(ctx, ctx.currentTime + 0.8);
+        } catch (e) {
+          console.log('Combo celebration failed:', e);
+        }
+      }, 500);
     } else {
       const counts = {};
       result.forEach((s, i) => {
@@ -1286,12 +1510,40 @@
       }
       
       if (payout === 0) {
-        messageDisplay.textContent = '🧾 No match. Order again!';
+        messageDisplay.textContent = '🧾 No match. Keep cooking!';
       } else if (payout > 0) {
-        messageDisplay.textContent = `🍔 Order Up! +$${payout}!`;
+        // Symbol-specific win messages and sounds
+        const symbols = result.join('');
+        if (symbols.includes('🍔🍔🍔')) {
+          messageDisplay.textContent = `🍔 Triple Burger Deluxe! +$${payout}!`;
+          setTimeout(() => {
+            try {
+              const ctx = initAudio();
+              createGrillSizzle(ctx, ctx.currentTime, 1.5);
+            } catch (e) {}
+          }, 200);
+        } else if (symbols.includes('🍟🍟🍟')) {
+          messageDisplay.textContent = `🍟 Fries Frenzy! +$${payout}!`;
+          setTimeout(() => {
+            try {
+              const ctx = initAudio();
+              createFryerBubble(ctx, ctx.currentTime, 1.8);
+            } catch (e) {}
+          }, 200);
+        } else if (symbols.includes('🥤🥤🥤')) {
+          messageDisplay.textContent = `🥤 Drink Special! +$${payout}!`;
+          setTimeout(() => {
+            try {
+              const ctx = initAudio();
+              createDrinkPour(ctx, ctx.currentTime);
+            } catch (e) {}
+          }, 200);
+        } else {
+          messageDisplay.textContent = `🍔 Order Complete! +$${payout}!`;
+        }
         playSound('win');
       } else {
-        messageDisplay.textContent = `🥗 Health tax: -$${-payout}!`;
+        messageDisplay.textContent = `🥗 Healthy Choice Fee: -$${-payout}!`;
       }
     }
     
