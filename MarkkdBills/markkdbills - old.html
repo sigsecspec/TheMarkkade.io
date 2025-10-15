@@ -1486,11 +1486,11 @@
     const particle = document.createElement('div');
     particle.classList.add('money-particle');
     const moneySymbols = ['💰', '💵', '💴', '💶', '💷', '💳', '💲'];
-    particle.textContent = moneySymbols[Math.floor(Math.random() * moneySymbols.length)];
-    particle.style.left = (Math.random() * 100) + 'vw';
-    particle.style.top = '110vh';
-    particle.style.animationDuration = (6 + Math.random() * 4) + 's';
-    particle.style.animationDelay = '-' + (Math.random() * 8) + 's';
+    particle.textContent = moneySymbols[Math.floor(Math.random(  // Leave game: simple navigation back to arcade with balance persisted
+  leaveGameBtn?.addEventListener('click', () => {
+    try { localStorage.setItem('localPlayerCash', balance.toFixed(2)); } catch {}
+    window.location.href = '../emoji-slots.html';
+  });* 8) + 's';
     document.getElementById('moneyParticles').appendChild(particle);
     
     setTimeout(() => {
@@ -1533,7 +1533,7 @@
   // Leave game: simple navigation back to arcade with balance persisted
   leaveGameBtn?.addEventListener('click', () => {
     try { localStorage.setItem('localPlayerCash', balance.toFixed(2)); } catch {}
-    window.location.href = '../index.html';
+    window.location.href = '../emoji-slots.html';
   });
 
   function setAutoSpinRunning(running) {
