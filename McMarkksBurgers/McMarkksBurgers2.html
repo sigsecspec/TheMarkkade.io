@@ -430,7 +430,7 @@
       inset 0 0 25px rgba(0,0,0,0.5),
       0 4px 20px rgba(0,0,0,0.8);
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 6px;
     width: 100%;
     max-width: 100%;
@@ -835,11 +835,21 @@
 
   <div class="fold-bottom">
     <div id="betSelector">
-      <button data-bet="25" class="selected">$25</button>
-      <button data-bet="50">$50</button>
-      <button data-bet="75">$75</button>
-      <button data-bet="100">$100</button>
-      <button data-bet="125">$125</button>
+      <button data-bet="55" class="selected" data-label="Regular">
+        <div style="font-size: 0.65rem; line-height: 1.2;">
+          Meal...$50<br>
+          Tax...$5<br>
+          <strong>Total...$55</strong>
+        </div>
+      </button>
+      <button data-bet="75" data-label="Auto Spin">
+        <div style="font-size: 0.65rem; line-height: 1.2;">
+          Meal...$50<br>
+          Auto Spin...$20<br>
+          Tax...$5<br>
+          <strong>Total...$75</strong>
+        </div>
+      </button>
     </div>
 
     <div class="action-buttons">
@@ -933,58 +943,33 @@
       
       <div class="menu-section-title">💰 DETAILED BET PAYOUTS</div>
       <div class="menu-item">
-        <div class="menu-item-name">$25 Bet</div>
-        <div class="menu-price">-</div>
+        <div class="menu-item-name">$55 Bet (Regular)</div>
+        <div class="menu-price">Meal $50 + Tax $5</div>
       </div>
       <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
         <div class="menu-item-name">🍔 x3/x4/x5</div>
-        <div class="menu-price">$50/$100/$250</div>
+        <div class="menu-price">$110/$220/$550</div>
       </div>
       <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
         <div class="menu-item-name">🍟 x3/x4/x5</div>
-        <div class="menu-price">$40/$80/$200</div>
+        <div class="menu-price">$88/$176/$440</div>
       </div>
       <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
         <div class="menu-item-name">🥤 x3/x4/x5</div>
-        <div class="menu-price">$30/$60/$150</div>
+        <div class="menu-price">$66/$132/$330</div>
       </div>
       <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
         <div class="menu-item-name">🥗 x3/x4/x5</div>
-        <div class="menu-price">$25/$50/$125</div>
+        <div class="menu-price">$55/$110/$275</div>
       </div>
       <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
         <div class="menu-item-name">🧾 x3/x4/x5</div>
-        <div class="menu-price">-$25/-$50/-$125</div>
+        <div class="menu-price">-$55/-$110/-$275</div>
       </div>
 
       <div class="menu-item">
-        <div class="menu-item-name">$50 Bet</div>
-        <div class="menu-price">-</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🍔 x3/x4/x5</div>
-        <div class="menu-price">$100/$200/$500</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🍟 x3/x4/x5</div>
-        <div class="menu-price">$80/$160/$400</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🥤 x3/x4/x5</div>
-        <div class="menu-price">$60/$120/$300</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🥗 x3/x4/x5</div>
-        <div class="menu-price">$50/$100/$250</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🧾 x3/x4/x5</div>
-        <div class="menu-price">-$50/-$100/-$250</div>
-      </div>
-
-      <div class="menu-item">
-        <div class="menu-item-name">$75 Bet</div>
-        <div class="menu-price">-</div>
+        <div class="menu-item-name">$75 Bet (Auto Spin)</div>
+        <div class="menu-price">Meal $50 + Auto $20 + Tax $5</div>
       </div>
       <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
         <div class="menu-item-name">🍔 x3/x4/x5</div>
@@ -1005,56 +990,6 @@
       <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
         <div class="menu-item-name">🧾 x3/x4/x5</div>
         <div class="menu-price">-$75/-$150/-$375</div>
-      </div>
-
-      <div class="menu-item">
-        <div class="menu-item-name">$100 Bet</div>
-        <div class="menu-price">-</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🍔 x3/x4/x5</div>
-        <div class="menu-price">$200/$400/$1000</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🍟 x3/x4/x5</div>
-        <div class="menu-price">$160/$320/$800</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🥤 x3/x4/x5</div>
-        <div class="menu-price">$120/$240/$600</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🥗 x3/x4/x5</div>
-        <div class="menu-price">$100/$200/$500</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🧾 x3/x4/x5</div>
-        <div class="menu-price">-$100/-$200/-$500</div>
-      </div>
-
-      <div class="menu-item">
-        <div class="menu-item-name">$125 Bet</div>
-        <div class="menu-price">-</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🍔 x3/x4/x5</div>
-        <div class="menu-price">$250/$500/$1250</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🍟 x3/x4/x5</div>
-        <div class="menu-price">$200/$400/$1000</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🥤 x3/x4/x5</div>
-        <div class="menu-price">$150/$300/$750</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🥗 x3/x4/x5</div>
-        <div class="menu-price">$125/$250/$625</div>
-      </div>
-      <div class="menu-item" style="padding-left: 20px; font-size: 0.7rem;">
-        <div class="menu-item-name">🧾 x3/x4/x5</div>
-        <div class="menu-price">-$125/-$250/-$625</div>
       </div>
       
       <div class="menu-footer">
@@ -1088,11 +1023,11 @@
   };
 
   const payouts = {
-    "🍔": { 25: [50, 100, 250], 50: [100, 200, 500], 75: [150, 300, 750], 100: [200, 400, 1000], 125: [250, 500, 1250] },
-    "🍟": { 25: [40, 80, 200], 50: [80, 160, 400], 75: [120, 240, 600], 100: [160, 320, 800], 125: [200, 400, 1000] },
-    "🥤": { 25: [30, 60, 150], 50: [60, 120, 300], 75: [90, 180, 450], 100: [120, 240, 600], 125: [150, 300, 750] },
-    "🥗": { 25: [25, 50, 125], 50: [50, 100, 250], 75: [75, 150, 375], 100: [100, 200, 500], 125: [125, 250, 625] },
-    "🧾": { 25: [-25, -50, -125], 50: [-50, -100, -250], 75: [-75, -150, -375], 100: [-100, -200, -500], 125: [-125, -250, -625] }
+    "🍔": { 25: [50, 100, 250], 50: [100, 200, 500], 55: [110, 220, 550], 75: [150, 300, 750], 100: [200, 400, 1000], 125: [250, 500, 1250] },
+    "🍟": { 25: [40, 80, 200], 50: [80, 160, 400], 55: [88, 176, 440], 75: [120, 240, 600], 100: [160, 320, 800], 125: [200, 400, 1000] },
+    "🥤": { 25: [30, 60, 150], 50: [60, 120, 300], 55: [66, 132, 330], 75: [90, 180, 450], 100: [120, 240, 600], 125: [150, 300, 750] },
+    "🥗": { 25: [25, 50, 125], 50: [50, 100, 250], 55: [55, 110, 275], 75: [75, 150, 375], 100: [100, 200, 500], 125: [125, 250, 625] },
+    "🧾": { 25: [-25, -50, -125], 50: [-50, -100, -250], 55: [-55, -110, -275], 75: [-75, -150, -375], 100: [-100, -200, -500], 125: [-125, -250, -625] }
   };
 
   const comboBonuses = {
@@ -1168,7 +1103,7 @@
 
   let balance = Number(localStorage.getItem('localPlayerCash')) || 1000;
   let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
-  let bet = 25;
+  let bet = 55;
   let spinning = false;
 
   const cells = [];
