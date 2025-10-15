@@ -1441,24 +1441,20 @@
   // Money particle system for win effects
   function createParticles(winIndices) {
     winIndices.forEach(index => {
-      const cell = cells[index];
-      const rect = cell.getBoundingClientRect();
-      
-      for (let i = 0; i < 12; i++) {
-        const particle = document.createElement('div');
-        particle.style.position = 'fixed';
-        particle.style.left = rect.left + rect.width / 2 + 'px';
-        particle.style.top = rect.top + rect.height / 2 + 'px';
-        particle.style.fontSize = '1.5rem';
-        particle.style.pointerEvents = 'none';
-        particle.style.zIndex = '1000';
-        particle.style.color = '#00ff88';
-        particle.style.filter = 'drop-shadow(0 0 8px rgba(0, 255, 136, 0.6))';
-        particle.textContent = ['💰', '💵', '💴', '💶', '💷'][Math.floor(Math.random() * 5)];
-        
-        document.body.appendChild(particle);
-        
-        const angle = (i / 12) * Math.PI * 2;
+    // Create floating money particles
+  function createMoneyParticle() {
+    const particle = document.createElement('div');
+    particle.classList.add('money-particle');
+    const moneySymbols = ['💰', '💵', '💴', '💶', '💷', '💳', '💲'];
+    particle.textContent = moneySymbols[Math.floor(Math.random() * moneySymbols.length)];
+    document.getElementById('moneyParticles').appendChild(particle);
+    
+    setTimeout(() => {
+      if (particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+    }, 10000);
+  }     const angle = (i / 12) * Math.PI * 2;
         const velocity = 120 + Math.random() * 80;
         const lifetime = 1500 + Math.random() * 500;
         
