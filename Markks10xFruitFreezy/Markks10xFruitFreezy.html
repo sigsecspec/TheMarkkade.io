@@ -1065,7 +1065,7 @@
     <div class="action-buttons">
       <button id="openPayTableBtn">🛒 Shopping List</button>
       <button id="spinBtn">SPIN</button>
-      <button id="exitBtn">🚪 Exit (-$5)</button>
+      <button id="exitBtn">🚪 Exit</button>
     </div>
   </div>
 </div>
@@ -1852,14 +1852,8 @@
   }
 
   function exitGame() {
-    if (balance >= 5) {
-      balance -= 5;
-      saveWallet();
-      updateBalance();
-      window.location.href = "../index.html";
-    } else {
-      showMessage("You need at least $5 to exit the game!");
-    }
+    saveWallet();
+    window.location.href = "../index.html";
   }
 
   // Modal functions
