@@ -1037,35 +1037,77 @@
       const now = ctx.currentTime;
       
       if (type === 'spin') {
-        for (let i = 0; i < 4; i++) {
+        // Enhanced kitchen grill sizzling sound
+        for (let i = 0; i < 6; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          
+          // Create sizzling noise with filtered sawtooth
+          osc.frequency.value = 140 + (i * 30) + (Math.random() * 30);
+          osc.type = 'sawtooth';
+          filter.type = 'highpass';
+          filter.frequency.value = 250 + (i * 40);
+          filter.Q.value = 1.5;
+          
+          gain.gain.setValueAtTime(0.08, now + i * 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.1);
+          
+          osc.start(now + i * 0.02);
+          osc.stop(now + i * 0.02 + 0.1);
+        }
+        
+        // Add fryer bubbling
+        for (let i = 0; i < 3; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
           
-          osc.frequency.value = 250 + (i * 80);
-          osc.type = 'square';
-          gain.gain.setValueAtTime(0.12, now + i * 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.08);
+          osc.frequency.value = 90 + (Math.random() * 50);
+          osc.type = 'triangle';
+          gain.gain.setValueAtTime(0.05, now + i * 0.25);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.25 + 0.15);
           
-          osc.start(now + i * 0.05);
-          osc.stop(now + i * 0.05 + 0.08);
+          osc.start(now + i * 0.25);
+          osc.stop(now + i * 0.25 + 0.15);
         }
       } else if (type === 'reel_stop') {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+        // Cash register "ka-ching" sound
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        const gain2 = ctx.createGain();
         
-        osc.frequency.value = 140;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.16, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        gain1.connect(ctx.destination);
+        gain2.connect(ctx.destination);
         
-        osc.start(now);
-        osc.stop(now + 0.13);
+        // First part - "ka" sound (metallic click)
+        osc1.frequency.value = 1100;
+        osc1.type = 'square';
+        gain1.gain.setValueAtTime(0.16, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        
+        // Second part - "ching" sound (bell ring)
+        osc2.frequency.value = 750;
+        osc2.type = 'sine';
+        gain2.gain.setValueAtTime(0, now);
+        gain2.gain.setValueAtTime(0.18, now + 0.04);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        
+        osc1.start(now);
+        osc1.stop(now + 0.04);
+        osc2.start(now + 0.04);
+        osc2.stop(now + 0.35);
       } else if (type === 'win') {
-        [500, 650, 800, 1000].forEach((freq, i) => {
+        // Happy customer "yum!" sound
+        [440, 554.37, 659.25, 783.99].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
@@ -1073,40 +1115,89 @@
           
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.2, now + i * 0.09);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.28);
+          gain.gain.setValueAtTime(0.16, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
           
-          osc.start(now + i * 0.09);
-          osc.stop(now + i * 0.09 + 0.28);
+          osc.start(now + i * 0.1);
+          osc.stop(now + i * 0.1 + 0.4);
         });
-      } else if (type === 'bigwin') {
-        for (let i = 0; i < 12; i++) {
+        
+        // Add celebration sparkle
+        for (let i = 0; i < 5; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
           
-          osc.frequency.value = 450 + (i * 130);
-          osc.type = 'triangle';
-          gain.gain.setValueAtTime(0.14, now + i * 0.07);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.23);
+          osc.frequency.value = 900 + (Math.random() * 600);
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0.07, now + 0.15 + i * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15 + i * 0.04 + 0.08);
+          
+          osc.start(now + 0.15 + i * 0.04);
+          osc.stop(now + 0.15 + i * 0.04 + 0.08);
+        }
+      } else if (type === 'bigwin') {
+        // Kitchen bell celebration
+        for (let i = 0; i < 10; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          // Alternating bell tones
+          osc.frequency.value = i % 2 === 0 ? 750 + (i * 45) : 550 + (i * 35);
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0.16, now + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.35);
           
           osc.start(now + i * 0.07);
-          osc.stop(now + i * 0.07 + 0.23);
+          osc.stop(now + i * 0.07 + 0.35);
         }
+        
+        // Victory fanfare
+        [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.frequency.value = freq;
+          osc.type = 'triangle';
+          gain.gain.setValueAtTime(0.11, now + 0.4 + i * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4 + i * 0.12 + 0.7);
+          
+          osc.start(now + 0.4 + i * 0.12);
+          osc.stop(now + 0.4 + i * 0.12 + 0.7);
+        });
       } else if (type === 'button') {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+        // Cash register button press
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        const gain2 = ctx.createGain();
         
-        osc.frequency.value = 650;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.09, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        gain1.connect(ctx.destination);
+        gain2.connect(ctx.destination);
         
-        osc.start(now);
-        osc.stop(now + 0.06);
+        // Click sound
+        osc1.frequency.value = 750;
+        osc1.type = 'square';
+        gain1.gain.setValueAtTime(0.11, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+        
+        // Confirmation beep
+        osc2.frequency.value = 1100;
+        osc2.type = 'sine';
+        gain2.gain.setValueAtTime(0.05, now + 0.015);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+        
+        osc1.start(now);
+        osc1.stop(now + 0.025);
+        osc2.start(now + 0.015);
+        osc2.stop(now + 0.07);
       }
     } catch (e) {
       console.log('Audio playback failed:', e);
