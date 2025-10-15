@@ -718,26 +718,77 @@
     return audioContext;
   }
 
-  // Optimized audio system for mobile performance
-  function playSound(type) {
+  // Mobile-optimized fruit sound system
+  function playFruitSound(type, symbol = null) {
     try {
       const ctx = initAudio();
       const now = ctx.currentTime;
       
-      if (type === 'spin') {
-        // Simplified spin sound - single oscillator
+      if (type === 'fruit_cut') {
+        // Simplified fruit cutting sound for mobile
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 800;
+        osc.type = 'square';
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        
+        osc.start(now);
+        osc.stop(now + 0.06);
+        
+      } else if (type === 'tree_shake') {
+        // Simplified tree shake for mobile
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 200;
+        osc.type = 'sawtooth';
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        
+        osc.start(now);
+        osc.stop(now + 0.08);
+        
+      } else if (type === 'fruit_drop') {
+        // Simplified fruit drop
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+        osc.type = 'triangle';
+        
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        
+        osc.start(now);
+        osc.stop(now + 0.1);
+        
+      } else if (type === 'spin') {
+        // Simplified spin sound
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.frequency.value = 400;
         osc.type = 'sine';
-        gain.gain.setValueAtTime(0.05, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
         osc.start(now);
-        osc.stop(now + 0.2);
+        osc.stop(now + 0.15);
+        
       } else if (type === 'win') {
-        // Simplified win sound - fewer oscillators
+        // Simplified win sound
         [600, 800].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -745,14 +796,51 @@
           gain.connect(ctx.destination);
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.08, now + i * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.2);
-          osc.start(now + i * 0.1);
-          osc.stop(now + i * 0.1 + 0.2);
+          gain.gain.setValueAtTime(0.06, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.15);
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.15);
         });
+        
+      } else if (type === 'fruit_match') {
+        // Simplified fruit matching sounds
+        let baseFreq = 440;
+        
+        switch(symbol) {
+          case '🍒': baseFreq = 880; break;
+          case '🍋': baseFreq = 660; break;
+          case '🍊': baseFreq = 523; break;
+          case '🍇': baseFreq = 392; break;
+          case '🍉': baseFreq = 294; break;
+          case '🍓': baseFreq = 740; break;
+          default: baseFreq = 440;
+        }
+        
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = baseFreq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        
+        osc.start(now);
+        osc.stop(now + 0.12);
       }
     } catch (e) {
       console.log('Audio failed:', e);
+    }
+  }
+
+  // Legacy function for backward compatibility
+  function playSound(type) {
+    if (type === 'button') {
+      playFruitSound('fruit_cut');
+    } else {
+      playFruitSound(type);
     }
   }
 
@@ -955,7 +1043,7 @@
     updateBalanceDisplay();
     showMessage(`Bet: $${bet}`);
 
-    playSound('spin');
+    playFruitSound('spin');
 
     const finalGrid = fillGridRandom();
     const spinDuration = 2000; // Reduced duration for better performance
@@ -1029,7 +1117,17 @@
         balance += payout;
         updateBalanceDisplay();
         showMessage(`🍎 Fruity Win: $${payout.toFixed(2)}! 🍊`);
-        playSound('win');
+        // Play fruit-specific matching sounds
+        matches.forEach((match, index) => {
+          const symbol = finalGrid[match[0]];
+          setTimeout(() => {
+            playFruitSound('fruit_match', symbol);
+          }, index * 100);
+        });
+        
+        setTimeout(() => {
+          playFruitSound('win');
+        }, 300);
         await new Promise(r => setTimeout(r, 1000));
       } else if (payout < 0) {
         balance += payout;
@@ -1075,6 +1173,22 @@
       b.classList.remove('selected');
     });
     e.target.classList.add('selected');
+  });
+
+  // Add immersive fruit sounds to buttons (mobile optimized)
+  document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.id === 'spinBtn') {
+        playFruitSound('tree_shake');
+      } else {
+        playFruitSound('fruit_cut');
+      }
+    });
+    
+    // Lighter hover sound for mobile
+    btn.addEventListener('touchstart', () => {
+      playFruitSound('fruit_drop');
+    }, { passive: true });
   });
 
   spinBtn.addEventListener('click', spin);
