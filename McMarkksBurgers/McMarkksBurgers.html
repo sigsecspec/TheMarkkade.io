@@ -1282,19 +1282,7 @@
     }
   }
 
-  document.addEventListener('click', () => {
-    initAudio();
-    // Play welcome kitchen sound
-    setTimeout(() => {
-      try {
-        const ctx = initAudio();
-        createCashRegister(ctx, ctx.currentTime);
-        messageDisplay.textContent = '🍔 Welcome to McMarkk\'s Kitchen! 🍔';
-      } catch (e) {}
-    }, 100);
-  }, { once: true });
-  
-  document.addEventListener('touchstart', () => {
+  function playWelcomeSound() {
     initAudio();
     setTimeout(() => {
       try {
@@ -1303,11 +1291,10 @@
         messageDisplay.textContent = '🍔 Welcome to McMarkk\'s Kitchen! 🍔';
       } catch (e) {}
     }, 100);
-  }, { once: true });
+  }
 
-  document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => playSound('button'));
-  });
+  document.addEventListener('click', playWelcomeSound, { once: true });
+  document.addEventListener('touchstart', playWelcomeSound, { once: true });
 
   function openPaytable() {
     paytableModal.classList.add('open');
@@ -1551,11 +1538,6 @@
     balanceDisplay.textContent = `Balance: $${balance}`;
     localStorage.setItem('localPlayerCash', balance);
   }
-
-  // Button sound effects
-  document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => playSound('button'));
-  });
 
 })();
 </script>

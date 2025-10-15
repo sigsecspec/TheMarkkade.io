@@ -1452,7 +1452,6 @@
     if (!isKitchenOpen) {
       startPremiumKitchen();
       setTimeout(() => {
-        if (!isKitchenOpen) return; // Don't stop if auto-spin started
         closePremiumKitchen();
       }, 8000);
     }
