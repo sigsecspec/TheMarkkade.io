@@ -37,8 +37,8 @@
     position: relative;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-  }ont-smoothing: antialiased;
-  }  /* Restaurant texture overlay */
+  }
+
   body::before {
     content: '';
     position: fixed;
@@ -47,22 +47,13 @@
     width: 100%;
     height: 100%;
     background-image: 
-      repeating-linear-gradient(90deg, 
-        transparent, 
-        transparent 50px, 
-        rgba(0,0,0,0.1) 50px, 
-        rgba(0,0,0,0.1) 51px),
-      repeating-linear-gradient(0deg, 
-        transparent, 
-        transparent 50px, 
-        rgba(0,0,0,0.05) 50px, 
-        rgba(0,0,0,0.05) 51px);
+      repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(0,0,0,0.1) 50px, rgba(0,0,0,0.1) 51px),
+      repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(0,0,0,0.05) 50px, rgba(0,0,0,0.05) 51px);
     pointer-events: none;
     z-index: 0;
     opacity: 0.3;
   }
 
-  /* Restaurant neon glow effect */
   body::after {
     content: '';
     position: fixed;
@@ -81,9 +72,9 @@
   @keyframes neonPulse {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
-  }     inset 0 0 100px rgba(255, 165, 0, 0.2);
-    }
-    .game-container {
+  }
+
+  .game-container {
     width: 100%;
     height: 100%;
     display: flex;
@@ -93,14 +84,14 @@
     background: rgba(0,0,0,0.3);
   }
   
-  /* Optimized for Razr 2024 - 22:9 aspect ratio, 6.9" display */
+  /* RAZR 2024 OPTIMIZED: Board on top half when folded */
   .fold-top {
-    flex: 1.15;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 12px 8px;
+    padding: 10px 8px;
     gap: 8px;
     background: 
       linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%),
@@ -111,8 +102,8 @@
     box-shadow: 
       0 4px 20px rgba(0,0,0,0.8),
       inset 0 -2px 10px rgba(255,215,0,0.2);
-  }x 40px rgba(0,0,0,0.4);
-   /* Restaurant neon sign backdrop */
+  }
+
   .restaurant-backdrop {
     position: absolute;
     top: 0;
@@ -120,7 +111,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    opacity: 0.15;
+    opacity: 0.12;
     z-index: 0;
   }
 
@@ -128,7 +119,7 @@
   .restaurant-backdrop::after {
     content: '🍔';
     position: absolute;
-    font-size: 120px;
+    font-size: 100px;
     opacity: 0.1;
     animation: floatBurger 20s ease-in-out infinite;
   }
@@ -150,90 +141,67 @@
     25% { transform: translateY(-20px) rotate(5deg); }
     50% { transform: translateY(0) rotate(-5deg); }
     75% { transform: translateY(20px) rotate(3deg); }
-  }0, 0, 0.15);
-    box-shadow: 0 0 30px rgba(255, 140, 0, 0.1);  .restaurant-header {
+  }
+
+  .restaurant-header {
     width: 100%;
     text-align: center;
-    padding: 8px;
+    padding: 6px;
     background: 
       linear-gradient(90deg, transparent, #FFD700 20%, #FFD700 80%, transparent),
       linear-gradient(180deg, #8B0000, #DC143C);
-    border: 3px solid #FFD700;
-    border-radius: 15px;
+    border: 2px solid #FFD700;
+    border-radius: 12px;
     position: relative;
     z-index: 2;
     box-shadow: 
-      0 0 40px rgba(255,215,0,0.5),
-      0 4px 20px rgba(0,0,0,0.8),
-      inset 0 0 20px rgba(255,215,0,0.2);
+      0 0 30px rgba(255,215,0,0.4),
+      0 4px 20px rgba(0,0,0,0.8);
     animation: neonSign 2s ease-in-out infinite;
   }
 
   @keyframes neonSign {
-    0%, 100% { 
-      box-shadow: 
-        0 0 40px rgba(255,215,0,0.5),
-        0 4px 20px rgba(0,0,0,0.8),
-        inset 0 0 20px rgba(255,215,0,0.2);
-    }
-    50% { 
-      box-shadow: 
-        0 0 60px rgba(255,215,0,0.7),
-        0 4px 20px rgba(0,0,0,0.8),
-        inset 0 0 30px rgba(255,215,0,0.3);
-    }
+    0%, 100% { box-shadow: 0 0 30px rgba(255,215,0,0.4), 0 4px 20px rgba(0,0,0,0.8); }
+    50% { box-shadow: 0 0 50px rgba(255,215,0,0.6), 0 4px 20px rgba(0,0,0,0.8); }
   }
 
   h1 {
     margin: 0;
     color: #FFF;
-    font-size: clamp(1.8rem, 5vw, 2.2rem);
+    font-size: clamp(1.4rem, 4.5vw, 1.8rem);
     font-family: 'Bebas Neue', cursive;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     text-shadow: 
       0 0 20px #FFD700,
       0 0 40px #FFD700,
-      0 0 60px #FFA500,
       2px 2px 4px rgba(0,0,0,0.9);
     position: relative;
-    animation: textFlicker 3s ease-in-out infinite;
-  }
-
-  @keyframes textFlicker {
-    0%, 100% { opacity: 1; }
-    95% { opacity: 0.95; }
   }
 
   h1::before {
     content: '★';
     color: #FFD700;
-    margin-right: 10px;
-    animation: starSpin 4s linear infinite;
+    margin-right: 8px;
   }
 
   h1::after {
     content: '★';
     color: #FFD700;
-    margin-left: 10px;
-    animation: starSpin 4s linear infinite reverse;
-  }
-
-  @keyframes starSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    margin-left: 8px;
   }
 
   .tagline {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     color: #FFD700;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     margin-top: 2px;
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     opacity: 0.9;
-  }nsform: translateY(0px); }
-    50% { transform: translateY(-3px); }  .game-stats {
+  }
+
+  .game-stats {
     display: flex;
     gap: 8px;
     justify-content: center;
@@ -246,74 +214,42 @@
     background: 
       linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(40,20,10,0.9) 100%);
     border: 2px solid #FFD700;
-    border-radius: 20px;
-    padding: 8px 16px;
+    border-radius: 15px;
+    padding: 8px 14px;
     box-shadow: 
       0 0 20px rgba(255,215,0,0.3),
-      0 4px 10px rgba(0,0,0,0.8),
-      inset 0 0 15px rgba(255,215,0,0.1);
+      0 4px 10px rgba(0,0,0,0.8);
     color: #FFD700;
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-size: clamp(0.85rem, 3vw, 1rem);
     font-weight: bold;
     letter-spacing: 1px;
     text-align: center;
     flex: 1;
-    min-width: 120px;
+    min-width: 0;
     position: relative;
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
-    text-shadow: 
-      0 0 10px rgba(255,215,0,0.5),
-      0 2px 4px rgba(0,0,0,0.9);
-    animation: digitalDisplay 5s ease-in-out infinite;
-  }ion: statsGlow 4s ease-in-out infinite;  @keyframes digitalDisplay {
-    0%, 100% { 
-      box-shadow: 
-        0 0 20px rgba(255,215,0,0.3),
-        0 4px 10px rgba(0,0,0,0.8),
-        inset 0 0 15px rgba(255,215,0,0.1);
-    }
-    50% { 
-      box-shadow: 
-        0 0 30px rgba(255,215,0,0.4),
-        0 4px 10px rgba(0,0,0,0.8),
-        inset 0 0 20px rgba(255,215,0,0.15);
-    }
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
   }
 
   #walletDisplay::before {
     content: '💵';
-    margin-right: 6px;
-    font-size: 1.1em;
+    margin-right: 5px;
+    font-size: 1em;
   }
 
   #freeSpinCounter {
     border-color: #FFA500;
     background: 
       linear-gradient(135deg, rgba(139,0,0,0.9) 0%, rgba(220,20,60,0.9) 100%);
-    animation: freeSpinPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes freeSpinPulse {
-    0%, 100% { 
-      transform: scale(1);
-      box-shadow: 
-        0 0 25px rgba(255,165,0,0.4),
-        0 4px 10px rgba(0,0,0,0.8);
-    }
-    50% { 
-      transform: scale(1.05);
-      box-shadow: 
-        0 0 35px rgba(255,165,0,0.5),
-        0 4px 10px rgba(0,0,0,0.8);
-    }
   }
 
   #freeSpinCounter::before {
     content: '🎆';
-    margin-right: 6px;
-    font-size: 1.1em;
-  }filter: drop-shadow(0 0 8px rgba(255, 228, 181, 0.4));
+    margin-right: 5px;
+    font-size: 1em;
+  }
+
   #slotContainer {
     position: relative;
     width: 100%;
@@ -323,14 +259,12 @@
         rgba(20,10,5,0.95) 0%, 
         rgba(40,20,10,0.95) 50%, 
         rgba(20,10,5,0.95) 100%);
-    border: 4px solid #FFD700;
-    border-radius: 15px;
-    padding: 12px;
+    border: 3px solid #FFD700;
+    border-radius: 12px;
+    padding: 10px;
     box-shadow: 
-      0 0 40px rgba(255,215,0,0.3),
-      0 10px 40px rgba(0,0,0,0.9),
-      inset 0 0 30px rgba(0,0,0,0.8),
-      inset 0 0 60px rgba(255,215,0,0.05);
+      0 0 30px rgba(255,215,0,0.3),
+      0 10px 40px rgba(0,0,0,0.9);
     z-index: 2;
     position: relative;
   }
@@ -338,48 +272,22 @@
   #slotContainer::before {
     content: 'DELUXE GRILL';
     position: absolute;
-    top: -8px;
+    top: -7px;
     left: 50%;
     transform: translateX(-50%);
     background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
     color: #000;
-    padding: 2px 20px;
-    font-size: 0.7rem;
+    padding: 2px 15px;
+    font-size: 0.6rem;
     font-weight: bold;
-    letter-spacing: 2px;
-    border-radius: 10px;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
     font-family: 'Bebas Neue', cursive;
-    box-shadow: 
-      0 0 20px rgba(255,215,0,0.5),
-      0 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 15px rgba(255,215,0,0.4);
     z-index: 1;
   }
 
-  /* Cooking grill lines overlay */
-  #slotContainer::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 20px,
-        rgba(255,215,0,0.03) 20px,
-        rgba(255,215,0,0.03) 21px
-      );
-    pointer-events: none;
-    border-radius: 15px;
-    z-index: 3;
-  }ft: 6px;
-  }
-
-  #slotContainer::after {
-    top: 6px;
-    right:   #slotGrid {
+  #slotGrid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -388,7 +296,7 @@
     z-index: 4;
     padding: 4px;
     background: rgba(0,0,0,0.5);
-    border-radius: 10px;
+    border-radius: 8px;
   }
   
   .slotCell {
@@ -398,12 +306,11 @@
         rgba(255,228,181,0.9) 50%, 
         rgba(255,218,185,0.85) 100%);
     border: 2px solid #8B4513;
-    border-radius: 10px;
-    font-size: clamp(2rem, 6vw, 2.8rem);
+    border-radius: 8px;
+    font-size: clamp(1.8rem, 5.5vw, 2.4rem);
     text-align: center;
     box-shadow: 
-      inset 0 2px 10px rgba(0,0,0,0.3),
-      inset 0 -2px 10px rgba(0,0,0,0.5),
+      inset 0 2px 8px rgba(0,0,0,0.3),
       0 4px 10px rgba(0,0,0,0.8);
     aspect-ratio: 1;
     display: flex;
@@ -412,22 +319,6 @@
     position: relative;
     transition: all 0.3s ease;
     overflow: hidden;
-  }ow(0 0 8px rgba(255, 140, 0, 0  .slotCell::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(255,255,255,0.3), 
-      transparent);
-    transition: left 0.5s;
-  }
-
-  .slotCell:hover::before {
-    left: 100%;
   }
 
   .slotCell.spinning {
@@ -437,25 +328,16 @@
         rgba(255,255,255,0.98) 0%, 
         rgba(255,248,220,0.95) 100%);
     border-color: #FFD700;
-    box-shadow: 
-      0 0 30px rgba(255,215,0,0.5),
-      inset 0 0 20px rgba(255,215,0,0.2);
+    box-shadow: 0 0 25px rgba(255,215,0,0.4);
   }
 
   @keyframes slotSpin {
-    0% { 
-      transform: rotateX(0deg) scale(1);
-      filter: blur(0px);
-    }
-    50% { 
-      transform: rotateX(180deg) scale(0.95);
-      filter: blur(2px);
-    }
-    100% { 
-      transform: rotateX(360deg) scale(1);
-      filter: blur(0px);
-    }
-  }(360deg); filter: brightness(1  .winning {
+    0% { transform: rotateX(0deg) scale(1); filter: blur(0px); }
+    50% { transform: rotateX(180deg) scale(0.95); filter: blur(2px); }
+    100% { transform: rotateX(360deg) scale(1); filter: blur(0px); }
+  }
+
+  .winning {
     background: 
       radial-gradient(ellipse at center, 
         #FFD700 0%, 
@@ -463,32 +345,17 @@
         #FF8C00 100%);
     border: 3px solid #FFD700;
     box-shadow: 
-      0 0 50px #FFD700,
-      0 0 30px #FFA500,
-      0 0 15px #FF8C00,
-      inset 0 0 30px rgba(255,215,0,0.3);
+      0 0 40px #FFD700,
+      0 0 25px #FFA500;
     animation: winCelebration 0.5s ease-in-out infinite alternate;
     z-index: 10;
   }
 
   @keyframes winCelebration {
-    0% { 
-      transform: scale(1) rotate(0deg);
-      box-shadow: 
-        0 0 50px #FFD700,
-        0 0 30px #FFA500,
-        0 0 15px #FF8C00,
-        inset 0 0 30px rgba(255,215,0,0.3);
-    }
-    100% { 
-      transform: scale(1.08) rotate(3deg);
-      box-shadow: 
-        0 0 70px #FFD700,
-        0 0 50px #FFA500,
-        0 0 30px #FF8C00,
-        inset 0 0 40px rgba(255,215,0,0.4);
-    }
-  }nset 0 0 30px rgba(255, 215, 0, 0.3);
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+  }
+
   #linesSvg {
     position: absolute;
     top: 0;
@@ -501,67 +368,43 @@
 
   .winLine {
     stroke: #FFD700;
-    stroke-width: 5;
+    stroke-width: 4;
     stroke-linecap: round;
     opacity: 1;
-    filter: drop-shadow(0 0 20px #FFD700);
+    filter: drop-shadow(0 0 15px #FFD700);
     animation: lineFlash 0.6s infinite ease-in-out;
-    stroke-dasharray: 10, 5;
-    stroke-dashoffset: 0;
   }
   
   @keyframes lineFlash {
-    0%, 100% {
-      stroke: #FFD700;
-      stroke-width: 5;
-      opacity: 1;
-      stroke-dashoffset: 0;
-    }
-    50% {
-      stroke: #FFF;
-      stroke-width: 7;
-      opacity: 1;
-      stroke-dashoffset: 15;
-    }
-  }(0 0 10px rgba(255, 248, 220, 0.7))  #message {
+    0%, 100% { stroke: #FFD700; stroke-width: 4; }
+    50% { stroke: #FFF; stroke-width: 6; }
+  }
+
+  #message {
     text-align: center;
-    font-size: clamp(0.85rem, 3vw, 1rem);
-    min-height: 2em;
+    font-size: clamp(0.75rem, 2.8vw, 0.9rem);
+    min-height: 1.8em;
     color: #FFD700;
     background: 
       linear-gradient(135deg, rgba(139,0,0,0.95) 0%, rgba(0,0,0,0.98) 100%);
     border: 2px solid #FFD700;
-    border-radius: 20px;
-    padding: 8px 16px;
-    margin: 4px auto;
-    max-width: 90%;
+    border-radius: 15px;
+    padding: 8px 14px;
+    margin: 0;
     box-shadow: 
-      0 0 30px rgba(255,215,0,0.3),
-      0 4px 15px rgba(0,0,0,0.8),
-      inset 0 0 20px rgba(255,215,0,0.1);
+      0 0 25px rgba(255,215,0,0.3),
+      0 4px 15px rgba(0,0,0,0.8);
     font-weight: bold;
-    letter-spacing: 1px;
-    text-shadow: 
-      0 0 10px rgba(255,215,0,0.5),
-      0 2px 4px rgba(0,0,0,0.9);
+    letter-spacing: 0.8px;
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     z-index: 2;
-    animation: orderUp 0.5s ease-out;
   }
-
-  @keyframes orderUp {
-    0% { 
-      transform: scale(0.8) translateY(20px);
-      opacity: 0;
-    }
-    100% { 
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-  }
-        0 0 45px rgba(255, 165, 0, 0.3);  .fold-bottom {
-    flex: 0.85;
+  
+  /* RAZR 2024 OPTIMIZED: Controls on bottom half when folded */
+  .fold-bottom {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -574,17 +417,17 @@
     position: relative;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    box-shadow: 
-      inset 0 4px 20px rgba(255,215,0,0.1),
-      0 -4px 20px rgba(0,0,0,0.8);
-  }20px 40px rgba(0,0  #betSelector {
+    box-shadow: inset 0 4px 20px rgba(255,215,0,0.1);
+  }
+
+  #betSelector {
     background: 
       linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(40,20,10,0.9) 100%);
-    border: 3px solid #8B4513;
-    border-radius: 15px;
+    border: 2px solid #8B4513;
+    border-radius: 12px;
     padding: 10px;
     box-shadow: 
-      inset 0 0 30px rgba(0,0,0,0.5),
+      inset 0 0 25px rgba(0,0,0,0.5),
       0 4px 20px rgba(0,0,0,0.8);
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -595,20 +438,20 @@
   }
 
   #betSelector::before {
-    content: 'SELECT YOUR ORDER SIZE';
+    content: 'SELECT ORDER SIZE';
     position: absolute;
-    top: -10px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
     background: #8B4513;
     color: #FFD700;
-    padding: 2px 15px;
-    font-size: 0.65rem;
+    padding: 2px 12px;
+    font-size: 0.6rem;
     font-weight: bold;
     letter-spacing: 1px;
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: 'Bebas Neue', cursive;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
   }
   
   #betSelector button {
@@ -618,92 +461,36 @@
     color: #FFD700;
     padding: 10px 8px;
     font-weight: bold;
-    font-size: clamp(0.85rem, 2.8vw, 0.95rem);
+    font-size: clamp(0.8rem, 2.6vw, 0.9rem);
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: 'Oswald', sans-serif;
     letter-spacing: 0.5px;
-    box-shadow: 
-      inset 0 2px 5px rgba(0,0,0,0.5),
-      0 2px 10px rgba(0,0,0,0.7);
-    min-height: 45px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    min-height: 42px;
     transition: all 0.2s ease;
     text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-    position: relative;
-    overflow: hidden;
-  }
-
-  #betSelector button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(255,215,0,0.3), 
-      transparent);
-    transition: left 0.3s;
-  };
-    text-shadow: 0 2px 4px rgba(0,  #betSelector button:hover::before {
-    left: 100%;
-  }
-
-  #betSelector button:hover {
-    transform: translateY(-2px) scale(1.05);
-    border-color: #FFD700;
-    box-shadow: 
-      0 0 20px rgba(255,215,0,0.3),
-      inset 0 2px 5px rgba(0,0,0,0.5),
-      0 4px 15px rgba(0,0,0,0.8);
   }
 
   #betSelector button:active {
-    transform: translateY(0) scale(1);
+    transform: scale(0.95);
   }
 
   #betSelector button.selected {
     background: 
       linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
     color: #000;
-    border: 3px solid #FFD700;
+    border: 2px solid #FFD700;
     box-shadow: 
-      0 0 30px rgba(255,215,0,0.5),
-      inset 0 2px 10px rgba(255,255,255,0.5),
+      0 0 25px rgba(255,215,0,0.5),
       0 4px 20px rgba(0,0,0,0.8);
-    transform: scale(1.05);
+    transform: scale(1.03);
     font-weight: 900;
-    animation: selectedPulse 2s ease-in-out infinite;
   }
 
-  #betSelector button.selected::after {
-    content: '✓';
-    position: absolute;
-    top: 2px;
-    right: 4px;
-    font-size: 0.8em;
-    color: #000;
-    font-weight: bold;
-  }
-
-  @keyframes selectedPulse {
-    0%, 100% { 
-      box-shadow: 
-        0 0 30px rgba(255,215,0,0.5),
-        inset 0 2px 10px rgba(255,255,255,0.5),
-        0 4px 20px rgba(0,0,0,0.8);
-    }
-    50% { 
-      box-shadow: 
-        0 0 40px rgba(255,215,0,0.6),
-        inset 0 2px 10px rgba(255,255,255,0.5),
-        0 4px 20px rgba(0,0,0,0.8);
-    }
-  }),
-        0 0 50px rgba(255, 215, 0, 0  .action-buttons {
+  .action-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     width: 100%;
     max-width: 100%;
@@ -716,158 +503,63 @@
     color: #FFD700;
     padding: 10px;
     font-weight: bold;
-    font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+    font-size: clamp(0.75rem, 2.3vw, 0.85rem);
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: 'Oswald', sans-serif;
-    letter-spacing: 0.5px;
-    box-shadow: 
-      inset 0 2px 5px rgba(0,0,0,0.5),
-      0 2px 10px rgba(0,0,0,0.7);
-    min-height: 45px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    min-height: 42px;
     transition: all 0.2s ease;
     text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .action-buttons button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(255,215,0,0.2), 
-      transparent);
-    transition: left 0.3s;
-  }
-
-  .action-buttons button:hover::before {
-    left: 100%;
-  }
-
-  .action-buttons button:hover {
-    transform: scale(1.05);
-    border-color: #FFD700;
-    box-shadow: 
-      0 0 15px rgba(255,215,0,0.3),
-      inset 0 2px 5px rgba(0,0,0,0.5),
-      0 4px 15px rgba(0,0,0,0.8);
   }
 
   .action-buttons button:active {
     transform: scale(0.95);
   }
 
-  #autoSpinBtn[data-running="true"] {
-    background: 
-      linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
-    border-color: #DC143C;
-    color: #FFD700;
-    animation: autoSpinActive 1s ease-in-out infinite;
-  }
-
-  @keyframes autoSpinActive {
-    0%, 100% { box-shadow: 0 0 20px rgba(220,20,60,0.5); }
-    50% { box-shadow: 0 0 30px rgba(220,20,60,0.7); }
-  }color: rgba(255, 69, 0, 0.8);
-    colo  #spinBtn {
+  #spinBtn {
     background: 
       linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
     color: #000;
     font-weight: 900;
-    font-size: clamp(1.4rem, 5vw, 1.8rem);
+    font-size: clamp(1.3rem, 4.5vw, 1.6rem);
     padding: 14px 30px;
-    border: 4px solid #8B0000;
-    border-radius: 15px;
+    border: 3px solid #8B0000;
+    border-radius: 12px;
     cursor: pointer;
     box-shadow: 
-      0 0 40px rgba(255,215,0,0.4),
-      0 8px 30px rgba(0,0,0,0.8),
-      inset 0 2px 10px rgba(255,255,255,0.5),
-      inset 0 -2px 10px rgba(139,0,0,0.3);
-    letter-spacing: 3px;
-    min-width: 85%;
-    text-shadow: 
-      2px 2px 4px rgba(139,0,0,0.3),
-      0 0 10px rgba(255,255,255,0.5);
+      0 0 35px rgba(255,215,0,0.4),
+      0 8px 30px rgba(0,0,0,0.8);
+    letter-spacing: 2.5px;
+    min-width: 100%;
+    text-shadow: 2px 2px 4px rgba(139,0,0,0.3);
     font-family: 'Bebas Neue', cursive;
     text-transform: uppercase;
     position: relative;
     transition: all 0.2s ease;
     grid-column: 1 / -1;
     animation: orderButton 3s ease-in-out infinite;
-    overflow: hidden;
-  }
-
-  #spinBtn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(255,255,255,0.4), 
-      transparent);
-    animation: buttonShine 3s ease-in-out infinite;
-  }
-
-  @keyframes buttonShine {
-    0% { left: -100%; }
-    50%, 100% { left: 100%; }
   }
 
   @keyframes orderButton {
-    0%, 100% { 
-      box-shadow: 
-        0 0 40px rgba(255,215,0,0.4),
-        0 8px 30px rgba(0,0,0,0.8),
-        inset 0 2px 10px rgba(255,255,255,0.5),
-        inset 0 -2px 10px rgba(139,0,0,0.3);
-    }
-    50% { 
-      box-shadow: 
-        0 0 50px rgba(255,215,0,0.5),
-        0 10px 35px rgba(0,0,0,0.9),
-        inset 0 2px 10px rgba(255,255,255,0.5),
-        inset 0 -2px 10px rgba(139,0,0,0.3);
-    }
-  }
-
-  .spin-text {
-    position: relative;
-    z-index: 1;
+    0%, 100% { box-shadow: 0 0 35px rgba(255,215,0,0.4), 0 8px 30px rgba(0,0,0,0.8); }
+    50% { box-shadow: 0 0 45px rgba(255,215,0,0.5), 0 10px 35px rgba(0,0,0,0.9); }
   }
 
   .spin-text::before {
     content: '🍔';
-    margin-right: 10px;
-    font-size: 1.2em;
+    margin-right: 8px;
+    font-size: 1.1em;
   }
 
   .spin-text::after {
     content: '🍔';
-    margin-left: 10px;
-    font-size: 1.2em;
-  }
-
-  #spinBtn:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 
-      0 0 60px rgba(255,215,0,0.6),
-      0 12px 40px rgba(0,0,0,0.9),
-      inset 0 2px 10px rgba(255,255,255,0.6),
-      inset 0 -2px 10px rgba(139,0,0,0.4);
-    border-color: #FFD700;
+    margin-left: 8px;
+    font-size: 1.1em;
   }
 
   #spinBtn:active {
-    transform: translateY(0) scale(0.98);
+    transform: scale(0.98);
   }
   
   #spinBtn:disabled {
@@ -875,24 +567,10 @@
     color: #999;
     cursor: not-allowed;
     border-color: #555;
-    box-shadow: 
-      0 4px 15px rgba(0,0,0,0.6),
-      inset 0 2px 5px rgba(0,0,0,0.5);
     animation: none;
   }
 
-  #spinBtn:disabled::before {
-    animation: none;
-  }
-
-  #spinBtn:disabled .spin-text::before,
-  #spinBtn:disabled .spin-text::after {
-    opacity: 0.3;
-    filter: grayscale(1);
-  }Btn:disabled::before,
-  #spinBtn:disabled::after {
-    animation: none;
-    filter: grayscale(1)  /* Restaurant Menu Board Modal */
+  /* Modal Styles */
   #paytableModal {
     position: fixed;
     inset: 0;
@@ -905,12 +583,6 @@
 
   #paytableModal.open {
     display: flex;
-    animation: modalFadeIn 0.3s ease-out;
-  }
-
-  @keyframes modalFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
   }
 
   .modal-backdrop {
@@ -925,336 +597,162 @@
     z-index: 1;
     width: 100%;
     max-width: 500px;
-    max-height: 90vh;
+    max-height: 85vh;
     background: 
       linear-gradient(180deg, #1a0e08 0%, #2c1810 10%, #2c1810 90%, #1a0e08 100%);
-    border: 5px solid #FFD700;
-    border-radius: 20px;
+    border: 4px solid #FFD700;
+    border-radius: 15px;
     padding: 0;
-    box-shadow: 
-      0 0 60px rgba(255,215,0,0.4),
-      0 20px 60px rgba(0,0,0,0.9),
-      inset 0 0 40px rgba(0,0,0,0.5);
+    box-shadow: 0 0 50px rgba(255,215,0,0.4);
     overflow: hidden;
     font-family: 'Oswald', sans-serif;
     display: flex;
     flex-direction: column;
-  }139, 69, 19, 0.05) 10px, rgba(139, 69, 19  #closePayTableBtn {
+  }
+
+  #closePayTableBtn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     background: 
       linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
     border: 2px solid #FFD700;
     color: #FFD700;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    box-shadow: 
-      0 0 20px rgba(255,215,0,0.3),
-      0 4px 15px rgba(0,0,0,0.7);
+    box-shadow: 0 0 15px rgba(255,215,0,0.3);
     z-index: 2;
     transition: all 0.2s ease;
   }
 
   #closePayTableBtn:hover {
     transform: scale(1.1) rotate(90deg);
-    box-shadow: 
-      0 0 30px rgba(255,215,0,0.4),
-      0 4px 15px rgba(0,0,0,0.7);
-  }shadow: 0 4px 12px rg  #payTableContainer {
-    padding: 20px;
+  }
+
+  #payTableContainer {
+    padding: 15px;
     background: transparent;
     overflow-y: auto;
     flex: 1;
   }
 
-  /* Menu board header lights */
-  .menu-lights {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    padding: 15px;
-    background: #000;
-    border-bottom: 3px solid #FFD700;
-  }
-
-  .menu-light {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #FFD700;
-    box-shadow: 0 0 10px #FFD700;
-    animation: lightBlink 2s ease-in-out infinite;
-  }
-
-  .menu-light:nth-child(2) { animation-delay: 0.2s; }
-  .menu-light:nth-child(3) { animation-delay: 0.4s; }
-  .menu-light:nth-child(4) { animation-delay: 0.6s; }
-  .menu-light:nth-child(5) { animation-delay: 0.8s; }
-
-  @keyframes lightBlink {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-  }gin-top: 16px;
-    letter  .menu-header {
+  .menu-header {
     text-align: center;
-    padding: 20px 10px;
+    padding: 15px 10px;
     background: 
       linear-gradient(180deg, rgba(139,0,0,0.9) 0%, rgba(0,0,0,0.9) 100%);
-    border: 3px solid #FFD700;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 
-      inset 0 0 30px rgba(255,215,0,0.1),
-      0 4px 20px rgba(0,0,0,0.7);
+    border: 2px solid #FFD700;
+    border-radius: 12px;
+    margin-bottom: 15px;
   }
 
   .menu-header h3 {
     color: #FFD700;
-    font-size: 2rem;
-    letter-spacing: 4px;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
     font-family: 'Bebas Neue', cursive;
-    text-shadow: 
-      0 0 20px rgba(255,215,0,0.5),
-      2px 2px 4px rgba(0,0,0,0.8);
-    animation: menuTitleGlow 3s ease-in-out infinite;
-  }
-
-  @keyframes menuTitleGlow {
-    0%, 100% { 
-      text-shadow: 
-        0 0 20px rgba(255,215,0,0.5),
-        2px 2px 4px rgba(0,0,0,0.8);
-    }
-    50% { 
-      text-shadow: 
-        0 0 30px rgba(255,215,0,0.7),
-        2px 2px 4px rgba(0,0,0,0.8);
-    }
+    text-shadow: 0 0 15px rgba(255,215,0,0.5);
   }
 
   .menu-header p {
     color: #FFA500;
-    font-size: 0.85rem;
-    margin: 5px 0;
-    letter-spacing: 2px;
+    font-size: 0.75rem;
+    margin: 4px 0;
+    letter-spacing: 1.5px;
     font-weight: bold;
     text-transform: uppercase;
-  }
-
-  .menu-header .tagline {
-    color: #FFD700;
-    font-size: 0.7rem;
-    opacity: 0.8;
-    margin-top: 8px;
-  }tter-spacing: 1px;
-    f  .menu-board {
-    background: 
-      linear-gradient(180deg, #000 0%, #1a0e08 50%, #000 100%);
-    border: 2px solid #8B4513;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 15px 0;
-    box-shadow: 
-      inset 0 0 40px rgba(0,0,0,0.8),
-      0 4px 20px rgba(0,0,0,0.7);
-  }
-
-  .menu-section {
-    margin-bottom: 20px;
   }
 
   .menu-section-title {
     color: #FFD700;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+    margin: 15px 0 8px;
     padding: 5px 10px;
     background: linear-gradient(90deg, transparent, rgba(255,215,0,0.1), transparent);
-    border-left: 4px solid #FFD700;
-    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+    border-left: 3px solid #FFD700;
   }
 
   .menu-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 10px;
-    margin: 5px 0;
+    padding: 6px 8px;
+    margin: 4px 0;
     background: rgba(255,215,0,0.05);
     border-radius: 5px;
-    transition: all 0.2s ease;
-  }
-
-  .menu-item:hover {
-    background: rgba(255,215,0,0.15);
-    transform: translateX(5px);
+    font-size: 0.8rem;
   }
 
   .menu-item-name {
     color: #FFA500;
-    font-size: 0.9rem;
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
-  }
-
-  .menu-item-symbol {
-    font-size: 1.2em;
-  }
-
-  .menu-item-prices {
-    display: flex;
-    gap: 15px;
+    gap: 6px;
   }
 
   .menu-price {
     color: #FFD700;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: bold;
-    min-width: 50px;
+    min-width: 45px;
     text-align: right;
-  }ner tr:hover {
-    background: rgba(2  .menu-footer {
-    margin-top: 20px;
-    padding: 15px;
+  }
+
+  .menu-footer {
+    margin-top: 15px;
+    padding: 12px;
     background: 
       linear-gradient(135deg, rgba(139,0,0,0.9) 0%, rgba(0,0,0,0.95) 100%);
     border: 2px solid #FFD700;
     border-radius: 10px;
     text-align: center;
-    box-shadow: 
-      inset 0 0 20px rgba(255,215,0,0.1),
-      0 4px 15px rgba(0,0,0,0.7);
   }
 
   .menu-footer p {
     color: #FFA500;
-    font-size: 0.8rem;
-    margin: 8px 0;
-    line-height: 1.5;
+    font-size: 0.7rem;
+    margin: 6px 0;
+    line-height: 1.4;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
   }
 
   .menu-footer .special {
     font-weight: 900;
-    font-size: 1rem;
-    margin: 15px 0;
-    color: #FFD700;
-    text-shadow: 
-      0 0 15px rgba(255,215,0,0.5),
-      2px 2px 4px rgba(0,0,0,0.8);
-    animation: specialOffer 2s ease-in-out infinite;
-  }
-
-  @keyframes specialOffer {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-
-  .combo-deal {
-    background: rgba(255,215,0,0.1);
-    border: 1px solid #FFD700;
-    border-radius: 8px;
-    padding: 10px;
-    margin: 10px 0;
-    transition: all 0.3s ease;
-  }
-
-  .combo-deal:hover {
-    background: rgba(255,215,0,0.2);
-    transform: scale(1.02);
-  }
-
-  .combo-name {
-    color: #FFD700;
-    font-weight: bold;
-    font-size: 0.9rem;
-  }
-
-  .combo-bonus {
-    color: #FFA500;
     font-size: 0.85rem;
-  } text-shadow: 1px 1px 2px  body.modal-open {
-    overflow: hidden;
+    margin: 10px 0;
+    color: #FFD700;
   }
 
-  /* Special scrollbar for menu */
-  .modal-dialog::-webkit-scrollbar,
-  #payTableContainer::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .modal-dialog::-webkit-scrollbar-track,
-  #payTableContainer::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.5);
-    border-radius: 4px;
-  }
-
-  .modal-dialog::-webkit-scrollbar-thumb,
-  #payTableContainer::-webkit-scrollbar-thumb {
-    background: #FFD700;
-    border-radius: 4px;
-  }
-
-  .modal-dialog::-webkit-scrollbar-thumb:hover,
-  #payTableContainer::-webkit-scrollbar-thumb:hover {
-    background: #FFA500;
-  }
-     /* Razr 2024 optimizations - 6.9" display, 1080x2640px, 22:9 aspect ratio */
-  @media (max-width: 480px) and (min-height: 800px) {
-    .fold-top {
-      padding: 10px 6px;
-      gap: 6px;
-    }
-    
-    .fold-bottom {
-      padding: 10px 6px;
-      gap: 8px;
-    }
-
-    .restaurant-header {
-      padding: 6px;
+  /* Razr optimizations for small screens */
+  @media (max-width: 420px) {
+    .fold-top, .fold-bottom {
+      padding: 8px 6px;
     }
     
     h1 {
-      font-size: clamp(1.4rem, 4.5vw, 1.8rem);
-      letter-spacing: 3px;
-    }
-
-    .tagline {
-      font-size: 0.6rem;
-    }px 16px;
-      let    .game-stats {
-      gap: 6px;
-      width: 100%;
-      padding: 0 2px;
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      letter-spacing: 2px;
     }
     
-    #walletDisplay, #freeSpinCounter {
-      min-width: 0;
-      padding: 6px 12px;
-      font-size: clamp(0.85rem, 3vw, 1rem);
-      border-radius: 15px;
+    .tagline {
+      font-size: 0.55rem;
     }
     
     #slotContainer {
-      padding: 10px;
-      max-width: 100%;
-      margin: 0;
+      padding: 8px;
     }
     
     #slotGrid {
@@ -1263,123 +761,64 @@
     }
     
     .slotCell {
-      font-size: clamp(1.8rem, 5.5vw, 2.4rem);
-      border-radius: 8px;
+      font-size: clamp(1.6rem, 5vw, 2rem);
     }
-      font-size: clamp(1.6rem,    #betSelector {
+    
+    #betSelector {
       grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
+      gap: 5px;
       padding: 8px;
-      max-width: 100%;
     }
     
     #betSelector button {
-      min-height: 40px;
-      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+      min-height: 38px;
+      font-size: clamp(0.75rem, 2.4vw, 0.85rem);
       padding: 8px 6px;
-      letter-spacing: 0px;
-      border-radius: 8px;
-    }0px;
-      let    .action-buttons {
-      grid-template-columns: 1fr 1fr;
+    }
+    
+    .action-buttons {
       gap: 6px;
     }
-
+    
     .action-buttons button {
-      font-size: clamp(0.7rem, 2.3vw, 0.8rem);
-      padding: 8px;
       min-height: 38px;
-      border-radius: 8px;
-    }
-
-    #autoSpinBtn {
-      grid-column: 1 / -1;
+      font-size: clamp(0.7rem, 2.2vw, 0.8rem);
+      padding: 8px;
     }
     
     #spinBtn {
-      padding: 12px 24px;
-      min-width: 90%;
-      font-size: clamp(1.3rem, 4.2vw, 1.6rem);
+      padding: 12px 26px;
+      font-size: clamp(1.2rem, 4vw, 1.4rem);
       letter-spacing: 2px;
-      border-radius: 12px;
-    }, 4vw, 1.4rem);
-      lett    #message {
-      font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    }
+    
+    #message {
+      font-size: clamp(0.7rem, 2.5vw, 0.85rem);
       padding: 6px 12px;
-      width: 95%;
-      letter-spacing: 0.5px;
-      min-height: 1.8em;
-      border-radius: 15px;
     }
+  }
 
-    .restaurant-backdrop::before,
-    .restaurant-backdrop::after {
-      font-size: 80px;
-    }
-
-    .modal-dialog {
-      max-width: 95%;
-      max-height: 85vh;
-    }
-  }h: 380px;
-     /* Extra compact for smaller flip phones */
-  @media (max-width: 380px) {
+  @media (max-width: 360px) {
     #betSelector {
       grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
     }
+    
+    .restaurant-backdrop::before,
+    .restaurant-backdrop::after {
+      font-size: 70px;
+    }
+  }
+</style>
+</head>
+<body>
 
-    .slotCell {
-      font-size: clamp(1.5rem, 5vw, 2rem);
-    }
-
-    h1 {
-      font-size: clamp(1.2rem, 4vw, 1.5rem);
-    }
-  }th: 320px;
-    /* Landscape mode optimization */
-  @media (orientation: landscape) and (max-height: 480px) {
-    .fold-top, .fold-bottom {
-      padding: 6px;
-      gap: 4px;
-    }
-
-    .restaurant-header {
-      padding: 4px;
-    }
-
-    h1 {
-      font-size: 1.2rem;
-      letter-spacing: 2px;
-    }
-
-    #slotContainer {
-      padding: 8px;
-    }
-
-    #slotGrid {
-      gap: 2px;
-    }
-
-    .slotCell {
-      font-size: 1.5rem;
-    }
-
-    #message {
-      font-size: 0.7rem;
-      padding: 4px 8px;
-    }
-  }n {
-      width: 280px;
-      height: 280px;
- <div class="game-container">
+<div class="game-container">
   <div class="fold-top">
     <div class="restaurant-backdrop"></div>
     <div class="restaurant-header">
       <h1>McMarkk's Burgers</h1>
       <div class="tagline">★ Premium Slots & Grills ★</div>
-    </div>n"></div>
-    <h1>McMarkk's Burgers</h1>
+    </div>
     
     <div class="game-stats">
       <div id="walletDisplay">Balance: $0</div>
@@ -1389,13 +828,12 @@
     <div id="slotContainer">
       <div id="slotGrid"></div>
       <svg id="linesSvg"></svg>
-    </div>  <div class="fold-bottom">
-    <div class="action-buttons">
-      <button id="autoSpinBtn" data-running="false">🔄 Auto</button>
-      <button id="openPayTableBtn">📜 MENU</button>
-      <button id="leaveGameBtn">🚪 EXIT</button>
     </div>
+    
+    <div id="message">Welcome to McMarkk's!</div>
+  </div>
 
+  <div class="fold-bottom">
     <div id="betSelector">
       <button data-bet="25" class="selected">$25</button>
       <button data-bet="50">$50</button>
@@ -1404,117 +842,73 @@
       <button data-bet="125">$125</button>
     </div>
 
-    <button id="spinBtn"><span class="spin-text">ORDER UP!</span></button>
+    <div class="action-buttons">
+      <button id="spinBtn"><span class="spin-text">ORDER UP!</span></button>
+      <button id="openPayTableBtn">📜 MENU</button>
+      <button id="leaveGameBtn">🚪 EXIT</button>
+    </div>
   </div>
+</div>
 
-<!-- Restaurant Menu Board Modal -->button>
-      <button id<!-- Restaurant Menu Board Modal -->
+<!-- Restaurant Menu Board Modal -->
 <div id="paytableModal">
   <div class="modal-backdrop" data-close="true"></div>
   <div class="modal-dialog">
-    <div class="menu-lights">
-      <div class="menu-light"></div>
-      <div class="menu-light"></div>
-      <div class="menu-light"></div>
-      <div class="menu-light"></div>
-      <div class="menu-light"></div>
-    </div>
     <button id="closePayTableBtn">✕</button>
     <div id="payTableContainer">
       <div class="menu-header">
-        <h3>🍔 MCMARKK'S MENU BOARD 🍔</h3>
+        <h3>🍔 MCMARKK'S MENU 🍔</h3>
         <p>★ WINNING COMBINATIONS ★</p>
-        <div class="tagline">Serving Winners Since 2025</div>
       </div>
       
-      <div class="menu-board">
-        <div class="menu-section">
-          <div class="menu-section-title">🍔 BURGER MEALS</div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🍔🍔🍔</span> Triple Burger</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$50-$250</span>
-            </div>
-          </div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🍔🍔🍔🍔</span> Quad Burger</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$100-$500</span>
-            </div>
-          </div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🍔🍔🍔🍔🍔</span> Mega Burger</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$250-$1250</span>
-            </div>
-          </div>
-        </div>
+      <div class="menu-section-title">🍔 BURGER MEALS</div>
+      <div class="menu-item">
+        <div class="menu-item-name">🍔🍔🍔 Triple</div>
+        <div class="menu-price">$50-$250</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-name">🍔🍔🍔🍔 Quad</div>
+        <div class="menu-price">$100-$500</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-name">🍔🍔🍔🍔🍔 Mega</div>
+        <div class="menu-price">$250-$1250</div>
+      </div>
 
-        <div class="menu-section">
-          <div class="menu-section-title">🍟 FRIES COMBOS</div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🍟🍟🍟</span> Triple Fries</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$40-$200</span>
-            </div>
-          </div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🍟🍟🍟🍟</span> Quad Fries</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$80-$400</span>
-            </div>
-          </div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🍟🍟🍟🍟🍟</span> Mega Fries</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$200-$1000</span>
-            </div>
-          </div>
-        </div>
+      <div class="menu-section-title">🍟 FRIES COMBOS</div>
+      <div class="menu-item">
+        <div class="menu-item-name">🍟🍟🍟 Triple</div>
+        <div class="menu-price">$40-$200</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-name">🍟🍟🍟🍟 Quad</div>
+        <div class="menu-price">$80-$400</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-name">🍟🍟🍟🍟🍟 Mega</div>
+        <div class="menu-price">$200-$1000</div>
+      </div>
 
-        <div class="menu-section">
-          <div class="menu-section-title">🥤 DRINKS & MORE</div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🥤</span> Drinks</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$30-$750</span>
-            </div>
-          </div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🥗</span> Salads</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">$25-$625</span>
-            </div>
-          </div>
-          <div class="menu-item">
-            <div class="menu-item-name"><span class="menu-item-symbol">🧾</span> Receipts</div>
-            <div class="menu-item-prices">
-              <span class="menu-price">-$25 to -$625</span>
-            </div>
-          </div>
-        </div>
+      <div class="menu-section-title">🥤 DRINKS & MORE</div>
+      <div class="menu-item">
+        <div class="menu-item-name">🥤 Drinks</div>
+        <div class="menu-price">$30-$750</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-name">🥗 Salads</div>
+        <div class="menu-price">$25-$625</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-name">🧾 Receipts</div>
+        <div class="menu-price">-$25 to -$625</div>
       </div>
       
       <div class="menu-footer">
-        <p class="special">🎁 SPECIAL COMBO MEALS 🎁</p>
-        <div class="combo-deal">
-          <div class="combo-name">🍔🍟🥤🥗🧾 GRAND SLAM</div>
-          <div class="combo-bonus">+$500 BONUS</div>
-        </div>
-        <div class="combo-deal">
-          <div class="combo-name">🍔🍟🥤🧾 CLASSIC COMBO</div>
-          <div class="combo-bonus">+$300 BONUS</div>
-        </div>
-        <div class="combo-deal">
-          <div class="combo-name">🍔🍟🧾 VALUE MEAL</div>
-          <div class="combo-bonus">+$200 BONUS</div>
-        </div>
-        <p>🎰 FREE SPINS WITH 3+ RECEIPTS 🎰</p>
-      </div>
-    </div>
-  </div>
-</div>G WITH US!</p>
-        <p style="font-size: 0.7rem;">MCMARKK'S BURGERS © 2025</p>
+        <p class="special">🎁 SPECIAL COMBOS 🎁</p>
+        <p>🍔🍟🥤🥗🧾 GRAND SLAM +$500</p>
+        <p>🍔🍟🥤🧾 CLASSIC +$300</p>
+        <p>🍔🍟🧾 VALUE MEAL +$200</p>
+        <p>🎰 FREE SPINS WITH 3+ RECEIPTS</p>
       </div>
     </div>
   </div>
@@ -1527,7 +921,6 @@
   const rows = 3;
   const cols = 5;
 
-  // Fast food themed symbols
   const symbols = [
     { sym: "🍔", name: "Burger" },
     { sym: "🍟", name: "Fries" },
@@ -1540,7 +933,6 @@
     "🍔": 25, "🍟": 25, "🥤": 25, "🥗": 20, "🧾": 5
   };
 
-  // Updated payouts for fast food theme
   const payouts = {
     "🍔": { 25: [50, 100, 250], 50: [100, 200, 500], 75: [150, 300, 750], 100: [200, 400, 1000], 125: [250, 500, 1250] },
     "🍟": { 25: [40, 80, 200], 50: [80, 160, 400], 75: [120, 240, 600], 100: [160, 320, 800], 125: [200, 400, 1000] },
@@ -1549,16 +941,14 @@
     "🧾": { 25: [-25, -50, -125], 50: [-50, -100, -250], 75: [-75, -150, -375], 100: [-100, -200, -500], 125: [-125, -250, -625] }
   };
 
-  // Special combo bonuses
   const comboBonuses = {
-    "🍔🍟🥤🥗🧾": 500,  // Grand Slam
-    "🍔🍟🥤🧾": 300,    // Classic Combo
-    "🍔🍟🧾": 200       // Value Combo
+    "🍔🍟🥤🥗🧾": 500,
+    "🍔🍟🥤🧾": 300,
+    "🍔🍟🧾": 200
   };
 
   const freeSpinsAward = { 3: 3, 4: 5, 5: 10 };
 
-  // Enhanced Sound System for restaurant theme
   let audioContext = null;
 
   function initAudio() {
@@ -1577,92 +967,42 @@
       const now = ctx.currentTime;
       
       if (type === 'spin') {
-        // Sizzling grill sound
         for (let i = 0; i < 6; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
-          
           osc.frequency.value = 180 + (i * 40);
           osc.type = 'sawtooth';
           gain.gain.setValueAtTime(0.08, now + i * 0.02);
           gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.05);
-          
           osc.start(now + i * 0.02);
           osc.stop(now + i * 0.02 + 0.05);
         }
-      } else if (type === 'reel_stop') {
-        // Cash register ding
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        
-        osc.frequency.value = 800;
-        osc.type = 'sine';
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-        
-        osc.start(now);
-        osc.stop(now + 0.3);
       } else if (type === 'win') {
-        // Happy customer sound
         [523.25, 659.25, 783.99].forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.connect(gain);
           gain.connect(ctx.destination);
-          
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(0.18, now + i * 0.1);
+          gain.gain.setValueAtTime(0.15, now + i * 0.1);
           gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
-          
           osc.start(now + i * 0.1);
           osc.stop(now + i * 0.1 + 0.4);
         });
-      } else if (type === 'bigwin') {
-        // Kitchen bell celebration
-        for (let i = 0; i < 8; i++) {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          
-          osc.frequency.value = 800 + (i * 100);
-          osc.type = 'sine';
-          gain.gain.setValueAtTime(0.2, now + i * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
-          
-          osc.start(now + i * 0.08);
-          osc.stop(now + i * 0.08 + 0.3);
-        }
-      } else if (type === 'button') {
-        // Order button beep
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-      let balance = Math.max(0, Number(localStorage.getItem('localPlayerCash')) || 1000);
-  let freeSpins = Math.max(0, Number(localStorage.getItem('freeSpins')) || 0);AtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-        
-        osc.start(now);
-        osc.stop(now + 0.05);
       }
     } catch (e) {
-      console.log('Audio playback failed:', e);
+      console.log('Audio failed:', e);
     }
   }
 
-  // Initialize audio on first user interaction
   document.addEventListener('click', () => initAudio(), { once: true });
-  document.addEventListener('touchstart', () => initAudio(), { once: true });
 
   const walletDisplay = document.getElementById('walletDisplay');
   const betSelector = document.getElementById('betSelector');
   const spinBtn = document.getElementById('spinBtn');
-  const autoSpinBtn = document.getElementById('autoSpinBtn');
   const slotGrid = document.getElementById('slotGrid');
   const linesSvg = document.getElementById('linesSvg');
   const messageEl = document.getElementById('message');
@@ -1676,7 +1016,6 @@
   let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
   let bet = 25;
   let spinning = false;
-  let autoSpinning = false;
 
   const cells = [];
   for (let r = 0; r < rows; r++) {
@@ -1687,11 +1026,6 @@
       cells.push(cell);
     }
   }
-
-  // Button sound effects
-  document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => playSound('button'));
-  });
 
   function weightedRandomSymbol() {
     const totalWeight = Object.values(weights).reduce((a,b) => a+b, 0);
@@ -1754,8 +1088,6 @@
 
   function findMatches(gridArr) {
     const matches = [];
-    
-    // Check horizontal matches
     for(let r=0; r<rows; r++) {
       let streak = [r*cols];
       for(let c=1; c<cols; c++) {
@@ -1771,7 +1103,6 @@
       if(streak.length >= 3) matches.push([...streak]);
     }
 
-    // Check vertical matches
     for(let c=0; c<cols; c++) {
       let streak = [c];
       for(let r=1; r<rows; r++) {
@@ -1795,7 +1126,6 @@
     let bonusAmount = 0;
     let comboFound = '';
 
-    // Check for special combos in order (largest first)
     for (const [combo, bonus] of Object.entries(comboBonuses)) {
       if (gridStr.includes(combo)) {
         bonusAmount = bonus;
@@ -1807,49 +1137,31 @@
     return { bonusAmount, comboFound };
   }
 
-  function calculatePayout(matche  function updateBalanceDisplay() {
-    // Ensure balance never goes negative
-    balance = Math.max(0, balance);
-    walletDisplay.textContent = `Balance: $${balance.toFixed(0)}`;
-    localStorage.setItem('localPlayerCash', balance.toFixed(0));
-  }urn;
-    spinning = true;
-    clearLines();
-    messageEl.textContent = '';
+  function calculatePayout(matches, gridArr, bet) {
+    let totalPayout = 0;
+    let receiptCount = 0;
 
-    const selectedBetBtn = betSelector.querySelector('button.selected');
-    bet = Number(selectedBetBtn.dataset.bet);
+    matches.forEach(group => {
+      const sym = gridArr[group[0]];
+      const count = group.length;
+      if(payouts[sym] && payouts[sym][bet]) {
+        const payoutArray = payouts[sym][bet];
+        if(count >= 3 && count <= 5) {
+          const payoutVal = payoutArray[count - 3];
+          totalPayout += payoutVal;
+        }
+      }
+    });
 
-    // Prevent betting with insufficient funds (must have enough to cover the bet)
-    if (balance < bet && freeSpins === 0) {
-      showMessage('⚠️ SKREEED! Insufficient Funds - No Free Money! ⚠️');
-      spinning = false;
-      return;
+    const combo = checkSpecialCombos(gridArr);
+    if(combo.bonusAmount > 0) {
+      totalPayout += combo.bonusAmount;
     }
 
-    // Additional check to prevent negative balance
-    if (balance <= 0 && freeSpins === 0) {
-      showMessage('💸 SKREEED! Your wallet is empty! No free burgers! 💸');
-      spinning = false;
-      return;
-    }
-
-    spinBtn.disabled = true;
-
-    if (freeSpins > 0) {
-      freeSpins--;
-      updateFreeSpinsDisplay();
-      showMessage('🍔 Free Meal! 🍔');
-    } else {
-      balance -= bet;
-      updateBalanceDisplay();
-      showMessage(`Order Placed: $${bet}`);
-    }   // Check for free spins (3+ receipts)
     receiptCount = gridArr.filter(s => s === "🧾").length;
     if(freeSpinsAward[receiptCount]) {
       freeSpins += freeSpinsAward[receiptCount];
       updateFreeSpinsDisplay();
-      showMessage(`🎟 ${freeSpinsAward[receiptCount]} Free Meals Awarded! 🎟`);
     }
 
     return totalPayout;
@@ -1917,68 +1229,54 @@
       return new Promise(resolve => {
         function animate() {
           const now = performance.now();
-          if (now - startTime >= dura      if (payout > 0) {
-        balance += payout;
-        updateBalanceDisplay();
-        showMessage(`🍔 Delicious! Won $${payout.toFixed(0)}! 🍔`);
-        
-        if (payout > bet * 10) {
-          playSound('bigwin');
-        } else {
-          playSound('win');
+          if (now - startTime >= duration) {
+            for (let r = 0; r < rows; r++) {
+              columnCells[r].textContent = finalGrid[r * cols + colIndex];
+              columnCells[r].classList.remove('spinning');
+            }
+            resolve();
+            return;
+          }
+          for (let r = 0; r < rows; r++) {
+            columnCells[r].textContent = weightedRandomSymbol();
+            columnCells[r].classList.add('spinning');
+          }
+          requestAnimationFrame(animate);
         }
-        
-        await new Promise(r => setTimeout(r, 1000));
-      } else if (payout < 0) {
-        // Prevent balance from going negative
-        const actualLoss = Math.min(Math.abs(payout), balance);
-        balance -= actualLoss;
-        updateBalanceDisplay();
-        if (balance <= 0) {
-          showMessage(`💸 SKREEED! Overcharged all remaining funds: $${actualLoss} 💸`);
-        } else {
-          showMessage(`💸 Overcharged: $${actualLoss} 💸`);
-        }
-        await new Promise(r => setTimeout(r, 1000));
-      } else { (let col = 0; col < cols; col++) {
-      await new Promise(r => setTimeout(r, columnDelay));
-      spinPromises.push(spi  async function runAutoSpinLoop() {
-    if (spinning || !autoSpinning) return;
-    while (autoSpinning) {
-      const selectedBetBtn = betSelector.querySelector('button.selected');
-      const currentBet = Number(selectedBetBtn.dataset.bet);
-      if (balance < currentBet && freeSpins === 0) {
-        setAutoSpinRunning(false);
-        showMessage('⚠️ SKREEED! Auto Stopped - No Funds! ⚠️');
-        break;
-      }
-      // Additional check for zero balance
-      if (balance <= 0 && freeSpins === 0) {
-        setAutoSpinRunning(false);
-        showMessage('💸 SKREEED! Auto Stopped - Wallet Empty! 💸');
-        break;
-      }
-      await spin();
-      if (freeSpins > 0) {
-        showMessage('Auto Stopped - Free Spins!');
-        setAutoSpinRunning(false);
-        break;
-      }
-      await new Promise(r => setTimeout(r, 1000));
+        animate();
+      });
     }
-  }tePayout(matches, finalGrid, bet);
+
+    const spinPromises = [];
+    for (let col = 0; col < cols; col++) {
+      await new Promise(r => setTimeout(r, columnDelay));
+      spinPromises.push(spinColumn(col, spinDuration));
+    }
+
+    await new Promise(r => setTimeout(r, 800));
+
+    for (let i = 0; i < spinPromises.length; i++) {
+      await spinPromises[i];
+      await new Promise(r => setTimeout(r, 150));
+    }
+
+    renderGrid(finalGrid);
+    const matches = findMatches(finalGrid);
+
+    if (matches.length === 0) {
+      showMessage('No Match - Try Again!');
+      await new Promise(r => setTimeout(r, 1000));
+    } else {
+      const winIndices = matches.flat();
+      highlightWinningCells(winIndices);
+      drawWinLines(matches);
+      const payout = calculatePayout(matches, finalGrid, bet);
       
       if (payout > 0) {
         balance += payout;
         updateBalanceDisplay();
         showMessage(`🍔 Delicious! Won $${payout.toFixed(0)}! 🍔`);
-        
-        if (payout > bet * 10) {
-          playSound('bigwin');
-        } else {
-          playSound('win');
-        }
-        
+        playSound('win');
         await new Promise(r => setTimeout(r, 1000));
       } else if (payout < 0) {
         balance += payout;
@@ -1986,7 +1284,7 @@
         showMessage(`💸 Overcharged: $${Math.abs(payout).toFixed(0)} 💸`);
         await new Promise(r => setTimeout(r, 1000));
       } else {
-        showMessage('Combo Found - No Payout');
+        showMessage('Combo Found!');
         await new Promise(r => setTimeout(r, 1000));
       }
     }
@@ -1995,57 +1293,14 @@
     spinBtn.disabled = false;
   }
 
-  function setAutoSpinRunning(running) {
-    autoSpinning = running;
-    autoSpinBtn.dataset.running = running ? 'true' : 'false';
-    autoSpinBtn.textContent = running ? '⏹ Stop' : '🔄 Aut  betSelector.addEventListener('click', e => {
-    if (e.target.tagName !== 'BUTTON') return;
-    
-    const selectedBet = Number(e.target.dataset.bet);
-    
-    // Prevent selecting a bet amount higher than balance (unless there are free spins)
-    if (selectedBet > balance && freeSpins === 0) {
-      showMessage(`⚠️ SKREEED! Can't bet $${selectedBet} - Only have $${balance}! ⚠️`);
-      return;
-    }
-    
-    betSelector.querySelectorAll('button').forEach(b => {
-      b.classList.remove('selected');
-    });
-    e.target.classList.add('selected');
-  });n.dataset.bet);
-      if (balance < currentBet && freeSpins === 0) {
-        setAutoSpinRunning(false);
-        showMessage('⚠️ Auto Stopped - No Funds ⚠️');
-        break;
-      }
-      await spin();
-      if (freeSpins > 0) {
-        showMessage('Auto Stopped - Free Spins!');
-        setAutoSpinRunning(false);
-        break;
-      }
-      await new Promise(r => setTimeout(r, 1000));
-    }
-  }
-
-  autoSpinBtn.addEventListener('click', async () => {
-    if (!autoSpinning) {
-      setAutoSpinRunning(true);
-      runAutoSpinLoop();
-    } else {
-      setAutoSpinRunning(false);
-    }
-  });
-
   function openPaytable() {
     paytableModal.classList.add('open');
-    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
   }
 
   function closePaytable() {
     paytableModal.classList.remove('open');
-    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
   }
 
   openPayTableBtn.addEventListener('click', openPaytable);
@@ -2076,7 +1331,6 @@
   updateBalanceDisplay();
   updateFreeSpinsDisplay();
   renderGrid(fillGridRandom());
-  showMessage('Welcome to McMarkk\'s Burgers!');
 
 })();
 </script>
