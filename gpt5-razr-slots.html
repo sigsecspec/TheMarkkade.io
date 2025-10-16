@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <title>GPT‑5 Neon Vault — Razr Edition</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      font-family: 'Arial Black', system-ui, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 50% 10%, #11203d 0%, #0b1220 55%, #070c16 100%);
+      color: #eaf2ff;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Dual-screen container for Motorola Razr 2024 */
+    .razr {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* TOP: Display area */
+    .top {
+      position: relative;
+      height: 50vh;
+      border-bottom: 3px solid #00e5ff55;
+      overflow: hidden;
+      background:
+        radial-gradient(800px 300px at 50% 0%, rgba(0, 229, 255, 0.08), transparent 70%),
+        linear-gradient(160deg, #0e1727 0%, #0a1220 60%, #060a12 100%);
+      box-shadow: inset 0 -20px 40px rgba(0,0,0,0.5);
+      cursor: pointer; /* Taps trigger effects */
+    }
+
+    /* Cabinet frame */
+    .cabinet {
+      position: absolute;
+      inset: 10px 10px 10px 10px;
+      border: 3px solid #9ee7ff;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #0b1526, #0f1a2f);
+      box-shadow:
+        0 0 24px rgba(158, 231, 255, 0.25),
+        inset 0 0 28px rgba(0,0,0,0.6),
+        inset 0 0 6px rgba(158, 231, 255, 0.15);
+    }
+
+    /* Marquee title */
+    .marquee {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 14px;
+      border-radius: 10px;
+      border: 2px solid #00e5ff;
+      background: linear-gradient(145deg, #06111f, #0b1a2f);
+      color: #a6f9ff;
+      font-weight: 900;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 14px #00e5ff, 2px 2px 0 rgba(0,0,0,0.7);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
+      animation: marqueeGlow 3s ease-in-out infinite;
+    }
+    @keyframes marqueeGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.35); }
+      50% { box-shadow: 0 0 38px rgba(0, 229, 255, 0.6); }
+    }
+
+    /* Bulb border lights */
+    .bulbs {
+      position: absolute;
+      inset: 48px 6% auto 6%;
+      height: 10px;
+      display: grid;
+      grid-template-columns: repeat(32, 1fr);
+      gap: 4px;
+      filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.6));
+    }
+    .bulb {
+      height: 10px; border-radius: 6px;
+      background: radial-gradient(circle at 30% 30%, #b2ffff, #00e5ff 50%, #008aa1 70%, transparent 72%);
+      opacity: 0.75;
+      animation: bulbBlink 1.2s ease-in-out infinite;
+    }
+    .bulb:nth-child(odd) { animation-delay: 0.3s; }
+    .bulb:nth-child(3n) { animation-delay: 0.6s; }
+    @keyframes bulbBlink { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+    /* Reels window */
+    .reels-window {
+      position: absolute;
+      left: 50%;
+      top: 62px;
+      transform: translateX(-50%);
+      width: 86%;
+      height: calc(60%);
+      border: 3px solid #00e5ff;
+      border-radius: 12px;
+      background:
+        linear-gradient(145deg, #03070f, #090f1a);
+      box-shadow: inset 0 0 26px rgba(0,0,0,0.85);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .reel {
+      position: relative;
+      border: 2px solid #1b2a44;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #0c1220, #0f1a2e);
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+    }
+    .strip { position: absolute; width: 100%; will-change: transform; }
+    .symbol {
+      height: 82px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.6rem; /* Emoji as mechanical symbols */
+      border-bottom: 1px solid #1f2a40;
+      background: linear-gradient(145deg, #07101d, #0a1424);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    /* Payline */
+    .payline {
+      position: absolute; left: 6%; right: 6%; top: 50%;
+      height: 3px; transform: translateY(-50%);
+      background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+      opacity: 0; z-index: 3; animation: payPulse 1.2s infinite;
+    }
+    @keyframes payPulse { 0%,100%{filter: drop-shadow(0 0 6px #00e5ff);} 50%{filter: drop-shadow(0 0 14px #54efff);} }
+
+    /* Info bar */
+    .info {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      width: 86%; height: 78px;
+      border: 2px solid #00e5ff;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #07101b, #0b1424);
+      color: #9aeaff;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      align-items: center; gap: 10px; padding: 8px 12px;
+      font-weight: 800; text-shadow: 0 0 8px #0aefff66;
+    }
+    .info .label { font-size: 0.72rem; color: #7bbfd4; letter-spacing: 1px; }
+    .info .val { font-size: 1.2rem; color: #bff7ff; }
+
+    /* Win/JPT overlays */
+    .overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 5; }
+    .overlay.win { background: radial-gradient(circle at 50% 40%, rgba(0,229,255,0.08), transparent 70%); }
+    .overlay .text { font-size: 3rem; font-weight: 900; color: #bff7ff; text-shadow: 0 0 24px #00e5ff, 0 0 48px #00e5ff; animation: winPulse 1s ease-in-out infinite; text-align: center; white-space: pre-line; }
+    @keyframes winPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+    .jackpot { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(2,10,20,0.85); z-index: 20; animation: jFlash 0.5s infinite; }
+    @keyframes jFlash { 0%,100%{ background: rgba(2,10,20,0.85);} 50% { background: rgba(0,229,255,0.25);} }
+    .jackpot .text { font-size: 4rem; color: #eaffff; text-shadow: 0 0 30px #eaffff, 0 0 60px #00e5ff; font-weight: 900; }
+
+    /* Ripple and sparkle for touches */
+    .ripple { position: absolute; border-radius: 999px; background: rgba(0,229,255,0.5); transform: scale(0); animation: ripple 0.6s linear forwards; pointer-events: none; }
+    @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+    .spark { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #eaffff; box-shadow: 0 0 12px #eaffff; pointer-events: none; }
+
+    /* Spin class for strips */
+    .spinning { animation: spinY 0.1s linear infinite; }
+    @keyframes spinY { from { transform: translateY(0); } to { transform: translateY(-82px); } }
+
+    /* BOTTOM: Controls */
+    .bottom {
+      height: 50vh; display: flex; flex-direction: column; gap: 12px; padding: 16px;
+      background: linear-gradient(180deg, #0a1322 0%, #08101d 100%);
+    }
+
+    .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .btn {
+      border: none; border-radius: 14px; height: 58px; font-weight: 900; letter-spacing: 1px; cursor: pointer;
+      color: #001018; background: linear-gradient(145deg, #9aeaff, #4ee7ff);
+      box-shadow: 0 8px 0 #167b88, 0 10px 18px rgba(0,0,0,0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease; position: relative; overflow: hidden;
+    }
+    .btn:active { transform: translateY(3px); box-shadow: 0 4px 0 #167b88, 0 6px 12px rgba(0,0,0,0.35); }
+
+    .btn.spin { grid-column: 1 / -1; height: 76px; border-radius: 18px; font-size: 1.2rem; background: linear-gradient(145deg, #00f0ff, #00b5c9); box-shadow: 0 10px 0 #0c8896, 0 14px 20px rgba(0,0,0,0.4); }
+    .btn.secondary { background: linear-gradient(145deg, #6edaff, #30cfff); }
+    .btn.cash { background: linear-gradient(145deg, #b3ffdd, #5affb0); box-shadow: 0 8px 0 #1f804e, 0 10px 18px rgba(0,0,0,0.35); }
+
+    .credit { text-align: center; font-size: 0.72rem; color: #76b3c7; background: rgba(0,229,255,0.06); padding: 8px; border-radius: 8px; }
+
+    /* Responsive tweaks for Razr inner display */
+    @media (max-width: 420px) {
+      .marquee { font-size: 1.05rem; }
+      .symbol { font-size: 2.4rem; height: 78px; }
+      .btn { height: 52px; }
+      .btn.spin { height: 70px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="razr" id="game">
+    <!-- TOP HALF -->
+    <div class="top" id="top">
+      <div class="cabinet"></div>
+      <div class="marquee">GPT‑5 NEON VAULT — RAZR EDITION</div>
+      <div class="bulbs" id="bulbs"></div>
+
+      <div class="reels-window">
+        <div class="reel" id="reel1"><div class="strip" id="strip1"></div></div>
+        <div class="reel" id="reel2"><div class="strip" id="strip2"></div></div>
+        <div class="reel" id="reel3"><div class="strip" id="strip3"></div></div>
+        <div class="payline" id="payline"></div>
+      </div>
+
+      <div class="info">
+        <div>
+          <div class="label">CREDITS</div>
+          <div class="val" id="credits">1000</div>
+        </div>
+        <div>
+          <div class="label">BET</div>
+          <div class="val" id="bet">10</div>
+        </div>
+        <div>
+          <div class="label">WIN</div>
+          <div class="val" id="win">0</div>
+        </div>
+        <div id="bonusInfo" style="display:none;">
+          <div class="label">FEATURE</div>
+          <div class="val" id="feature">—</div>
+        </div>
+      </div>
+
+      <div class="overlay win" id="winOverlay"><div class="text" id="winText">WIN!</div></div>
+    </div>
+
+    <!-- BOTTOM HALF -->
+    <div class="bottom">
+      <div class="row">
+        <button class="btn secondary" id="betBtn">💰 Bet</button>
+        <button class="btn secondary" id="maxBtn">🔥 Max</button>
+        <button class="btn cash" id="cashBtn">💸 Cash Out</button>
+      </div>
+      <button class="btn spin" id="spinBtn">🎰 SPIN</button>
+      <div class="row">
+        <button class="btn secondary" id="autoBtn">🔄 Auto</button>
+        <button class="btn secondary" id="payBtn">📊 Pay Table</button>
+        <button class="btn secondary" id="settingsBtn">⚙️ Settings</button>
+      </div>
+      <div class="credit">Created by GPT‑5</div>
+    </div>
+  </div>
+
+  <div class="jackpot" id="jackpot"><div class="text">🎉 JACKPOT 🎉</div></div>
+
+  <script>
+  class GPT5NeonVault {
+    constructor() {
+      // Economy
+      this.credits = 1000;
+      this.betLevels = [5, 10, 25, 50, 100, 250];
+      this.betIndex = 1;
+      this.currentBet = this.betLevels[this.betIndex];
+      this.lastWin = 0;
+
+      // State
+      this.isSpinning = false;
+      this.autoActive = false; this.autoCount = 0;
+      this.multiplier = 1; this.freeSpins = 0;
+
+      // Symbols and payouts (weights approximate rarity)
+      this.symbolDefs = [
+        { s: '🍒', w: 30, p: {2: 2, 3: 10} },
+        { s: '🍋', w: 25, p: {2: 3, 3: 15} },
+        { s: '🍇', w: 20, p: {2: 4, 3: 20} },
+        { s: '🔔', w: 12, p: {2: 6, 3: 35} },
+        { s: '⭐', w: 8,  p: {2: 10, 3: 60} },
+        { s: '💎', w: 5,  p: {2: 15, 3: 120} },
+        { s: '👑', w: 3,  p: {2: 25, 3: 240} },
+        { s: '💰', w: 2,  p: {2: 60, 3: 600} },
+        { s: '🎁', w: 1,  special: 'bonus' },
+        { s: '🆓', w: 1,  special: 'freespin' }
+      ];
+
+      // Audio
+      this.ctx = null; this.sfx = {};
+
+      this.init();
+    }
+
+    async init() {
+      this.renderBulbs();
+      this.setupStrips();
+      this.bindUI();
+      this.updateInfo();
+      this.initAudio();
+    }
+
+    renderBulbs() {
+      const bulbs = document.getElementById('bulbs');
+      for (let i = 0; i < 32; i++) {
+        const b = document.createElement('div');
+        b.className = 'bulb';
+        bulbs.appendChild(b);
+      }
+    }
+
+    setupStrips() {
+      const weighted = [];
+      this.symbolDefs.forEach(def => { for (let i=0;i<def.w;i++) weighted.push(def.s); });
+      this.reelSource = weighted;
+      for (let idx = 1; idx <= 3; idx++) {
+        const strip = document.getElementById('strip'+idx);
+        strip.innerHTML = '';
+        // 4x copies for long loop
+        for (let c = 0; c < 4; c++) {
+          for (let i = 0; i < this.reelSource.length; i++) {
+            const d = document.createElement('div');
+            d.className = 'symbol';
+            d.textContent = this.reelSource[i];
+            strip.appendChild(d);
+          }
+        }
+      }
+    }
+
+    bindUI() {
+      document.getElementById('spinBtn').addEventListener('click', () => {
+        if (!this.isSpinning) this.spin();
+      });
+      document.getElementById('betBtn').addEventListener('click', () => this.nextBet());
+      document.getElementById('maxBtn').addEventListener('click', () => this.maxBet());
+      document.getElementById('cashBtn').addEventListener('click', () => this.cashOut());
+      document.getElementById('autoBtn').addEventListener('click', () => this.toggleAuto());
+      document.getElementById('payBtn').addEventListener('click', () => this.showPay());
+      document.getElementById('settingsBtn').addEventListener('click', () => this.showSettings());
+
+      // Top screen effects + haptics
+      document.getElementById('top').addEventListener('click', (e) => {
+        this.touchFX(e);
+        this.sparkles(e);
+        this.vibrate([30, 20, 30]);
+      });
+
+      // Button haptic taps
+      document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          this.buttonRipple(e);
+          this.vibrate([50]);
+          if (this.sfx.button) this.sfx.button();
+        });
+      });
+    }
+
+    updateInfo() {
+      document.getElementById('credits').textContent = this.credits;
+      document.getElementById('bet').textContent = this.currentBet;
+      document.getElementById('win').textContent = this.lastWin;
+    }
+
+    initAudio() {
+      const resume = () => {
+        if (!this.ctx) {
+          try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+        this.createSFX();
+        document.removeEventListener('click', resume);
+        document.removeEventListener('touchstart', resume);
+      };
+      document.addEventListener('click', resume, { once: true });
+      document.addEventListener('touchstart', resume, { once: true });
+    }
+
+    tone(freq, dur, type='sine', vol=0.08) {
+      return () => {
+        if (!this.ctx) return;
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.connect(g); g.connect(this.ctx.destination);
+        o.type = type; o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        g.gain.setValueAtTime(vol, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+        o.start(this.ctx.currentTime);
+        o.stop(this.ctx.currentTime + dur);
+      };
+    }
+
+    createSFX() {
+      this.sfx.spin = this.tone(200, 0.12, 'sawtooth', 0.05);
+      this.sfx.reel = this.tone(120, 0.06, 'square', 0.06);
+      this.sfx.stop = this.tone(280, 0.08, 'square', 0.07);
+      this.sfx.win = this.tone(660, 0.2, 'sine', 0.09);
+      this.sfx.big = this.tone(990, 0.35, 'sine', 0.1);
+      this.sfx.jpt = this.tone(1320, 0.5, 'sine', 0.12);
+      this.sfx.button = this.tone(520, 0.04, 'square', 0.06);
+      this.sfx.lose = this.tone(160, 0.25, 'sawtooth', 0.05);
+    }
+
+    vibrate(pattern) { if (navigator.vibrate) navigator.vibrate(pattern); }
+
+    touchFX(e) {
+      const top = document.getElementById('top');
+      const rect = top.getBoundingClientRect();
+      const size = 60;
+      const x = e.clientX - rect.left - size/2;
+      const y = e.clientY - rect.top - size/2;
+      const rip = document.createElement('div'); rip.className='ripple';
+      rip.style.width = rip.style.height = size+'px';
+      rip.style.left = x+'px'; rip.style.top = y+'px';
+      top.appendChild(rip);
+      setTimeout(()=> rip.remove(), 600);
+    }
+
+    buttonRipple(e) {
+      const btn = e.currentTarget;
+      const r = btn.getBoundingClientRect();
+      const size = Math.max(r.width, r.height);
+      const x = e.clientX - r.left - size/2;
+      const y = e.clientY - r.top - size/2;
+      const rip = document.createElement('div'); rip.className='ripple';
+      rip.style.width = rip.style.height = size+'px';
+      rip.style.left = x+'px'; rip.style.top = y+'px';
+      rip.style.background = 'rgba(186, 255, 255, 0.35)';
+      btn.appendChild(rip);
+      setTimeout(()=> rip.remove(), 600);
+    }
+
+    sparkles(e) {
+      const top = document.getElementById('top');
+      const rect = top.getBoundingClientRect();
+      for (let i=0;i<6;i++) {
+        const s = document.createElement('div'); s.className='spark';
+        const sx = e.clientX - rect.left + (Math.random()-0.5)*120;
+        const sy = e.clientY - rect.top + (Math.random()-0.5)*120;
+        s.style.left = sx+'px'; s.style.top = sy+'px';
+        top.appendChild(s);
+        const dur = 700 + Math.random()*400;
+        s.animate([
+          { transform: 'scale(0) rotate(0deg)', opacity: 1 },
+          { transform: 'scale(1) rotate(180deg)', opacity: 1, offset: 0.5 },
+          { transform: 'scale(0) rotate(360deg)', opacity: 0 }
+        ], { duration: dur, easing: 'ease-out' }).onfinish = () => s.remove();
+      }
+    }
+
+    randomSymbol() {
+      const total = this.symbolDefs.reduce((a,b)=>a+b.w,0);
+      let rnd = Math.random()*total;
+      for (const def of this.symbolDefs) { rnd -= def.w; if (rnd<=0) return def.s; }
+      return this.symbolDefs[0].s;
+    }
+
+    positionReel(reelIdx, symbol) {
+      const strip = document.getElementById('strip'+(reelIdx+1));
+      const nodes = strip.querySelectorAll('.symbol');
+      let target = -1;
+      for (let i=0;i<nodes.length;i++) if (nodes[i].textContent===symbol) { target=i; break; }
+      if (target!==-1) {
+        const h = 82; const offset = -(target*h) + h; strip.style.transform = `translateY(${offset}px)`;
+      }
+    }
+
+    async spin() {
+      if (this.isSpinning || this.credits < this.currentBet) {
+        if (this.credits < this.currentBet) { this.flashMsg('Insufficient credits'); this.vibrate([120,60,120]); }
+        return;
+      }
+      this.isSpinning = true;
+      this.credits -= this.currentBet; this.lastWin = 0; this.updateInfo();
+      if (this.sfx.spin) this.sfx.spin(); this.vibrate([90,40,90]);
+      document.getElementById('winOverlay').style.display = 'none';
+
+      const durations = [2000, 2400, 2800];
+      const results = [];
+
+      for (let i=0;i<3;i++) {
+        const strip = document.getElementById('strip'+(i+1));
+        strip.classList.add('spinning');
+        const loop = setInterval(()=>{ if(this.sfx.reel) this.sfx.reel(); }, 110);
+        setTimeout(()=> clearInterval(loop), durations[i]);
+      }
+
+      for (let i=0;i<3;i++) {
+        setTimeout(()=>{
+          const strip = document.getElementById('strip'+(i+1));
+          strip.classList.remove('spinning');
+          const sym = this.randomSymbol();
+          results.push(sym);
+          this.positionReel(i, sym);
+          if (this.sfx.stop) this.sfx.stop(); this.vibrate([120]);
+          if (i===2) setTimeout(()=>{ this.settle(results); }, 420);
+        }, durations[i]);
+      }
+    }
+
+    settle(results) {
+      // Count occurrences
+      const counts = {};
+      results.forEach(s => counts[s] = (counts[s]||0)+1);
+
+      let winAmount = 0; let winType = '';
+      let feature = null;
+      if ((counts['🎁']||0) >= 3) feature = 'bonus';
+      if ((counts['🆓']||0) >= 3) feature = 'freespin';
+
+      for (const [sym, count] of Object.entries(counts)) {
+        const def = this.symbolDefs.find(d=>d.s===sym);
+        if (!def) continue;
+        if (def.p && def.p[count]) {
+          const payout = def.p[count] * this.currentBet * this.multiplier;
+          winAmount += payout;
+          if (count===3) winType = sym==='💰' ? 'JACKPOT' : (payout >= 100 ? 'BIG WIN' : 'WIN');
+          else if (count===2) winType = winType || 'SMALL WIN';
+        }
+      }
+
+      if (feature==='bonus') this.triggerBonus();
+      if (feature==='freespin') this.triggerFreespins();
+
+      if (winAmount>0) {
+        this.lastWin = winAmount; this.credits += winAmount; this.updateInfo();
+        this.showPayline();
+        this.showWin(winType, winAmount);
+      } else { this.updateInfo(); this.sfx.lose && this.sfx.lose(); }
+
+      this.isSpinning = false;
+      if (this.autoActive && this.autoCount>0) {
+        this.autoCount--; if (this.autoCount>0) setTimeout(()=> this.spin(), 900); else this.toggleAuto(true);
+      }
+    }
+
+    showPayline() {
+      const p = document.getElementById('payline');
+      p.style.opacity = '1'; setTimeout(()=> p.style.opacity = '0', 1800);
+    }
+
+    showWin(type, amt) {
+      const overlay = document.getElementById('winOverlay');
+      const text = document.getElementById('winText');
+      if (type==='JACKPOT') {
+        const j = document.getElementById('jackpot'); j.style.display='flex';
+        this.sfx.jpt && this.sfx.jpt(); this.vibrate([200,100,200,100,200,100,200]);
+        setTimeout(()=> j.style.display='none', 3000);
+      } else if (type==='BIG WIN') {
+        text.textContent = `🎉 ${type}!\n$${amt}`; overlay.style.display='flex';
+        this.sfx.big && this.sfx.big(); this.vibrate([150,60,150,60,150]);
+        setTimeout(()=> overlay.style.display='none', 2300);
+      } else {
+        text.textContent = `${type}!\n$${amt}`; overlay.style.display='flex';
+        this.sfx.win && this.sfx.win(); this.vibrate([100,40,100]);
+        setTimeout(()=> overlay.style.display='none', 1500);
+      }
+    }
+
+    triggerBonus() {
+      this.flashMsg('🎁 BONUS — Neon Pick!'); this.vibrate([200,120,200,120,200]);
+      // Simple instant bonus for v1
+      const win = this.currentBet * (10 + Math.floor(Math.random()*40));
+      setTimeout(()=>{ this.credits += win; this.lastWin = win; this.updateInfo(); this.flashMsg(`Bonus Win: $${win}`); }, 1500);
+    }
+
+    triggerFreespins() {
+      this.freeSpins = 5 + Math.floor(Math.random()*6);
+      this.multiplier = 2 + Math.floor(Math.random()*3);
+      document.getElementById('bonusInfo').style.display='block';
+      document.getElementById('feature').textContent = `${this.freeSpins}x${this.multiplier}`;
+      this.flashMsg(`🆓 Free Spins: ${this.freeSpins} @ ${this.multiplier}x`);
+      this.vibrate([150,50,150,50,150,50,150]);
+    }
+
+    nextBet() {
+      this.betIndex = (this.betIndex + 1) % this.betLevels.length;
+      this.currentBet = this.betLevels[this.betIndex];
+      this.updateInfo();
+      this.flashMsg(`Bet: $${this.currentBet}`);
+    }
+
+    maxBet() {
+      this.betIndex = this.betLevels.length - 1; this.currentBet = this.betLevels[this.betIndex];
+      this.updateInfo(); this.flashMsg(`Max Bet: $${this.currentBet}`);
+    }
+
+    cashOut() {
+      if (this.credits>0) {
+        this.flashMsg(`Cashed out $${this.credits}`); this.vibrate([200,100,200,100,200]);
+        setTimeout(()=> { this.credits = 1000; this.updateInfo(); }, 1600);
+      } else { this.flashMsg('No credits to cash out'); this.vibrate([180]); }
+    }
+
+    toggleAuto(endOnly=false) {
+      if (endOnly) { this.autoActive=false; this.autoCount=0; document.getElementById('autoBtn').textContent = '🔄 Auto'; return; }
+      if (this.autoActive) { this.autoActive=false; this.autoCount=0; document.getElementById('autoBtn').textContent = '🔄 Auto'; this.flashMsg('Auto stop'); }
+      else { this.autoActive=true; this.autoCount=10; document.getElementById('autoBtn').textContent = '⏹ Stop'; this.flashMsg('Auto x10'); if(!this.isSpinning) this.spin(); }
+    }
+
+    showPay() {
+      let txt = '🎰 GPT‑5 NEON VAULT — PAY TABLE\n\n';
+      this.symbolDefs.forEach(def => {
+        if (def.special) txt += `${def.s} 3x → ${def.special.toUpperCase()}\n`;
+        else txt += `${def.s} 2x:${def.p[2]||'-'}x  3x:${def.p[3]||'-'}x\n`;
+      });
+      txt += `\nFree Spins: 5‑10 with 2x‑4x multiplier\n`; alert(txt);
+    }
+
+    showSettings() {
+      alert('Audio: ON\nHaptics: ON\nOptimized for Motorola Razr 2024');
+    }
+
+    flashMsg(message) {
+      const div = document.createElement('div');
+      div.style.cssText = `position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);`+
+        `background:rgba(0,229,255,0.1);color:#bff7ff;border:2px solid #00e5ff;`+
+        `padding:14px 18px;border-radius:10px;font-weight:900;z-index:50;`+
+        `text-shadow:0 0 10px #00e5ff;box-shadow:0 0 20px rgba(0,229,255,0.4);`;
+      div.textContent = message; document.body.appendChild(div);
+      setTimeout(()=> div.remove(), 1600);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => new GPT5NeonVault());
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  </script>
+</body>
+</html>
