@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#D2691E" />
-<title>JB's Pizzeria - Razr Edition</title>
+<title>JB's Pizzeria - Motorola RAZR 2024 Edition</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;700&display=swap');
   
@@ -87,24 +87,28 @@
     background: rgba(0,0,0,0.3);
   }
   
-  /* RAZR 2024 OPTIMIZED: Board on top half when folded */
+  /* MOTOROLA RAZR 2024 OPTIMIZED: Display area on top screen */
   .fold-top {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 10px 8px;
-    gap: 8px;
+    justify-content: space-between;
+    padding: 12px 10px;
+    gap: 6px;
     background: 
-      linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%),
       linear-gradient(135deg, #5d3a00 0%, #704214 50%, #5d3a00 100%);
-    border-bottom: 4px solid #D2691E;
+    border-bottom: 6px solid #D2691E;
     position: relative;
     overflow: hidden;
     box-shadow: 
-      0 4px 20px rgba(0,0,0,0.8),
-      inset 0 -2px 10px rgba(210,105,30,0.2);
+      0 6px 30px rgba(0,0,0,0.9),
+      inset 0 -4px 15px rgba(210,105,30,0.3),
+      0 0 50px rgba(210,105,30,0.2);
+    /* RAZR 2024 specific optimizations */
+    min-height: 50vh;
+    max-height: 50vh;
   }
 
   .pizzeria-backdrop {
@@ -282,19 +286,23 @@
     position: relative;
     width: 100%;
     max-width: 100%;
+    flex: 1;
     background: 
       linear-gradient(135deg, 
         rgba(93,58,0,0.95) 0%, 
         rgba(112,66,20,0.95) 50%, 
         rgba(93,58,0,0.95) 100%);
-    border: 3px solid #D2691E;
-    border-radius: 12px;
-    padding: 10px;
+    border: 4px solid #D2691E;
+    border-radius: 15px;
+    padding: 12px;
     box-shadow: 
-      0 0 30px rgba(210,105,30,0.3),
-      0 10px 40px rgba(0,0,0,0.9);
+      0 0 40px rgba(210,105,30,0.4),
+      0 12px 50px rgba(0,0,0,0.9),
+      inset 0 2px 15px rgba(210,105,30,0.1);
     z-index: 2;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   #slotContainer::before {
@@ -319,12 +327,14 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 4px;
+    gap: 6px;
     position: relative;
     z-index: 4;
-    padding: 4px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 8px;
+    padding: 8px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 10px;
+    flex: 1;
+    min-height: 0;
   }
   
   .slotCell {
@@ -418,47 +428,57 @@
     z-index: 2;
   }
   
-  /* RAZR 2024 OPTIMIZED: Controls on bottom half when folded */
+  /* MOTOROLA RAZR 2024 OPTIMIZED: Control area on bottom screen */
   .fold-bottom {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 8px;
+    justify-content: space-evenly;
+    gap: 15px;
+    padding: 15px 12px;
     background: 
-      linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%),
       linear-gradient(135deg, #704214 0%, #5d3a00 50%, #704214 100%);
     position: relative;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    box-shadow: inset 0 4px 20px rgba(210,105,30,0.1);
+    overflow: hidden;
+    box-shadow: 
+      inset 0 6px 25px rgba(210,105,30,0.2),
+      0 0 40px rgba(210,105,30,0.15);
+    /* RAZR 2024 specific optimizations */
+    min-height: 50vh;
+    max-height: 50vh;
+    border-top: 2px solid rgba(210,105,30,0.4);
   }
 
   .action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 12px;
     width: 100%;
     max-width: 100%;
+    margin-top: 10px;
   }
 
   .action-buttons button {
     background: 
       linear-gradient(135deg, #704214 0%, #5d3a00 100%);
-    border: 2px solid #8B4513;
+    border: 3px solid #8B4513;
     color: #D2691E;
-    padding: 10px;
+    padding: 15px 12px;
     font-weight: bold;
-    font-size: clamp(0.75rem, 2.3vw, 0.85rem);
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 12px;
     font-family: 'Oswald', sans-serif;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.7);
-    min-height: 42px;
-    transition: all 0.2s ease;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+    box-shadow: 
+      0 4px 15px rgba(0,0,0,0.8),
+      0 0 20px rgba(210,105,30,0.2);
+    min-height: 50px;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
   .action-buttons button:active {
@@ -470,28 +490,121 @@
       linear-gradient(135deg, #D2691E 0%, #FFA500 50%, #FF8C00 100%);
     color: #000;
     font-weight: 900;
-    font-size: clamp(1.3rem, 4.5vw, 1.6rem);
-    padding: 14px 30px;
-    border: 3px solid #8B0000;
-    border-radius: 12px;
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
+    padding: 20px 35px;
+    border: 4px solid #8B0000;
+    border-radius: 15px;
     cursor: pointer;
     box-shadow: 
-      0 0 35px rgba(210,105,30,0.4),
-      0 8px 30px rgba(0,0,0,0.8);
-    letter-spacing: 2.5px;
+      0 0 45px rgba(210,105,30,0.5),
+      0 10px 40px rgba(0,0,0,0.9),
+      inset 0 2px 10px rgba(255,255,255,0.2);
+    letter-spacing: 3px;
     min-width: 100%;
-    text-shadow: 2px 2px 4px rgba(139,0,0,0.3);
+    text-shadow: 
+      2px 2px 4px rgba(139,0,0,0.4),
+      0 0 15px rgba(255,255,255,0.3);
     font-family: 'Bebas Neue', cursive;
     text-transform: uppercase;
     position: relative;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     grid-column: 1 / -1;
-    animation: orderButton 3s ease-in-out infinite;
+    animation: orderButton 2.5s ease-in-out infinite;
+    margin-bottom: 10px;
   }
 
   @keyframes orderButton {
-    0%, 100% { box-shadow: 0 0 35px rgba(210,105,30,0.4), 0 8px 30px rgba(0,0,0,0.8); }
-    50% { box-shadow: 0 0 45px rgba(210,105,30,0.5), 0 10px 35px rgba(0,0,0,0.9); }
+    0%, 100% { 
+      box-shadow: 
+        0 0 45px rgba(210,105,30,0.5),
+        0 10px 40px rgba(0,0,0,0.9),
+        inset 0 2px 10px rgba(255,255,255,0.2);
+    }
+    50% { 
+      box-shadow: 
+        0 0 60px rgba(210,105,30,0.7),
+        0 12px 45px rgba(0,0,0,0.95),
+        inset 0 2px 15px rgba(255,255,255,0.3);
+    }
+  }
+  
+  /* RAZR 2024 Status Indicators */
+  .razr-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 8px 12px;
+    background: 
+      linear-gradient(90deg, rgba(210,105,30,0.1), rgba(210,105,30,0.2), rgba(210,105,30,0.1));
+    border: 2px solid rgba(210,105,30,0.3);
+    border-radius: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .razr-indicator, .dual-screen-hint {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #D2691E;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(210,105,30,0.5);
+    font-family: 'Oswald', sans-serif;
+  }
+  
+  .dual-screen-hint {
+    animation: dualScreenPulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes dualScreenPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+  
+  /* RAZR 2024 Dynamic Optimization Classes */
+  .razr-optimized .fold-top {
+    border-bottom-color: #FFD700;
+    box-shadow: 
+      0 6px 30px rgba(0,0,0,0.9),
+      inset 0 -4px 15px rgba(255,215,0,0.3),
+      0 0 50px rgba(255,215,0,0.2);
+  }
+  
+  .razr-optimized .fold-bottom {
+    border-top-color: rgba(255,215,0,0.4);
+  }
+  
+  .folded-mode .game-container {
+    /* Additional optimizations when device is folded */
+  }
+  
+  .folded-mode .fold-top,
+  .folded-mode .fold-bottom {
+    min-height: 48vh;
+    max-height: 48vh;
+  }
+  
+  .landscape-mode .game-container {
+    flex-direction: row;
+  }
+  
+  .landscape-mode .fold-top,
+  .landscape-mode .fold-bottom {
+    flex: 1;
+    min-height: 100vh;
+    max-height: 100vh;
+    min-width: 50vw;
+    max-width: 50vw;
+  }
+  
+  .landscape-mode .fold-top {
+    border-bottom: none;
+    border-right: 6px solid #D2691E;
+  }
+  
+  .landscape-mode .fold-bottom {
+    border-top: none;
+    border-left: 2px solid rgba(210,105,30,0.4);
   }
 
   .spin-text::before {
@@ -684,60 +797,105 @@
     color: #D2691E;
   }
 
-  /* Razr optimizations for small screens */
+  /* MOTOROLA RAZR 2024 Dual-Screen Optimizations */
+  @media (max-height: 900px) and (orientation: portrait) {
+    .fold-top {
+      min-height: 45vh;
+      max-height: 45vh;
+      padding: 8px 6px;
+    }
+    
+    .fold-bottom {
+      min-height: 45vh;
+      max-height: 45vh;
+      padding: 12px 8px;
+    }
+  }
+  
+  /* Compact RAZR screen optimizations */
   @media (max-width: 420px) {
     .fold-top, .fold-bottom {
       padding: 8px 6px;
     }
     
     h1 {
-      font-size: clamp(1.2rem, 4vw, 1.5rem);
-      letter-spacing: 2px;
+      font-size: clamp(1.1rem, 3.8vw, 1.4rem);
+      letter-spacing: 1.5px;
     }
     
     .tagline {
-      font-size: 0.55rem;
+      font-size: 0.5rem;
     }
     
     #slotContainer {
       padding: 8px;
+      border-width: 3px;
     }
     
     #slotGrid {
-      gap: 3px;
-      padding: 3px;
+      gap: 4px;
+      padding: 6px;
     }
     
     .slotCell {
-      font-size: clamp(1.6rem, 5vw, 2rem);
+      font-size: clamp(1.4rem, 4.5vw, 1.8rem);
     }
     
     .action-buttons {
-      gap: 6px;
+      gap: 8px;
     }
     
     .action-buttons button {
-      min-height: 38px;
-      font-size: clamp(0.7rem, 2.2vw, 0.8rem);
-      padding: 8px;
+      min-height: 45px;
+      font-size: clamp(0.75rem, 2.3vw, 0.9rem);
+      padding: 12px 8px;
     }
     
     #spinBtn {
-      padding: 12px 26px;
-      font-size: clamp(1.2rem, 4vw, 1.4rem);
+      padding: 16px 28px;
+      font-size: clamp(1.2rem, 4.2vw, 1.5rem);
       letter-spacing: 2px;
     }
     
     #message {
-      font-size: clamp(0.7rem, 2.5vw, 0.85rem);
-      padding: 6px 12px;
+      font-size: clamp(0.65rem, 2.3vw, 0.8rem);
+      padding: 6px 10px;
     }
   }
 
   @media (max-width: 360px) {
     .pizzeria-backdrop::before,
     .pizzeria-backdrop::after {
-      font-size: 70px;
+      font-size: 60px;
+    }
+    
+    .fold-top {
+      gap: 4px;
+    }
+    
+    .fold-bottom {
+      gap: 10px;
+    }
+  }
+  
+  /* RAZR 2024 Folded State Detection */
+  @media (max-height: 700px) and (orientation: portrait) {
+    .game-container {
+      /* Optimize for folded state */
+    }
+    
+    .fold-top {
+      border-bottom-width: 8px;
+      box-shadow: 
+        0 8px 35px rgba(0,0,0,0.95),
+        inset 0 -6px 20px rgba(210,105,30,0.4);
+    }
+    
+    .fold-bottom {
+      border-top-width: 4px;
+      box-shadow: 
+        inset 0 8px 30px rgba(210,105,30,0.3),
+        0 0 50px rgba(210,105,30,0.2);
     }
   }
 </style>
@@ -765,6 +923,12 @@
   </div>
 
   <div class="fold-bottom">
+    <!-- RAZR 2024: Enhanced bottom screen controls -->
+    <div class="razr-status">
+      <div class="razr-indicator">📱 MOTOROLA RAZR 2024</div>
+      <div class="dual-screen-hint">🔄 DUAL SCREEN MODE</div>
+    </div>
+    
     <div class="action-buttons">
       <button id="spinBtn"><span class="spin-text">BAKE PIZZA!</span></button>
       <button id="openPayTableBtn">📜 MENU</button>
@@ -992,6 +1156,51 @@
   }
 
   document.addEventListener('click', () => initAudio(), { once: true });
+
+  // MOTOROLA RAZR 2024 Dual-Screen Detection and Optimization
+  function detectRazrDualScreen() {
+    const isRazr = /Motorola|RAZR/i.test(navigator.userAgent) || 
+                   window.screen.height < 900 && window.innerHeight < 500;
+    
+    if (isRazr) {
+      document.body.classList.add('razr-optimized');
+      console.log('🍕 JB\'s Pizzeria: RAZR 2024 dual-screen mode detected!');
+      
+      // Optimize for dual-screen layout
+      const gameContainer = document.querySelector('.game-container');
+      if (gameContainer) {
+        gameContainer.style.setProperty('--razr-optimization', 'active');
+      }
+      
+      // Add visual feedback for dual-screen mode
+      setTimeout(() => {
+        showMessage('🍕 RAZR 2024 Dual-Screen Optimized! 🍕');
+      }, 1000);
+    }
+  }
+  
+  // Screen orientation and fold detection
+  function handleScreenChange() {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const isFolded = window.innerHeight < 700;
+    
+    document.body.classList.toggle('landscape-mode', isLandscape);
+    document.body.classList.toggle('folded-mode', isFolded);
+    
+    if (isFolded) {
+      console.log('🍕 Folded mode detected - optimizing layout');
+    }
+  }
+  
+  // Listen for screen changes
+  window.addEventListener('resize', handleScreenChange);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(handleScreenChange, 100);
+  });
+  
+  // Initialize RAZR detection
+  detectRazrDualScreen();
+  handleScreenChange();
 
   const walletDisplay = document.getElementById('walletDisplay');
   const spinBtn = document.getElementById('spinBtn');
