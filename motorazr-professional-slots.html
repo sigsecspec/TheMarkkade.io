@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Casino Slots - Motorola Razr 2024</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Screen - Display Area */
+        .top-screen {
+            height: 50vh;
+            background: linear-gradient(135deg, #2c1810, #1a0f08);
+            border-bottom: 4px solid #ffd700;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .casino-header {
+            background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
+            color: #8b0000;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            box-shadow: 0 2px 10px rgba(255,215,0,0.5);
+        }
+
+        .slot-machine-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100% - 60px);
+            position: relative;
+        }
+
+        .reel-container {
+            display: flex;
+            gap: 15px;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #ffd700;
+            box-shadow: 
+                inset 0 0 20px rgba(255,215,0,0.3),
+                0 0 30px rgba(255,215,0,0.2);
+        }
+
+        .reel {
+            width: 80px;
+            height: 120px;
+            background: linear-gradient(180deg, #000, #1a1a1a, #000);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .reel-strip {
+            position: absolute;
+            width: 100%;
+            transition: transform 0.1s ease-out;
+        }
+
+        .symbol {
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            background: linear-gradient(145deg, #333, #222);
+            border-bottom: 1px solid #555;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .win-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff0000, #ff0000, transparent);
+            transform: translateY(-50%);
+            opacity: 0;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        .win-line.active {
+            opacity: 1;
+            animation: winLinePulse 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes winLinePulse {
+            0% { box-shadow: 0 0 10px #ff0000; }
+            100% { box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000; }
+        }
+
+        .credits-display {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            background: linear-gradient(145deg, #000, #1a1a1a);
+            color: #00ff00;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+            box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
+        }
+
+        .bet-display {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: linear-gradient(145deg, #000, #1a1a1a);
+            color: #ffff00;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ffff00;
+            box-shadow: inset 0 0 10px rgba(255,255,0,0.2);
+        }
+
+        /* Bottom Screen - Controls */
+        .bottom-screen {
+            height: 50vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 15px;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .control-button {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(145deg, #ffd700, #ffed4e);
+            border: 3px solid #b8860b;
+            border-radius: 12px;
+            color: #8b0000;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.3);
+        }
+
+        .control-button:active {
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .spin-button {
+            background: linear-gradient(145deg, #ff4444, #cc0000) !important;
+            color: white !important;
+            border-color: #990000 !important;
+            font-size: 1.3em !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+        }
+
+        .spin-button:disabled {
+            background: linear-gradient(145deg, #666, #444) !important;
+            color: #999 !important;
+            border-color: #333 !important;
+            cursor: not-allowed !important;
+        }
+
+        .payline-info {
+            background: linear-gradient(145deg, #000, #1a1a1a);
+            color: #ffd700;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            text-align: center;
+            font-size: 0.9em;
+            box-shadow: inset 0 0 10px rgba(255,215,0,0.2);
+        }
+
+        /* Particle Effects */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 1.5em;
+            animation: particleFloat 2s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.5);
+            }
+        }
+
+        /* Touch Effects */
+        .touch-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,215,0,0.6) 0%, transparent 70%);
+            pointer-events: none;
+            animation: rippleEffect 0.8s ease-out forwards;
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Win Animations */
+        .big-win {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 
+                0 0 10px #ffd700,
+                0 0 20px #ffd700,
+                0 0 30px #ffd700;
+            animation: bigWinPulse 2s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes bigWinPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Reel Spinning Animation */
+        .spinning {
+            animation: spin 0.1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-80px); }
+        }
+
+        /* Responsive Design for Motorola Razr 2024 */
+        @media screen and (max-width: 400px) {
+            .reel {
+                width: 70px;
+                height: 100px;
+            }
+            
+            .symbol {
+                height: 67px;
+                font-size: 2em;
+            }
+            
+            .control-button {
+                padding: 12px;
+                font-size: 1em;
+            }
+            
+            .casino-header {
+                font-size: 1em;
+                padding: 6px 0;
+            }
+        }
+
+        /* Audio Visualizer */
+        .audio-visualizer {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2px;
+            height: 20px;
+            align-items: flex-end;
+        }
+
+        .audio-bar {
+            width: 3px;
+            background: linear-gradient(to top, #ffd700, #ffed4e);
+            border-radius: 2px;
+            animation: audioVisualize 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes audioVisualize {
+            0% { height: 5px; }
+            100% { height: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Screen - Display Area -->
+    <div class="top-screen" id="topScreen">
+        <div class="casino-header">
+            🎰 PROFESSIONAL CASINO SLOTS 🎰
+        </div>
+        
+        <div class="credits-display" id="creditsDisplay">
+            CREDITS: $<span id="credits">1000</span>
+        </div>
+        
+        <div class="bet-display" id="betDisplay">
+            BET: $<span id="currentBet">10</span>
+        </div>
+        
+        <div class="slot-machine-display">
+            <div class="reel-container">
+                <div class="reel" id="reel1">
+                    <div class="reel-strip" id="reelStrip1"></div>
+                </div>
+                <div class="reel" id="reel2">
+                    <div class="reel-strip" id="reelStrip2"></div>
+                </div>
+                <div class="reel" id="reel3">
+                    <div class="reel-strip" id="reelStrip3"></div>
+                </div>
+            </div>
+            <div class="win-line" id="winLine"></div>
+        </div>
+        
+        <div class="audio-visualizer" id="audioVisualizer">
+            <div class="audio-bar" style="animation-delay: 0s;"></div>
+            <div class="audio-bar" style="animation-delay: 0.1s;"></div>
+            <div class="audio-bar" style="animation-delay: 0.2s;"></div>
+            <div class="audio-bar" style="animation-delay: 0.3s;"></div>
+            <div class="audio-bar" style="animation-delay: 0.4s;"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Screen - Controls -->
+    <div class="bottom-screen">
+        <div class="control-row">
+            <button class="control-button" id="betMinusBtn">BET -</button>
+            <button class="control-button" id="betPlusBtn">BET +</button>
+            <button class="control-button" id="maxBetBtn">MAX BET</button>
+        </div>
+        
+        <div class="control-row">
+            <button class="control-button spin-button" id="spinBtn">🎰 SPIN 🎰</button>
+        </div>
+        
+        <div class="control-row">
+            <button class="control-button" id="autoSpinBtn">AUTO SPIN</button>
+            <button class="control-button" id="cashOutBtn">CASH OUT</button>
+            <button class="control-button" id="soundToggleBtn">🔊 SOUND</button>
+        </div>
+        
+        <div class="payline-info">
+            <div>💎💎💎 = 500x | 🍒🍒🍒 = 100x | 🍋🍋🍋 = 50x | 🍊🍊🍊 = 25x</div>
+            <div>⭐⭐⭐ = 200x | 🔔🔔🔔 = 75x | 7️⃣7️⃣7️⃣ = 1000x JACKPOT!</div>
+        </div>
+    </div>
+
+    <script>
+        class ProfessionalSlotMachine {
+            constructor() {
+                this.credits = 1000;
+                this.currentBet = 10;
+                this.minBet = 1;
+                this.maxBet = 100;
+                this.isSpinning = false;
+                this.autoSpinActive = false;
+                this.soundEnabled = true;
+                this.autoSpinCount = 0;
+                
+                // Slot symbols with weights (higher weight = more common)
+                this.symbols = [
+                    { symbol: '💎', weight: 1, payout: 500 },
+                    { symbol: '7️⃣', weight: 1, payout: 1000 },
+                    { symbol: '🍒', weight: 3, payout: 100 },
+                    { symbol: '🍋', weight: 4, payout: 50 },
+                    { symbol: '🍊', weight: 5, payout: 25 },
+                    { symbol: '⭐', weight: 2, payout: 200 },
+                    { symbol: '🔔', weight: 3, payout: 75 },
+                    { symbol: '🍇', weight: 6, payout: 15 },
+                    { symbol: '🍎', weight: 7, payout: 10 },
+                    { symbol: '🥝', weight: 8, payout: 5 }
+                ];
+                
+                this.reels = [[], [], []];
+                this.currentResults = ['', '', ''];
+                
+                this.initializeGame();
+                this.setupEventListeners();
+                this.generateReels();
+                this.updateDisplay();
+            }
+            
+            initializeGame() {
+                // Initialize audio context for sound effects
+                this.audioContext = null;
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Audio context not supported');
+                }
+                
+                // Haptic feedback support
+                this.supportsVibration = 'vibrate' in navigator;
+            }
+            
+            setupEventListeners() {
+                // Betting controls
+                document.getElementById('betMinusBtn').addEventListener('click', () => this.adjustBet(-1));
+                document.getElementById('betPlusBtn').addEventListener('click', () => this.adjustBet(1));
+                document.getElementById('maxBetBtn').addEventListener('click', () => this.setMaxBet());
+                
+                // Spin controls
+                document.getElementById('spinBtn').addEventListener('click', () => this.spin());
+                document.getElementById('autoSpinBtn').addEventListener('click', () => this.toggleAutoSpin());
+                
+                // Other controls
+                document.getElementById('cashOutBtn').addEventListener('click', () => this.cashOut());
+                document.getElementById('soundToggleBtn').addEventListener('click', () => this.toggleSound());
+                
+                // Top screen touch effects
+                document.getElementById('topScreen').addEventListener('click', (e) => this.createTouchEffect(e));
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    switch(e.code) {
+                        case 'Space':
+                            e.preventDefault();
+                            if (!this.isSpinning) this.spin();
+                            break;
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            this.adjustBet(1);
+                            break;
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            this.adjustBet(-1);
+                            break;
+                    }
+                });
+            }
+            
+            generateReels() {
+                // Create weighted symbol arrays for each reel
+                for (let reelIndex = 0; reelIndex < 3; reelIndex++) {
+                    this.reels[reelIndex] = [];
+                    this.symbols.forEach(symbolData => {
+                        for (let i = 0; i < symbolData.weight; i++) {
+                            this.reels[reelIndex].push(symbolData.symbol);
+                        }
+                    });
+                    
+                    // Shuffle the reel
+                    this.shuffleArray(this.reels[reelIndex]);
+                    
+                    // Populate the visual reel strip
+                    this.populateReelStrip(reelIndex + 1);
+                }
+            }
+            
+            populateReelStrip(reelNumber) {
+                const reelStrip = document.getElementById(`reelStrip${reelNumber}`);
+                const reel = this.reels[reelNumber - 1];
+                
+                // Create enough symbols for smooth scrolling
+                let html = '';
+                for (let i = 0; i < 20; i++) {
+                    const symbolIndex = i % reel.length;
+                    html += `<div class="symbol">${reel[symbolIndex]}</div>`;
+                }
+                
+                reelStrip.innerHTML = html;
+            }
+            
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+            
+            adjustBet(amount) {
+                if (this.isSpinning) return;
+                
+                const newBet = this.currentBet + amount;
+                if (newBet >= this.minBet && newBet <= this.maxBet && newBet <= this.credits) {
+                    this.currentBet = newBet;
+                    this.updateDisplay();
+                    this.playSound('button');
+                    this.vibrate([50]);
+                }
+            }
+            
+            setMaxBet() {
+                if (this.isSpinning) return;
+                
+                this.currentBet = Math.min(this.maxBet, this.credits);
+                this.updateDisplay();
+                this.playSound('button');
+                this.vibrate([100]);
+            }
+            
+            async spin() {
+                if (this.isSpinning || this.credits < this.currentBet) return;
+                
+                this.isSpinning = true;
+                this.credits -= this.currentBet;
+                this.updateDisplay();
+                
+                // Disable spin button
+                const spinBtn = document.getElementById('spinBtn');
+                spinBtn.disabled = true;
+                
+                // Play spin sound and vibration
+                this.playSound('spin');
+                this.vibrate([100, 50, 100]);
+                
+                // Start reel animations
+                this.startReelAnimations();
+                
+                // Generate results
+                const results = this.generateSpinResults();
+                
+                // Stop reels one by one with delays
+                await this.stopReelsSequentially(results);
+                
+                // Check for wins
+                const winAmount = this.checkWin(results);
+                
+                if (winAmount > 0) {
+                    await this.celebrateWin(winAmount);
+                    this.credits += winAmount;
+                }
+                
+                this.updateDisplay();
+                this.isSpinning = false;
+                spinBtn.disabled = false;
+                
+                // Continue auto spin if active
+                if (this.autoSpinActive && this.credits >= this.currentBet) {
+                    setTimeout(() => this.spin(), 1500);
+                } else if (this.autoSpinActive) {
+                    this.toggleAutoSpin(); // Stop auto spin if out of credits
+                }
+            }
+            
+            startReelAnimations() {
+                for (let i = 1; i <= 3; i++) {
+                    const reelStrip = document.getElementById(`reelStrip${i}`);
+                    reelStrip.classList.add('spinning');
+                }
+            }
+            
+            generateSpinResults() {
+                const results = [];
+                for (let i = 0; i < 3; i++) {
+                    const randomIndex = Math.floor(Math.random() * this.reels[i].length);
+                    results.push(this.reels[i][randomIndex]);
+                }
+                return results;
+            }
+            
+            async stopReelsSequentially(results) {
+                for (let i = 0; i < 3; i++) {
+                    await new Promise(resolve => {
+                        setTimeout(() => {
+                            const reelStrip = document.getElementById(`reelStrip${i + 1}`);
+                            reelStrip.classList.remove('spinning');
+                            
+                            // Set the final symbol
+                            this.setReelResult(i + 1, results[i]);
+                            this.currentResults[i] = results[i];
+                            
+                            this.playSound('reelStop');
+                            this.vibrate([75]);
+                            
+                            resolve();
+                        }, 1000 + (i * 500)); // Stagger the stops
+                    });
+                }
+            }
+            
+            setReelResult(reelNumber, symbol) {
+                const reelStrip = document.getElementById(`reelStrip${reelNumber}`);
+                const symbols = reelStrip.querySelectorAll('.symbol');
+                
+                // Set the middle symbol to the result
+                if (symbols[1]) {
+                    symbols[1].textContent = symbol;
+                }
+            }
+            
+            checkWin(results) {
+                // Check if all three symbols match
+                if (results[0] === results[1] && results[1] === results[2]) {
+                    const symbolData = this.symbols.find(s => s.symbol === results[0]);
+                    return symbolData ? symbolData.payout * this.currentBet : 0;
+                }
+                
+                // Check for two matching symbols (smaller payout)
+                if (results[0] === results[1] || results[1] === results[2] || results[0] === results[2]) {
+                    return Math.floor(this.currentBet * 0.5);
+                }
+                
+                return 0;
+            }
+            
+            async celebrateWin(winAmount) {
+                const winLine = document.getElementById('winLine');
+                winLine.classList.add('active');
+                
+                // Show big win text for large wins
+                if (winAmount >= this.currentBet * 50) {
+                    this.showBigWin(winAmount);
+                }
+                
+                // Play win sound and vibration
+                this.playSound('win');
+                this.vibrate([200, 100, 200, 100, 200]);
+                
+                // Create particle effects
+                this.createWinParticles();
+                
+                // Wait for celebration
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                winLine.classList.remove('active');
+            }
+            
+            showBigWin(amount) {
+                const bigWin = document.createElement('div');
+                bigWin.className = 'big-win';
+                bigWin.textContent = `BIG WIN! $${amount}`;
+                document.getElementById('topScreen').appendChild(bigWin);
+                
+                setTimeout(() => {
+                    if (bigWin.parentNode) {
+                        bigWin.parentNode.removeChild(bigWin);
+                    }
+                }, 3000);
+            }
+            
+            createWinParticles() {
+                const container = document.getElementById('topScreen');
+                const particles = ['💰', '⭐', '💎', '🎉', '✨'];
+                
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.top = Math.random() * 100 + '%';
+                        
+                        container.appendChild(particle);
+                        
+                        setTimeout(() => {
+                            if (particle.parentNode) {
+                                particle.parentNode.removeChild(particle);
+                            }
+                        }, 2000);
+                    }, i * 100);
+                }
+            }
+            
+            createTouchEffect(event) {
+                const ripple = document.createElement('div');
+                ripple.className = 'touch-ripple';
+                
+                const rect = event.currentTarget.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                ripple.style.left = x - 25 + 'px';
+                ripple.style.top = y - 25 + 'px';
+                ripple.style.width = '50px';
+                ripple.style.height = '50px';
+                
+                event.currentTarget.appendChild(ripple);
+                
+                this.vibrate([30]);
+                this.playSound('touch');
+                
+                setTimeout(() => {
+                    if (ripple.parentNode) {
+                        ripple.parentNode.removeChild(ripple);
+                    }
+                }, 800);
+            }
+            
+            toggleAutoSpin() {
+                this.autoSpinActive = !this.autoSpinActive;
+                const btn = document.getElementById('autoSpinBtn');
+                
+                if (this.autoSpinActive) {
+                    btn.textContent = 'STOP AUTO';
+                    btn.style.background = 'linear-gradient(145deg, #ff4444, #cc0000)';
+                    btn.style.color = 'white';
+                    
+                    if (!this.isSpinning && this.credits >= this.currentBet) {
+                        this.spin();
+                    }
+                } else {
+                    btn.textContent = 'AUTO SPIN';
+                    btn.style.background = 'linear-gradient(145deg, #ffd700, #ffed4e)';
+                    btn.style.color = '#8b0000';
+                }
+                
+                this.playSound('button');
+                this.vibrate([50]);
+            }
+            
+            cashOut() {
+                if (this.isSpinning) return;
+                
+                alert(`Congratulations! You're cashing out $${this.credits}!`);
+                this.playSound('cashOut');
+                this.vibrate([300, 100, 300]);
+                
+                // Reset credits for demo purposes
+                this.credits = 1000;
+                this.updateDisplay();
+            }
+            
+            toggleSound() {
+                this.soundEnabled = !this.soundEnabled;
+                const btn = document.getElementById('soundToggleBtn');
+                btn.textContent = this.soundEnabled ? '🔊 SOUND' : '🔇 MUTED';
+                
+                this.vibrate([50]);
+            }
+            
+            playSound(type) {
+                if (!this.soundEnabled || !this.audioContext) return;
+                
+                const frequencies = {
+                    button: [800, 0.1],
+                    spin: [400, 0.3],
+                    reelStop: [600, 0.1],
+                    win: [1000, 0.5],
+                    cashOut: [1200, 0.8],
+                    touch: [500, 0.05]
+                };
+                
+                const [frequency, duration] = frequencies[type] || [440, 0.1];
+                
+                try {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                    oscillator.type = type === 'win' ? 'sine' : 'square';
+                    
+                    gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+                    
+                    oscillator.start(this.audioContext.currentTime);
+                    oscillator.stop(this.audioContext.currentTime + duration);
+                } catch (e) {
+                    console.log('Error playing sound:', e);
+                }
+            }
+            
+            vibrate(pattern) {
+                if (this.supportsVibration) {
+                    navigator.vibrate(pattern);
+                }
+            }
+            
+            updateDisplay() {
+                document.getElementById('credits').textContent = this.credits;
+                document.getElementById('currentBet').textContent = this.currentBet;
+                
+                // Update button states
+                const spinBtn = document.getElementById('spinBtn');
+                if (this.credits < this.currentBet) {
+                    spinBtn.disabled = true;
+                    spinBtn.textContent = 'INSUFFICIENT FUNDS';
+                } else {
+                    spinBtn.disabled = this.isSpinning;
+                    spinBtn.textContent = this.isSpinning ? '🎰 SPINNING... 🎰' : '🎰 SPIN 🎰';
+                }
+            }
+        }
+        
+        // Initialize the game when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Enable audio context on first user interaction
+            document.addEventListener('click', function enableAudio() {
+                if (window.slotMachine && window.slotMachine.audioContext && window.slotMachine.audioContext.state === 'suspended') {
+                    window.slotMachine.audioContext.resume();
+                }
+                document.removeEventListener('click', enableAudio);
+            }, { once: true });
+            
+            // Initialize the slot machine
+            window.slotMachine = new ProfessionalSlotMachine();
+        });
+        
+        // Prevent zoom on double tap for mobile
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Prevent context menu
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>
