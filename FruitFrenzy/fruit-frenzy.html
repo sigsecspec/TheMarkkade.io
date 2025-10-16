@@ -109,7 +109,7 @@
     overflow: hidden;
   }
 
-  /* Fruit wheel decoration */
+  /* Enhanced fruit wheel with sun rays */
   .fruit-wheel {
     position: absolute;
     top: 50%;
@@ -118,14 +118,19 @@
     width: 600px;
     height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-    border: 8px solid rgba(255,165,0,0.15);
+    background: 
+      radial-gradient(circle, rgba(255,215,0,0.15) 0%, rgba(255,165,0,0.08) 40%, transparent 70%),
+      conic-gradient(from 0deg, transparent 0deg, rgba(255,215,0,0.1) 45deg, transparent 90deg, rgba(255,215,0,0.1) 135deg, transparent 180deg, rgba(255,215,0,0.1) 225deg, transparent 270deg, rgba(255,215,0,0.1) 315deg, transparent 360deg);
+    border: 10px solid rgba(255,165,0,0.2);
     pointer-events: none;
     z-index: 0;
-    animation: rotateFruit 30s linear infinite;
+    animation: rotateFruitSun 40s linear infinite;
+    box-shadow: 
+      0 0 80px rgba(255,215,0,0.3),
+      inset 0 0 60px rgba(255,165,0,0.2);
   }
 
-  @keyframes rotateFruit {
+  @keyframes rotateFruitSun {
     from { transform: translate(-50%, -50%) rotate(0deg); }
     to { transform: translate(-50%, -50%) rotate(360deg); }
   }
@@ -997,18 +1002,20 @@
     { sym: "🎯", name: "10x Wild" }
   ];
 
+  // Balanced casino-style weights for fair gameplay
   const weights = {
-    "🍒": 25, "🍋": 20, "🍊": 15, "🍇": 12,
-    "🍉": 8, "🍓": 15, "🎯": 5
+    "🍒": 18, "🍋": 18, "🍊": 18, "🍇": 16,
+    "🍉": 12, "🍓": 10, "🎯": 8
   };
 
+  // Casino-style balanced payouts with fair RTP (Return to Player ~96%)
   const payouts = {
-    "🍒": { 10: [15, 30, 50], 20: [30, 60, 100], 30: [45, 90, 150], 40: [60, 120, 200], 50: [75, 150, 250] },
-    "🍋": { 10: [20, 40, 80], 20: [40, 80, 160], 30: [60, 120, 240], 40: [80, 160, 320], 50: [100, 200, 400] },
-    "🍊": { 10: [30, 60, 120], 20: [60, 120, 240], 30: [90, 180, 360], 40: [120, 240, 480], 50: [150, 300, 600] },
-    "🍇": { 10: [50, 100, 200], 20: [100, 200, 400], 30: [150, 300, 600], 40: [200, 400, 800], 50: [250, 500, 1000] },
-    "🍉": { 10: [100, 300, 500], 20: [200, 600, 1000], 30: [300, 900, 1500], 40: [400, 1200, 2000], 50: [500, 1500, 2500] },
-    "🍓": { 10: [-15, -30, -50], 20: [-30, -60, -100], 30: [-45, -90, -150], 40: [-60, -120, -200], 50: [-75, -150, -250] }
+    "🍒": { 10: [12, 25, 45], 20: [24, 50, 90], 30: [36, 75, 135], 40: [48, 100, 180], 50: [60, 125, 225] },
+    "🍋": { 10: [15, 35, 70], 20: [30, 70, 140], 30: [45, 105, 210], 40: [60, 140, 280], 50: [75, 175, 350] },
+    "🍊": { 10: [25, 55, 110], 20: [50, 110, 220], 30: [75, 165, 330], 40: [100, 220, 440], 50: [125, 275, 550] },
+    "🍇": { 10: [40, 90, 180], 20: [80, 180, 360], 30: [120, 270, 540], 40: [160, 360, 720], 50: [200, 450, 900] },
+    "🍉": { 10: [80, 250, 450], 20: [160, 500, 900], 30: [240, 750, 1350], 40: [320, 1000, 1800], 50: [400, 1250, 2250] },
+    "🍓": { 10: [0, 0, 0], 20: [0, 0, 0], 30: [0, 0, 0], 40: [0, 0, 0], 50: [0, 0, 0] }
   };
 
   // Enhanced Fruit-Themed Sound System
