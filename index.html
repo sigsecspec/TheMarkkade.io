@@ -19,13 +19,17 @@
     --razr-cyan:#00BCD4;
     --razr-gold:#FFD700;
     --razr-orange:#FF6B35;
+    --razr-silver:#C0C0C0;
     --bg-dark:#0a0a0f;
     --bg-card:#151520;
+    --bg-control:#1a1a25;
     --text:#ffffff;
     --text-dim:#b0b0c0;
     --glow-pink:0 0 30px rgba(233,30,99,0.6);
     --glow-purple:0 0 30px rgba(156,39,176,0.6);
     --glow-blue:0 0 30px rgba(33,150,243,0.6);
+    --glow-gold:0 0 30px rgba(255,215,0,0.6);
+    --touch-ripple:0 0 50px rgba(233,30,99,0.8);
 }
 
 @keyframes neonPulse{
@@ -60,13 +64,97 @@
     100%{background-position:200% center;}
 }
 
+@keyframes touchRipple{
+    0%{transform:scale(0);opacity:1;}
+    100%{transform:scale(4);opacity:0;}
+}
+
+@keyframes screenGlow{
+    0%,100%{box-shadow:inset 0 0 50px rgba(233,30,99,0.2);}
+    50%{box-shadow:inset 0 0 80px rgba(156,39,176,0.4);}
+}
+
+@keyframes buttonPress{
+    0%{transform:scale(1) translateY(0);}
+    50%{transform:scale(0.95) translateY(2px);}
+    100%{transform:scale(1) translateY(0);}
+}
+
+@keyframes holographicShift{
+    0%{background-position:0% 0%;}
+    25%{background-position:100% 0%;}
+    50%{background-position:100% 100%;}
+    75%{background-position:0% 100%;}
+    100%{background-position:0% 0%;}
+}
+
 body{
     font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
     background:var(--bg-dark);
     color:var(--text);
-    overflow-x:hidden;
-    min-height:100vh;
+    overflow:hidden;
+    height:100vh;
     position:relative;
+    display:flex;
+    flex-direction:column;
+}
+
+/* MOTO RAZR 2024 DUAL SCREEN LAYOUT */
+.razr-container{
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    width:100vw;
+    position:relative;
+}
+
+/* TOP SCREEN - DISPLAY AREA */
+.top-screen{
+    flex:1;
+    background:linear-gradient(135deg,var(--bg-dark) 0%,#1a1a2e 50%,var(--bg-card) 100%);
+    border-bottom:3px solid var(--razr-pink);
+    position:relative;
+    overflow-y:auto;
+    overflow-x:hidden;
+    animation:screenGlow 4s ease-in-out infinite;
+    touch-action:manipulation;
+}
+
+.top-screen::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;bottom:0;
+    background:linear-gradient(45deg,
+        transparent 0%,
+        rgba(233,30,99,0.1) 25%,
+        transparent 50%,
+        rgba(156,39,176,0.1) 75%,
+        transparent 100%);
+    background-size:400% 400%;
+    animation:holographicShift 8s ease infinite;
+    pointer-events:none;
+    z-index:1;
+}
+
+/* BOTTOM SCREEN - CONTROLS AREA */
+.bottom-screen{
+    height:40vh;
+    background:linear-gradient(135deg,var(--bg-control) 0%,#2a2a3e 100%);
+    border-top:3px solid var(--razr-purple);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 -10px 30px rgba(0,0,0,0.5);
+}
+
+.bottom-screen::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;bottom:0;
+    background:radial-gradient(circle at center,rgba(233,30,99,0.1) 0%,transparent 70%);
+    pointer-events:none;
+    z-index:1;
 }
 
 /* Animated Gradient Background */
@@ -112,8 +200,8 @@ body{
 .particle:nth-child(4){animation-delay:3s;background:var(--razr-cyan);}
 .particle:nth-child(5){animation-delay:4s;background:var(--razr-gold);}
 
-/* Header */
-header{
+/* TOP SCREEN HEADER */
+.top-header{
     position:sticky;
     top:0;
     z-index:100;
@@ -121,32 +209,32 @@ header{
     backdrop-filter:blur(20px) saturate(180%);
     border-bottom:2px solid transparent;
     border-image:linear-gradient(90deg,var(--razr-pink),var(--razr-purple),var(--razr-blue)) 1;
-    padding:14px 18px;
+    padding:12px 16px;
     box-shadow:0 4px 20px rgba(0,0,0,0.3);
 }
 
-.header-content{
+.top-header-content{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:12px;
+    gap:10px;
 }
 
 .logo-title{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:10px;
 }
 
 .logo-title img{
-    width:36px;
-    height:36px;
-    border-radius:10px;
+    width:32px;
+    height:32px;
+    border-radius:8px;
     animation:neonPulse 3s ease-in-out infinite;
 }
 
 .logo-title h1{
-    font-size:20px;
+    font-size:18px;
     font-weight:800;
     background:linear-gradient(135deg,var(--razr-pink),var(--razr-purple),var(--razr-blue));
     background-size:200% 200%;
@@ -157,9 +245,12 @@ header{
     text-shadow:var(--glow-pink);
 }
 
-.header-actions{
+.top-status{
     display:flex;
-    gap:10px;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    color:var(--text-dim);
 }
 
 .icon-btn{
@@ -198,17 +289,17 @@ header{
     box-shadow:0 2px 10px rgba(255,107,53,0.6);
 }
 
-/* Currency Bar */
-.currency-bar{
+/* TOP SCREEN CURRENCY BAR */
+.top-currency-bar{
     background:rgba(21,21,32,0.9);
     backdrop-filter:blur(15px) saturate(180%);
     border-bottom:1px solid rgba(233,30,99,0.2);
-    padding:12px 18px;
+    padding:10px 16px;
     display:flex;
     justify-content:space-around;
-    gap:14px;
+    gap:12px;
     position:sticky;
-    top:70px;
+    top:62px;
     z-index:99;
 }
 
@@ -248,12 +339,80 @@ header{
     background-clip:text;
 }
 
-/* Main Content */
-main{
+/* TOP SCREEN CONTENT */
+.top-content{
     position:relative;
-    z-index:1;
-    padding:18px;
-    padding-bottom:100px;
+    z-index:2;
+    padding:16px;
+    padding-bottom:20px;
+    flex:1;
+}
+
+/* TOUCH RIPPLE EFFECT */
+.touch-ripple{
+    position:absolute;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(233,30,99,0.6) 0%,transparent 70%);
+    pointer-events:none;
+    animation:touchRipple 0.6s ease-out forwards;
+    z-index:9999;
+}
+
+/* BOTTOM SCREEN CONTROLS */
+.control-panel{
+    position:relative;
+    z-index:2;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    padding:16px;
+    gap:12px;
+}
+
+.control-row{
+    display:flex;
+    gap:12px;
+    flex:1;
+}
+
+.control-btn{
+    flex:1;
+    background:linear-gradient(135deg,rgba(233,30,99,0.3),rgba(156,39,176,0.3));
+    border:2px solid rgba(233,30,99,0.5);
+    border-radius:16px;
+    color:var(--text);
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.2s cubic-bezier(0.4,0,0.2,1);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    min-height:60px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.3);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+.control-btn:active{
+    animation:buttonPress 0.2s ease;
+    border-color:var(--razr-pink);
+    box-shadow:var(--touch-ripple);
+    background:linear-gradient(135deg,rgba(233,30,99,0.5),rgba(156,39,176,0.5));
+}
+
+.control-btn-icon{
+    font-size:24px;
+    filter:drop-shadow(0 2px 8px rgba(233,30,99,0.5));
+}
+
+.control-btn-text{
+    font-size:11px;
+    opacity:0.9;
 }
 
 /* Featured Game Carousel */
@@ -351,24 +510,40 @@ main{
     font-size:26px;
 }
 
-/* Games Grid */
+/* TOP SCREEN GAMES GRID */
 .games-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
-    gap:14px;
-    margin-bottom:28px;
+    gap:12px;
+    margin-bottom:20px;
 }
 
 .game-card{
     background:var(--bg-card);
     border:2px solid rgba(233,30,99,0.3);
-    border-radius:18px;
+    border-radius:16px;
     overflow:hidden;
     transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
     cursor:pointer;
     position:relative;
     animation:slideInUp 0.6s ease;
     animation-fill-mode:both;
+    touch-action:manipulation;
+}
+
+.game-card::after{
+    content:'';
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:0;
+    height:0;
+    background:radial-gradient(circle,rgba(233,30,99,0.4) 0%,transparent 70%);
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    transition:all 0.3s ease;
+    pointer-events:none;
+    z-index:10;
 }
 
 .game-card:nth-child(1){animation-delay:0.1s;}
@@ -395,6 +570,12 @@ main{
 
 .game-card:active::before{
     opacity:1;
+}
+
+.game-card:active::after{
+    width:100px;
+    height:100px;
+    animation:touchRipple 0.6s ease-out forwards;
 }
 
 .game-card-img{
@@ -719,64 +900,84 @@ main{
     <div class="particle" style="left:50%;top:40%;"></div>
 </div>
 
-<header>
-    <div class="header-content">
-        <div class="logo-title">
-            <img src="logo.png" alt="Logo">
-            <h1>MOTORAZR2024</h1>
-        </div>
-        <div class="header-actions">
-            <div class="icon-btn" id="rewardsBtn">
-                🎁
-                <span class="badge" id="rewardBadge" style="display:none;">!</span>
+<!-- MOTO RAZR 2024 DUAL SCREEN CONTAINER -->
+<div class="razr-container">
+    <!-- TOP SCREEN - DISPLAY AREA -->
+    <div class="top-screen" id="topScreen">
+        <div class="top-header">
+            <div class="top-header-content">
+                <div class="logo-title">
+                    <img src="logo.png" alt="Logo">
+                    <h1>MOTORAZR2024</h1>
+                </div>
+                <div class="top-status">
+                    <span>🔋</span>
+                    <span id="gameStatus">READY</span>
+                </div>
             </div>
-            <div class="icon-btn" id="shopBtn">
-                🛒
-            </div>
         </div>
-    </div>
-</header>
 
-<div class="currency-bar">
-    <div class="currency-item" id="cashDisplay">
-        <span class="currency-icon">💰</span>
-        <span class="currency-value" id="playerCash">0</span>
+        <div class="top-currency-bar">
+            <div class="currency-item" id="cashDisplay">
+                <span class="currency-icon">💰</span>
+                <span class="currency-value" id="playerCash">0</span>
+            </div>
+            <div class="currency-item" id="coinsDisplay">
+                <span class="currency-icon">🪙</span>
+                <span class="currency-value" id="playerCoins">0</span>
+            </div>
+        </div>
+
+        <div class="top-content">
+            <div class="featured-carousel">
+                <span class="featured-label">⭐ FEATURED GAME</span>
+                <h2 id="featuredTitle">Welcome to MOTORAZR2024!</h2>
+                <p id="featuredDesc">Your ultimate mobile gaming experience. Play exclusive Razr-optimized games and win big!</p>
+            </div>
+
+            <div class="section-title">
+                <span>🎮</span> All Games
+            </div>
+            <div class="games-grid" id="gamesGrid"></div>
+        </div>
     </div>
-    <div class="currency-item" id="coinsDisplay">
-        <span class="currency-icon">🪙</span>
-        <span class="currency-value" id="playerCoins">0</span>
+
+    <!-- BOTTOM SCREEN - CONTROLS AREA -->
+    <div class="bottom-screen">
+        <div class="control-panel">
+            <div class="control-row">
+                <div class="control-btn" id="playFeaturedBtn">
+                    <div class="control-btn-icon">🎮</div>
+                    <div class="control-btn-text">PLAY FEATURED</div>
+                </div>
+                <div class="control-btn" id="shopBtn">
+                    <div class="control-btn-icon">🛒</div>
+                    <div class="control-btn-text">SHOP</div>
+                    <span class="badge" id="shopBadge" style="display:none;">NEW</span>
+                </div>
+                <div class="control-btn" id="rewardsBtn">
+                    <div class="control-btn-icon">🎁</div>
+                    <div class="control-btn-text">REWARDS</div>
+                    <span class="badge" id="rewardBadge" style="display:none;">!</span>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-btn" id="statsBtn">
+                    <div class="control-btn-icon">📊</div>
+                    <div class="control-btn-text">STATS</div>
+                </div>
+                <div class="control-btn" id="settingsBtn">
+                    <div class="control-btn-icon">⚙️</div>
+                    <div class="control-btn-text">SETTINGS</div>
+                </div>
+                <div class="control-btn" id="achievementsBtn">
+                    <div class="control-btn-icon">🏆</div>
+                    <div class="control-btn-text">ACHIEVEMENTS</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
-<main>
-    <div class="featured-carousel">
-        <span class="featured-label">⭐ FEATURED GAME</span>
-        <h2 id="featuredTitle">Welcome to MOTORAZR2024!</h2>
-        <p id="featuredDesc">Your ultimate mobile gaming experience. Play exclusive Razr-optimized games and win big!</p>
-        <button class="featured-btn" id="featuredBtn">PLAY NOW</button>
-    </div>
-
-    <div class="section-title">
-        <span>🎮</span> All Games
-    </div>
-    <div class="games-grid" id="gamesGrid"></div>
-
-    <div class="section-title">
-        <span>⚡</span> Quick Actions
-    </div>
-    <div class="quick-actions">
-        <div class="action-card" id="viewAllBtn">
-            <div class="action-icon">📚</div>
-            <div class="action-title">All Games</div>
-            <div class="action-desc">Browse complete library</div>
-        </div>
-        <div class="action-card" id="statsBtn">
-            <div class="action-icon">📊</div>
-            <div class="action-title">Statistics</div>
-            <div class="action-desc">View your progress</div>
-        </div>
-    </div>
-</main>
 
 <!-- Shop Modal -->
 <div class="modal" id="shopModal">
@@ -804,17 +1005,24 @@ main{
 
 <script src="games-data.js"></script>
 <script>
-// ========== AUDIO SYSTEM ==========
+// ========== ENHANCED AUDIO SYSTEM ==========
 const AudioEngine = {
     context: null,
     sounds: {},
+    masterVolume: 0.3,
     
     init() {
-        this.context = new (window.AudioContext || window.webkitAudioContext)();
+        try {
+            this.context = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) {
+            console.warn('Web Audio API not supported');
+        }
     },
     
-    playTone(freq, duration, type = 'sine') {
+    playTone(freq, duration, type = 'sine', volume = 1) {
         if (!this.context) this.init();
+        if (!this.context) return;
+        
         const osc = this.context.createOscillator();
         const gain = this.context.createGain();
         
@@ -824,59 +1032,103 @@ const AudioEngine = {
         osc.frequency.value = freq;
         osc.type = type;
         
-        gain.gain.setValueAtTime(0.2, this.context.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.context.currentTime + duration);
+        const vol = this.masterVolume * volume;
+        gain.gain.setValueAtTime(vol, this.context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + duration);
         
         osc.start(this.context.currentTime);
         osc.stop(this.context.currentTime + duration);
     },
     
+    playChord(frequencies, duration, type = 'sine') {
+        frequencies.forEach(freq => this.playTone(freq, duration, type, 0.3));
+    },
+    
     playClick() {
-        this.playTone(400, 0.08, 'square');
+        this.playTone(600, 0.06, 'square');
+        setTimeout(() => this.playTone(800, 0.04, 'square'), 30);
+    },
+    
+    playTouch() {
+        this.playTone(400, 0.05, 'sine', 0.5);
     },
     
     playSuccess() {
-        this.playTone(523.25, 0.1, 'sine');
-        setTimeout(() => this.playTone(659.25, 0.15, 'sine'), 100);
+        const notes = [523.25, 659.25, 783.99];
+        notes.forEach((note, i) => {
+            setTimeout(() => this.playTone(note, 0.15, 'sine'), i * 80);
+        });
     },
     
     playReward() {
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        notes.forEach((note, i) => {
-            setTimeout(() => this.playTone(note, 0.2, 'sine'), i * 100);
-        });
+        const chord1 = [523.25, 659.25, 783.99];
+        const chord2 = [659.25, 830.61, 1046.50];
+        this.playChord(chord1, 0.3);
+        setTimeout(() => this.playChord(chord2, 0.4), 200);
     },
     
     playBuy() {
         this.playTone(800, 0.1, 'triangle');
         setTimeout(() => this.playTone(1000, 0.15, 'triangle'), 80);
+        setTimeout(() => this.playTone(1200, 0.1, 'sine'), 150);
     },
     
     playError() {
-        this.playTone(200, 0.3, 'sawtooth');
+        this.playTone(150, 0.4, 'sawtooth');
+    },
+    
+    playStartup() {
+        const melody = [261.63, 329.63, 392.00, 523.25];
+        melody.forEach((note, i) => {
+            setTimeout(() => this.playTone(note, 0.2, 'sine'), i * 150);
+        });
+    },
+    
+    playGameSelect() {
+        this.playTone(880, 0.1, 'sine');
+        setTimeout(() => this.playTone(1108.73, 0.15, 'sine'), 100);
     }
 };
 
-// ========== VIBRATION SYSTEM ==========
+// ========== ENHANCED VIBRATION SYSTEM ==========
 const VibrationEngine = {
+    enabled: true,
     patterns: {
-        tap: [10],
-        click: [20],
-        success: [30, 20, 30],
-        reward: [50, 30, 50, 30, 50],
-        buy: [40, 20, 40],
-        error: [200]
+        tap: [8],
+        click: [15],
+        touch: [12],
+        success: [25, 15, 25, 15, 25],
+        reward: [50, 30, 50, 30, 100, 50, 100],
+        buy: [40, 20, 40, 20, 60],
+        error: [200, 100, 200],
+        startup: [30, 20, 30, 20, 50],
+        gameSelect: [20, 10, 20],
+        longPress: [100],
+        doubleClick: [15, 10, 15]
     },
     
     vibrate(pattern) {
-        if ('vibrate' in navigator) {
-            navigator.vibrate(typeof pattern === 'string' ? this.patterns[pattern] : pattern);
+        if (!this.enabled || !('vibrate' in navigator)) return;
+        
+        const vibrationPattern = typeof pattern === 'string' ? this.patterns[pattern] : pattern;
+        if (vibrationPattern) {
+            navigator.vibrate(vibrationPattern);
         }
+    },
+    
+    setEnabled(enabled) {
+        this.enabled = enabled;
+        localStorage.setItem('motorazr_vibration', enabled);
+    },
+    
+    init() {
+        const saved = localStorage.getItem('motorazr_vibration');
+        this.enabled = saved !== null ? saved === 'true' : true;
     }
 };
 
-// ========== PARTICLE SYSTEM ==========
-const ParticleEngine = {
+// ========== ENHANCED PARTICLE & TOUCH EFFECTS SYSTEM ==========
+const EffectsEngine = {
     createExplosion(x, y, icon = '💰', count = 12) {
         for (let i = 0; i < count; i++) {
             const particle = document.createElement('div');
@@ -910,6 +1162,45 @@ const ParticleEngine = {
             document.body.appendChild(particle);
             setTimeout(() => particle.remove(), 1500);
         }
+    },
+    
+    createTouchRipple(x, y, color = 'rgba(233,30,99,0.6)') {
+        const ripple = document.createElement('div');
+        ripple.className = 'touch-ripple';
+        ripple.style.left = (x - 25) + 'px';
+        ripple.style.top = (y - 25) + 'px';
+        ripple.style.width = '50px';
+        ripple.style.height = '50px';
+        ripple.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+        
+        document.body.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    },
+    
+    createScreenFlash(color = 'rgba(233,30,99,0.1)') {
+        const flash = document.createElement('div');
+        flash.style.position = 'fixed';
+        flash.style.top = '0';
+        flash.style.left = '0';
+        flash.style.width = '100vw';
+        flash.style.height = '100vh';
+        flash.style.background = color;
+        flash.style.pointerEvents = 'none';
+        flash.style.zIndex = '9999';
+        flash.style.animation = 'fadeIn 0.1s ease-out reverse';
+        
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 100);
+    },
+    
+    pulseElement(element, scale = 1.1, duration = 200) {
+        const originalTransform = element.style.transform;
+        element.style.transform = `scale(${scale})`;
+        element.style.transition = `transform ${duration}ms cubic-bezier(0.4,0,0.2,1)`;
+        
+        setTimeout(() => {
+            element.style.transform = originalTransform;
+        }, duration);
     }
 };
 
@@ -962,9 +1253,10 @@ function checkFirstTimeBonus() {
             showToast('🎉 WELCOME BONUS: 💰5000 + 🪙2500!', 5000);
             AudioEngine.playReward();
             VibrationEngine.vibrate('reward');
-            ParticleEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, '🎉', 20);
+            EffectsEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, '🎉', 20);
+            EffectsEngine.createScreenFlash('rgba(255,215,0,0.3)');
             localStorage.setItem('motorazr_first_bonus', 'true');
-        }, 1000);
+        }, 2000);
     }
 }
 
@@ -991,7 +1283,8 @@ function claimDailyReward() {
     showToast(`🎁 DAILY REWARD: 💰${cash} + 🪙${coins}!`, 4000);
     AudioEngine.playReward();
     VibrationEngine.vibrate('reward');
-    ParticleEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, '🎁', 15);
+    EffectsEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, '🎁', 15);
+    EffectsEngine.createScreenFlash('rgba(255,215,0,0.2)');
     
     document.getElementById('rewardBadge').style.display = 'none';
     loadRewards();
@@ -1037,7 +1330,8 @@ function buyItem(id) {
         showToast(`✅ PURCHASED: ${item.title}!`);
         AudioEngine.playBuy();
         VibrationEngine.vibrate('buy');
-        ParticleEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, item.icon, 12);
+        EffectsEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, item.icon, 12);
+        EffectsEngine.createScreenFlash('rgba(0,255,0,0.1)');
     } else if (item.currency === 'coins' && playerCoins >= item.price) {
         playerCoins -= item.price;
         if (item.coins) playerCoins += item.coins;
@@ -1046,11 +1340,13 @@ function buyItem(id) {
         showToast(`✅ PURCHASED: ${item.title}!`);
         AudioEngine.playBuy();
         VibrationEngine.vibrate('buy');
-        ParticleEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, item.icon, 12);
+        EffectsEngine.createExplosion(window.innerWidth / 2, window.innerHeight / 2, item.icon, 12);
+        EffectsEngine.createScreenFlash('rgba(0,255,0,0.1)');
     } else {
         showToast('❌ INSUFFICIENT FUNDS!');
         AudioEngine.playError();
         VibrationEngine.vibrate('error');
+        EffectsEngine.createScreenFlash('rgba(255,0,0,0.1)');
     }
 }
 
@@ -1107,19 +1403,90 @@ function getCategoryName(slug) {
     return cat ? cat.name : '';
 }
 
+// ========== TOUCH EFFECTS SYSTEM ==========
+const TouchEffects = {
+    init() {
+        const topScreen = document.getElementById('topScreen');
+        
+        // Add touch effects to top screen
+        topScreen.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+        topScreen.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        topScreen.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
+        
+        // Add click effects for desktop
+        topScreen.addEventListener('click', this.handleClick.bind(this));
+    },
+    
+    handleTouchStart(e) {
+        const touch = e.touches[0];
+        const x = touch.clientX;
+        const y = touch.clientY;
+        
+        EffectsEngine.createTouchRipple(x, y);
+        AudioEngine.playTouch();
+        VibrationEngine.vibrate('touch');
+        
+        // Add glow effect to top screen
+        const topScreen = document.getElementById('topScreen');
+        topScreen.style.boxShadow = 'inset 0 0 100px rgba(233,30,99,0.3)';
+    },
+    
+    handleTouchMove(e) {
+        // Create trailing effect for swipes
+        const touch = e.touches[0];
+        const x = touch.clientX;
+        const y = touch.clientY;
+        
+        if (Math.random() < 0.3) { // Reduce frequency
+            EffectsEngine.createTouchRipple(x, y, 'rgba(156,39,176,0.4)');
+        }
+    },
+    
+    handleTouchEnd(e) {
+        // Remove glow effect
+        const topScreen = document.getElementById('topScreen');
+        setTimeout(() => {
+            topScreen.style.boxShadow = '';
+        }, 200);
+    },
+    
+    handleClick(e) {
+        const x = e.clientX;
+        const y = e.clientY;
+        
+        EffectsEngine.createTouchRipple(x, y);
+        AudioEngine.playTouch();
+        VibrationEngine.vibrate('touch');
+    }
+};
+
 // ========== NAVIGATION ==========
 function playGame(href, title) {
-    AudioEngine.playClick();
-    VibrationEngine.vibrate('click');
+    AudioEngine.playGameSelect();
+    VibrationEngine.vibrate('gameSelect');
     showToast(`🎮 LOADING ${title.toUpperCase()}...`);
-    ParticleEngine.createFloating(window.innerWidth / 2, window.innerHeight / 2, '🎮', 8);
-    setTimeout(() => window.location.href = href, 400);
+    EffectsEngine.createFloating(window.innerWidth / 2, window.innerHeight / 2, '🎮', 8);
+    EffectsEngine.createScreenFlash('rgba(33,150,243,0.1)');
+    
+    // Update status
+    document.getElementById('gameStatus').textContent = 'LOADING...';
+    
+    setTimeout(() => window.location.href = href, 600);
 }
 
 // ========== EVENT LISTENERS ==========
+document.getElementById('playFeaturedBtn').addEventListener('click', () => {
+    const games = window.MARKKADE?.GAMES || [];
+    const featured = games.find(g => g.featured) || games[0];
+    if (featured) {
+        playGame(featured.href, featured.title);
+    }
+});
+
 document.getElementById('shopBtn').addEventListener('click', () => {
     AudioEngine.playClick();
     VibrationEngine.vibrate('click');
+    EffectsEngine.pulseElement(document.getElementById('shopBtn'));
     loadShop();
     document.getElementById('shopModal').classList.add('active');
 });
@@ -1133,6 +1500,7 @@ document.getElementById('closeShop').addEventListener('click', () => {
 document.getElementById('rewardsBtn').addEventListener('click', () => {
     AudioEngine.playClick();
     VibrationEngine.vibrate('click');
+    EffectsEngine.pulseElement(document.getElementById('rewardsBtn'));
     loadRewards();
     document.getElementById('rewardsModal').classList.add('active');
 });
@@ -1143,17 +1511,25 @@ document.getElementById('closeRewards').addEventListener('click', () => {
     document.getElementById('rewardsModal').classList.remove('active');
 });
 
-document.getElementById('viewAllBtn').addEventListener('click', () => {
-    AudioEngine.playClick();
-    VibrationEngine.vibrate('click');
-    showToast('🎮 VIEWING ALL GAMES...');
-    // Could expand to show all games or filter
-});
-
 document.getElementById('statsBtn').addEventListener('click', () => {
     AudioEngine.playClick();
     VibrationEngine.vibrate('click');
+    EffectsEngine.pulseElement(document.getElementById('statsBtn'));
     showToast('📊 STATISTICS COMING SOON!');
+});
+
+document.getElementById('settingsBtn').addEventListener('click', () => {
+    AudioEngine.playClick();
+    VibrationEngine.vibrate('click');
+    EffectsEngine.pulseElement(document.getElementById('settingsBtn'));
+    showToast('⚙️ SETTINGS COMING SOON!');
+});
+
+document.getElementById('achievementsBtn').addEventListener('click', () => {
+    AudioEngine.playClick();
+    VibrationEngine.vibrate('click');
+    EffectsEngine.pulseElement(document.getElementById('achievementsBtn'));
+    showToast('🏆 ACHIEVEMENTS COMING SOON!');
 });
 
 // Close modals on background click
@@ -1167,45 +1543,97 @@ document.querySelectorAll('.modal').forEach(modal => {
     });
 });
 
-// Add vibrate on touch for all interactive elements
+// Enhanced interactive elements with effects
 document.addEventListener('DOMContentLoaded', () => {
     const interactiveElements = [
-        'button', '.game-card', '.action-card', '.currency-item', 
-        '.icon-btn', '.shop-item', '.shop-btn', '.claim-btn'
+        'button', '.game-card', '.currency-item', 
+        '.shop-item', '.shop-btn', '.claim-btn', '.control-btn'
     ];
     
     interactiveElements.forEach(selector => {
         document.querySelectorAll(selector).forEach(el => {
-            el.addEventListener('touchstart', () => VibrationEngine.vibrate('tap'), { passive: true });
+            el.addEventListener('touchstart', (e) => {
+                VibrationEngine.vibrate('tap');
+                AudioEngine.playTouch();
+                EffectsEngine.pulseElement(el, 1.05, 150);
+                
+                // Create ripple at touch point
+                const rect = el.getBoundingClientRect();
+                const touch = e.touches[0];
+                const x = touch.clientX;
+                const y = touch.clientY;
+                EffectsEngine.createTouchRipple(x, y, 'rgba(233,30,99,0.4)');
+            }, { passive: true });
+            
+            // Add hover effects for desktop
+            el.addEventListener('mouseenter', () => {
+                EffectsEngine.pulseElement(el, 1.02, 200);
+            });
         });
     });
+    
+    // Initialize touch effects
+    TouchEffects.init();
 });
 
 // Currency display tap effects
 document.getElementById('cashDisplay').addEventListener('click', () => {
     AudioEngine.playClick();
     VibrationEngine.vibrate('tap');
-    ParticleEngine.createFloating(window.innerWidth / 4, 100, '💰', 3);
+    EffectsEngine.createFloating(window.innerWidth / 4, 100, '💰', 3);
+    EffectsEngine.createScreenFlash('rgba(255,215,0,0.1)');
 });
 
 document.getElementById('coinsDisplay').addEventListener('click', () => {
     AudioEngine.playClick();
     VibrationEngine.vibrate('tap');
-    ParticleEngine.createFloating(window.innerWidth * 3 / 4, 100, '🪙', 3);
+    EffectsEngine.createFloating(window.innerWidth * 3 / 4, 100, '🪙', 3);
+    EffectsEngine.createScreenFlash('rgba(255,215,0,0.1)');
 });
 
 // ========== INITIALIZATION ==========
-AudioEngine.init();
-updateCurrency();
-loadGames();
-checkFirstTimeBonus();
-checkDailyReward();
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize all systems
+    AudioEngine.init();
+    VibrationEngine.init();
+    updateCurrency();
+    loadGames();
+    
+    // Startup sequence
+    setTimeout(() => {
+        AudioEngine.playStartup();
+        VibrationEngine.vibrate('startup');
+        EffectsEngine.createScreenFlash('rgba(233,30,99,0.2)');
+        document.getElementById('gameStatus').textContent = 'READY';
+    }, 500);
+    
+    // Check bonuses after startup
+    setTimeout(() => {
+        checkFirstTimeBonus();
+        checkDailyReward();
+    }, 1500);
+});
 
 // Auto-save currency periodically
 setInterval(() => {
     localStorage.setItem('motorazr_cash', playerCash);
     localStorage.setItem('motorazr_coins', playerCoins);
 }, 5000);
+
+// Prevent context menu on long press for mobile
+document.addEventListener('contextmenu', (e) => {
+    if (e.target.closest('.top-screen') || e.target.closest('.bottom-screen')) {
+        e.preventDefault();
+    }
+});
+
+// Add orientation change handling
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        EffectsEngine.createScreenFlash('rgba(33,150,243,0.1)');
+        showToast('📱 OPTIMIZED FOR RAZR 2024!');
+    }, 100);
+});
 </script>
 </body>
 </html>
