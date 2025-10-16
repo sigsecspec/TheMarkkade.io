@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b0e17" />
+  <title>Neon Mirage Slots — GPT‑5 Edition (Razr 2024)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, rgba(255,0,128,0.12), transparent),
+                  radial-gradient(900px 500px at 10% 80%, rgba(0,255,255,0.10), transparent),
+                  radial-gradient(1000px 600px at 100% 50%, rgba(255,255,0,0.06), transparent),
+                  linear-gradient(135deg, #0b0e17 0%, #0a0c14 50%, #070a10 100%);
+      color: #f4f8ff;
+      user-select: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Dual-screen container (top display, bottom controls) */
+    .razr-container { display: flex; flex-direction: column; width: 100vw; height: 100vh; }
+
+    /* TOP SCREEN (display area) */
+    .top-screen {
+      flex: 1;
+      position: relative;
+      border-bottom: 3px solid #15f1ff;
+      background:
+        radial-gradient(1200px 400px at 50% 0%, rgba(21,241,255,0.10), transparent 70%),
+        linear-gradient(180deg, rgba(10,14,22,0.3), rgba(7,10,16,0.75));
+      overflow: hidden;
+      cursor: pointer; /* tap reacts with effects */
+    }
+
+    /* Cabinet bezel */
+    .cabinet-frame {
+      position: absolute; inset: 10px 10px 10px 10px;
+      border-radius: 18px;
+      border: 4px solid #15f1ff;
+      background:
+        linear-gradient(135deg, #0e1526 0%, #0a0f1f 50%, #0e1526 100%);
+      box-shadow:
+        0 0 24px rgba(21,241,255,0.35),
+        inset 0 0 26px rgba(0,0,0,0.6),
+        inset 0 0 80px rgba(21,241,255,0.06);
+    }
+
+    .header {
+      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      padding: 8px 14px; border-radius: 12px; border: 2px solid #ff2aa1;
+      background: linear-gradient(135deg, rgba(255,42,161,0.14), rgba(21,241,255,0.08));
+      box-shadow: 0 0 24px rgba(255,42,161,0.35), inset 0 0 18px rgba(0,0,0,0.5);
+      text-align: center; z-index: 3;
+    }
+
+    .title {
+      font-weight: 900; letter-spacing: 2px;
+      font-size: clamp(18px, 4.2vw, 22px);
+      color: #ff2aa1;
+      text-shadow: 0 0 18px rgba(255,42,161,0.75), 0 0 28px rgba(21,241,255,0.35);
+      animation: titleGlow 2s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow { from{ filter:brightness(1); } to{ filter:brightness(1.3); } }
+
+    .info-strip {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-items: center;
+      padding: 8px 12px; border: 2px solid #15f1ff; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(21,241,255,0.10), rgba(255,42,161,0.08));
+      color: #cfe9ff; z-index: 3; min-width: 72%;
+      box-shadow: 0 0 18px rgba(21,241,255,0.25), inset 0 0 16px rgba(0,0,0,0.45);
+      font-weight: 800;
+    }
+    .info-label { font-size: 11px; color: #9ad9ff; text-shadow: 0 0 8px rgba(21,241,255,0.6); }
+    .info-value { font-size: 18px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.45); }
+
+    /* Reels */
+    .reels {
+      position: absolute; top: 56px; left: 50%; transform: translateX(-50%);
+      width: min(92vw, 560px); height: min(52vh, 280px);
+      border-radius: 12px; border: 3px solid #15f1ff;
+      background: linear-gradient(180deg, #05070b 0%, #0a0e16 100%);
+      display: flex; gap: 10px; padding: 10px; overflow: hidden; z-index: 2;
+      box-shadow: inset 0 0 28px rgba(0,0,0,0.7);
+    }
+    .reel { flex: 1; border-radius: 10px; border: 2px solid #24374a; background: linear-gradient(180deg, #0e1622 0%, #0a0f1a 100%); position: relative; overflow: hidden; box-shadow: inset 0 0 16px rgba(0,0,0,0.55); }
+    .strip { position: absolute; width: 100%; will-change: transform; }
+    .symbol { height: 84px; display: flex; align-items: center; justify-content: center; font-size: 46px; color: #fff; text-shadow: 0 0 12px currentColor; border-bottom: 1px solid #142031; }
+
+    .payline { position: absolute; top: 50%; left: 0; right: 0; height: 3px; transform: translateY(-50%); background: linear-gradient(90deg, transparent, #15f1ff, transparent); opacity: 0; animation: paylinePulse 1.4s ease-in-out infinite; z-index: 3; }
+    @keyframes paylinePulse { 0%,100%{opacity:.15} 50%{opacity:1} }
+
+    /* Touch ripple/spark */
+    .ripple { position: absolute; border-radius: 50%; background: rgba(21,241,255,0.35); transform: scale(0); animation: ripple 600ms ease-out forwards; pointer-events: none; }
+    @keyframes ripple { to { transform: scale(5); opacity: 0; } }
+    .spark { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #ff2aa1; box-shadow: 0 0 10px #ff2aa1; pointer-events: none; animation: spark 900ms ease-out forwards; }
+    @keyframes spark { to { transform: translate(var(--sx), var(--sy)) scale(0); opacity: 0; } }
+
+    /* Win overlay */
+    .win-overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 4; }
+    .win-text { font-weight: 900; font-size: clamp(28px, 6vw, 42px); color: #15f1ff; text-shadow: 0 0 18px rgba(21,241,255,0.9), 0 0 36px rgba(255,42,161,0.6); animation: winPulse 0.9s ease-in-out infinite; }
+    @keyframes winPulse { 0%,100%{ transform: scale(1) } 50%{ transform: scale(1.08) } }
+
+    /* BOTTOM SCREEN (controls) */
+    .bottom-screen { flex: 1; display: flex; flex-direction: column; padding: 14px; gap: 12px; background: linear-gradient(180deg, rgba(7,10,16,0.85), rgba(6,9,14,0.95)); border-top: 3px solid #15f1ff; }
+
+    .control-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .button { height: 56px; border: 0; border-radius: 14px; font-weight: 900; letter-spacing: 1px; color: #0a0f16; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.45); background: linear-gradient(135deg, #15f1ff 0%, #00c4ff 50%, #15f1ff 100%); text-shadow: 0 1px 0 rgba(255,255,255,0.35); }
+    .button:active { transform: translateY(2px); box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+    .spin { height: 76px; border-radius: 18px; font-size: 20px; grid-column: 1 / -1; background: linear-gradient(135deg, #ff2aa1 0%, #ff6ac1 50%, #ff2aa1 100%); color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.4); box-shadow: 0 10px 26px rgba(255,42,161,0.35); }
+
+    .credit { text-align: center; font-size: 11px; color: #9ad9ff; opacity: 0.9; border: 1px solid rgba(21,241,255,0.25); border-radius: 10px; padding: 8px; background: linear-gradient(135deg, rgba(21,241,255,0.08), rgba(255,42,161,0.06)); }
+
+    /* Spinning class for strips */
+    .spinning { animation: reelSpin 110ms linear infinite; }
+    @keyframes reelSpin { from { transform: translateY(0); } to { transform: translateY(-84px); } }
+
+    /* Small screen tuning */
+    @media (max-width: 420px) {
+      .reels { height: min(50vh, 250px); }
+      .symbol { height: 78px; font-size: 40px; }
+      .spinning { animation-duration: 120ms; }
+    }
+  </style>
+</head>
+<body>
+  <div class="razr-container">
+    <div class="top-screen" id="topScreen">
+      <div class="cabinet-frame"></div>
+      <div class="header"><div class="title">NEON MIRAGE SLOTS — GPT‑5</div></div>
+
+      <div class="reels">
+        <div class="reel"><div class="strip" id="strip1"></div></div>
+        <div class="reel"><div class="strip" id="strip2"></div></div>
+        <div class="reel"><div class="strip" id="strip3"></div></div>
+      </div>
+      <div class="payline" id="payline"></div>
+
+      <div class="info-strip">
+        <div>
+          <div class="info-label">CREDITS</div>
+          <div class="info-value" id="credits">1000</div>
+        </div>
+        <div>
+          <div class="info-label">BET</div>
+          <div class="info-value" id="bet">10</div>
+        </div>
+        <div>
+          <div class="info-label">WIN</div>
+          <div class="info-value" id="win">0</div>
+        </div>
+      </div>
+
+      <div class="win-overlay" id="winOverlay">
+        <div class="win-text" id="winText">WIN!</div>
+      </div>
+    </div>
+
+    <div class="bottom-screen">
+      <div class="control-row">
+        <button class="button" id="betDown">− BET</button>
+        <button class="button" id="maxBet">MAX BET</button>
+        <button class="button" id="betUp">+ BET</button>
+      </div>
+      <button class="button spin" id="spin">SPIN</button>
+      <div class="control-row">
+        <button class="button" id="auto">AUTO</button>
+        <button class="button" id="paytable">PAY TABLE</button>
+        <button class="button" id="settings">SETTINGS</button>
+      </div>
+      <div class="credit">Built by GPT‑5 — Neon Mirage Slots (Motorola Razr 2024 Dual‑Screen)</div>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // Adaptive AI difficulty knobs (tuned during play)
+    const ai = {
+      targetRTP: 0.94, // long-term theoretical payout
+      volatility: 0.6, // 0..1 higher = spikier results
+      adjustPeriod: 25, // spins per adjustment
+      spinsSinceAdjust: 0,
+      recentPayouts: [],
+      updateAfter(winAmount, bet) {
+        this.recentPayouts.push(winAmount / Math.max(bet, 1));
+        if (this.recentPayouts.length > this.adjustPeriod) this.recentPayouts.shift();
+        this.spinsSinceAdjust++;
+        if (this.spinsSinceAdjust >= this.adjustPeriod) {
+          const avgReturn = this.recentPayouts.reduce((a,b)=>a+b,0) / this.recentPayouts.length;
+          // Nudge volatility toward target experience
+          if (avgReturn < this.targetRTP * 0.8) this.volatility = Math.min(0.9, this.volatility + 0.05);
+          if (avgReturn > this.targetRTP * 1.1) this.volatility = Math.max(0.2, this.volatility - 0.05);
+          this.spinsSinceAdjust = 0;
+        }
+      }
+    };
+
+    const SYMBOLS = [
+      { s:'🍒', w: 26, p:{2:2, 3:12} },
+      { s:'🍋', w: 22, p:{2:3, 3:16} },
+      { s:'🍇', w: 18, p:{2:4, 3:22} },
+      { s:'🔔', w: 12, p:{2:8, 3:40} },
+      { s:'⭐', w: 9,  p:{2:12,3:70} },
+      { s:'💎', w: 6,  p:{2:18,3:120} },
+      { s:'🎰', w: 3,  p:{2:40,3:500} },
+      { s:'🃏', w: 4,  p:{}, wild:true }, // wild
+      { s:'🌀', w: 2,  p:{}, feature:'freespin' } // feature
+    ];
+
+    const UI = {
+      credits: document.getElementById('credits'),
+      bet: document.getElementById('bet'),
+      win: document.getElementById('win'),
+      strips: [document.getElementById('strip1'), document.getElementById('strip2'), document.getElementById('strip3')],
+      payline: document.getElementById('payline'),
+      winOverlay: document.getElementById('winOverlay'),
+      winText: document.getElementById('winText'),
+      topScreen: document.getElementById('topScreen'),
+      buttons: {
+        spin: document.getElementById('spin'),
+        betUp: document.getElementById('betUp'),
+        betDown: document.getElementById('betDown'),
+        maxBet: document.getElementById('maxBet'),
+        auto: document.getElementById('auto'),
+        paytable: document.getElementById('paytable'),
+        settings: document.getElementById('settings')
+      }
+    };
+
+    // Economy
+    let credits = 1000;
+    const betLevels = [5, 10, 25, 50, 100, 250];
+    let betIndex = 1;
+    let lastWin = 0;
+    let spinning = false;
+    let autoSpins = 0;
+    let freeSpins = 0;
+
+    // Audio via WebAudio
+    let audioCtx = null;
+    function ensureAudio() {
+      if (!audioCtx) {
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+    function tone(freq, dur, type='sine', vol=0.08) {
+      const ctx = ensureAudio(); if (!ctx) return;
+      const osc = ctx.createOscillator(); const g = ctx.createGain();
+      osc.connect(g); g.connect(ctx.destination);
+      osc.frequency.value = freq; osc.type = type; g.gain.value = vol;
+      const now = ctx.currentTime; g.gain.setValueAtTime(vol, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      osc.start(now); osc.stop(now + dur);
+    }
+
+    // Haptics
+    function vibrate(pattern){ if('vibrate' in navigator) navigator.vibrate(pattern); }
+
+    // Top-screen touch visual effects
+    UI.topScreen.addEventListener('click', (e) => {
+      // ripple
+      const r = document.createElement('div'); r.className = 'ripple';
+      const rect = UI.topScreen.getBoundingClientRect(); const size = 64;
+      r.style.width = r.style.height = size+'px';
+      r.style.left = (e.clientX - rect.left - size/2)+'px';
+      r.style.top = (e.clientY - rect.top - size/2)+'px';
+      UI.topScreen.appendChild(r); setTimeout(()=>r.remove(), 650);
+
+      // sparks
+      for(let i=0;i<6;i++){
+        const s = document.createElement('div'); s.className = 'spark';
+        const sx = (Math.random()-0.5)*160; const sy = (Math.random()-0.5)*160;
+        s.style.left = (e.clientX - rect.left)+'px'; s.style.top = (e.clientY - rect.top)+'px';
+        s.style.setProperty('--sx', sx+'px'); s.style.setProperty('--sy', sy+'px');
+        UI.topScreen.appendChild(s); setTimeout(()=>s.remove(), 900);
+      }
+      vibrate([15,10,15]);
+      tone(1200 + Math.random()*400, 0.07, 'triangle', 0.05);
+    }, { passive: true });
+
+    // Build strips
+    function buildStrips() {
+      const stripLen = 18;
+      for (let i=0;i<3;i++) {
+        const strip = UI.strips[i]; strip.innerHTML='';
+        for (let copy=0; copy<4; copy++) {
+          for (let k=0;k<stripLen;k++) {
+            const sym = weightedSymbol();
+            const div = document.createElement('div');
+            div.className='symbol'; div.textContent = sym.s;
+            strip.appendChild(div);
+          }
+        }
+      }
+    }
+
+    function weightedSymbol() {
+      const base = SYMBOLS.reduce((a,b)=>a+b.w,0);
+      let rnd = Math.random()*base;
+      for (const sym of SYMBOLS) { rnd -= sym.w; if (rnd <= 0) return sym; }
+      return SYMBOLS[0];
+    }
+
+    function getSpinResult() {
+      // AI-adjusted chance: modulate rare symbols frequency by volatility
+      const boost = 1 + ai.volatility*0.6;
+      function pick() {
+        const total = SYMBOLS.reduce((a,b)=>a + (b.w / (b.w < 8 ? boost : 1)), 0);
+        let r = Math.random()*total;
+        for (const sym of SYMBOLS) {
+          const adj = sym.w / (sym.w < 8 ? boost : 1);
+          r -= adj; if (r <= 0) return sym;
+        }
+        return SYMBOLS[0];
+      }
+      return [pick(), pick(), pick()];
+    }
+
+    function setStripTo(i, symbolChar) {
+      const strip = UI.strips[i];
+      const nodes = strip.querySelectorAll('.symbol');
+      const mid = Math.floor(nodes.length/2);
+      if (nodes[mid]) nodes[mid].textContent = symbolChar;
+      if (nodes[mid-1]) nodes[mid-1].textContent = weightedSymbol().s;
+      if (nodes[mid+1]) nodes[mid+1].textContent = weightedSymbol().s;
+      strip.style.transform = `translateY(-${mid*84}px)`;
+    }
+
+    function updateUI() {
+      UI.credits.textContent = credits;
+      UI.bet.textContent = betLevels[betIndex];
+      UI.win.textContent = lastWin;
+      UI.buttons.spin.disabled = spinning || credits < betLevels[betIndex];
+      UI.buttons.maxBet.disabled = spinning || betIndex === betLevels.length-1;
+    }
+
+    function showWinOverlay(text, duration=2200) {
+      UI.winText.textContent = text;
+      UI.winOverlay.style.display = 'flex';
+      setTimeout(()=>UI.winOverlay.style.display='none', duration);
+    }
+
+    function showPaylineFlash() {
+      UI.payline.style.opacity = '1';
+      setTimeout(()=>UI.payline.style.opacity='0', 1500);
+    }
+
+    // Button ripple + haptic + click tone
+    function decorateButton(btn) {
+      btn.addEventListener('click', (e)=>{
+        const rect = btn.getBoundingClientRect();
+        const rp = document.createElement('div'); rp.className='ripple';
+        const size = Math.max(rect.width, rect.height);
+        rp.style.width = rp.style.height = size+'px';
+        rp.style.left = (e.clientX - rect.left - size/2)+'px';
+        rp.style.top = (e.clientY - rect.top - size/2)+'px';
+        btn.appendChild(rp); setTimeout(()=>rp.remove(), 650);
+        vibrate(30); tone(420, 0.05, 'square', 0.06);
+      });
+    }
+    Object.values(UI.buttons).forEach(decorateButton);
+
+    // Controls
+    UI.buttons.betUp.addEventListener('click', ()=>{ if (betIndex < betLevels.length-1){ betIndex++; updateUI(); }});
+    UI.buttons.betDown.addEventListener('click', ()=>{ if (betIndex > 0){ betIndex--; updateUI(); }});
+    UI.buttons.maxBet.addEventListener('click', ()=>{ betIndex = betLevels.length-1; updateUI(); vibrate([10,10,10]); });
+
+    UI.buttons.paytable.addEventListener('click', ()=>{
+      alert('Pay Table (3 in a row):\n\n🍒 12x   🍋 16x   🍇 22x\n🔔 40x   ⭐ 70x   💎 120x\n🎰 500x JACKPOT\n🃏 Wild substitutes\n🌀 3x activates 5 Free Spins');
+    });
+
+    UI.buttons.settings.addEventListener('click', ()=>{
+      alert('Settings are auto-optimized for Razr dual-screen. Sound + haptics enabled.');
+    });
+
+    UI.buttons.auto.addEventListener('click', ()=>{
+      if (autoSpins > 0) { autoSpins = 0; UI.buttons.auto.textContent = 'AUTO'; return; }
+      autoSpins = 15; UI.buttons.auto.textContent = '⏹ STOP';
+      if (!spinning) spin();
+    });
+
+    UI.buttons.spin.addEventListener('click', spin);
+
+    // Spin logic
+    function startStripSpin() { UI.strips.forEach(strip => strip.classList.add('spinning')); }
+    function stopStripSpin() { UI.strips.forEach(strip => strip.classList.remove('spinning')); }
+
+    function payoutFrom(results, bet) {
+      const chars = results.map(r=>r.s);
+      // Count specials
+      const specials = { wild: results.filter(r=>r.wild).length, fs: results.filter(r=>r.feature==='freespin').length };
+
+      // Wild handling: treat wilds as matching the most valuable found in the trio
+      const nonSpecial = results.filter(r=>!r.wild && !r.feature);
+      let bestSymbol = nonSpecial.sort((a,b)=> (b.p[3]||0) - (a.p[3]||0))[0] || results[0];
+      const count = results.filter(r=> r.s === bestSymbol.s || r.wild).length;
+
+      let win = 0;
+      if (count >= 2 && bestSymbol.p[count]) win = bestSymbol.p[count] * bet;
+
+      // Jackpot case (3 🎰 including wilds)
+      if (['🎰','🃏'].includes(bestSymbol.s) && count === 3) {
+        win = Math.max(win, 500 * bet);
+      }
+
+      // Free spins trigger
+      let fsAward = 0;
+      if (specials.fs >= 3) fsAward = 5 + Math.floor(Math.random()*3); // 5-7
+
+      return { win, fsAward };
+    }
+
+    async function spin() {
+      if (spinning) return;
+      const bet = betLevels[betIndex];
+      if (credits < bet && freeSpins === 0) { tone(180,0.2,'sawtooth',0.06); vibrate([50]); return; }
+
+      spinning = true; lastWin = 0; updateUI();
+
+      // Spend
+      if (freeSpins > 0) { freeSpins--; } else { credits -= bet; }
+      UI.winOverlay.style.display = 'none'; UI.payline.style.opacity = '0';
+
+      // Start audiovisuals
+      ensureAudio(); tone(360, 0.12, 'sine', 0.05); vibrate([80,40,80]);
+      startStripSpin();
+
+      // Decide outcome
+      const results = getSpinResult();
+
+      // Staggered stops with sounds + haptics
+      const stops = [900, 1400, 1900];
+      await new Promise(r => setTimeout(r, stops[0])); setStripTo(0, results[0].s); tone(260,0.1,'square',0.07); vibrate([60]);
+      await new Promise(r => setTimeout(r, stops[1]-stops[0])); setStripTo(1, results[1].s); tone(230,0.1,'square',0.07); vibrate([70]);
+      await new Promise(r => setTimeout(r, stops[2]-stops[1])); setStripTo(2, results[2].s); tone(200,0.12,'square',0.08); vibrate([80]);
+
+      stopStripSpin();
+
+      // Evaluate
+      const { win, fsAward } = payoutFrom(results, bet);
+      lastWin = win; if (win > 0) credits += win;
+      if (fsAward > 0) { freeSpins += fsAward; }
+
+      // Feedback
+      if (win > 0) {
+        const mult = win / Math.max(bet,1);
+        showPaylineFlash();
+        if (mult >= 100) { // jackpot
+          showWinOverlay('🎉 JACKPOT! 🎉');
+          for (let i=0;i<4;i++) setTimeout(()=>tone(800+i*220,0.24,'sine',0.09), i*120);
+          vibrate([200,100,200,100,200]);
+        } else if (mult >= 40) {
+          showWinOverlay('💎 BIG WIN! 💎'); tone(980,0.3,'sine',0.1); setTimeout(()=>tone(1200,0.3,'sine',0.1), 160); vibrate([140,60,140]);
+        } else {
+          showWinOverlay('WIN!'); tone(900,0.22,'sine',0.08); vibrate([100]);
+        }
+      } else {
+        tone(180,0.18,'sawtooth',0.06); vibrate([40]);
+      }
+
+      // AI adapt
+      ai.updateAfter(win, bet);
+
+      updateUI();
+      spinning = false;
+
+      // Autoplay
+      if (autoSpins > 0) {
+        autoSpins--; UI.buttons.auto.textContent = autoSpins > 0 ? `⏩ ${autoSpins}` : 'AUTO';
+        if (autoSpins > 0 && (credits >= bet || freeSpins > 0)) {
+          setTimeout(spin, 450);
+        }
+      }
+    }
+
+    // Initialization
+    buildStrips(); updateUI();
+
+    // Resume audio on first interaction
+    document.addEventListener('click', ensureAudio, { once: true });
+    document.addEventListener('touchstart', ensureAudio, { once: true, passive: true });
+
+    // Prevent context menu / accidental zoom
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    let lastTouchEnd = 0; document.addEventListener('touchend', (e)=>{ const now = Date.now(); if (now - lastTouchEnd <= 300) e.preventDefault(); lastTouchEnd = now; }, { passive: false });
+  })();
+  </script>
+</body>
+</html>
