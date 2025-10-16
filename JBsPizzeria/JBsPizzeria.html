@@ -842,9 +842,9 @@
   'use strict';
 
   const pizzaTypes = [
-    { name: "cheese", weight: 50, emoji: "🧀" },
-    { name: "pepperoni", weight: 30, emoji: "🍕" },
-    { name: "olives", weight: 20, emoji: "🫒" }
+    { name: "cheese", weight: 50, image: "pizza/cheese.png" },
+    { name: "pepperoni", weight: 30, image: "pizza/pepperoni.png" },
+    { name: "olives", weight: 20, image: "pizza/olives.png" }
   ];
 
   const costPerSpin = 5;
@@ -1026,11 +1026,15 @@
     return pizzaTypes[0];
   }
 
-  // Initialize grid with pizza emojis
+  // Initialize grid with pizza images
   function initializeGrid() {
     for(let i = 0; i < ROWS * COLS; i++) {
       const pizza = weightedRandomPizza();
-      cells[i].textContent = pizza.emoji;
+      const img = document.createElement('img');
+      img.src = pizza.image;
+      img.alt = pizza.name;
+      cells[i].innerHTML = '';
+      cells[i].appendChild(img);
       cells[i].dataset.pizzaType = pizza.name;
     }
   }
@@ -1117,7 +1121,11 @@
         const interval = setInterval(() => {
           colSlots.forEach((cell, rowIdx) => {
             const pizza = weightedRandomPizza();
-            cell.textContent = pizza.emoji;
+            const img = document.createElement('img');
+            img.src = pizza.image;
+            img.alt = pizza.name;
+            cell.innerHTML = '';
+            cell.appendChild(img);
             cell.dataset.pizzaType = pizza.name;
             cell.classList.add('spinning');
             results[rowIdx][colIndex] = pizza.name;
