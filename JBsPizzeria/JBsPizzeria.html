@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>JB’s Pizzeria Slot Machine - Wooden Theme</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #5d3a00, #402700);
+      color: #fff4e1;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 30px 20px;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      position: relative;
+      background-image:
+        radial-gradient(circle at top left, #a0522d20 5%, transparent 25%),
+        radial-gradient(circle at bottom right, #a0522d20 8%, transparent 35%);
+      background-repeat: no-repeat;
+      background-size: 300px 300px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: #d2691e;
+      margin-bottom: 12px;
+      text-shadow:
+        0 0 7px #ffa500cc,
+        0 0 15px #d2691e88;
+      letter-spacing: 1.4px;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    #slotMachine {
+      display: grid;
+      grid-template-columns: repeat(4, 110px);
+      grid-template-rows: repeat(3, 110px);
+      gap: 14px;
+      padding: 22px 30px;
+      background: linear-gradient(145deg, #704214, #5a3310);
+      border-radius: 20px;
+      box-shadow:
+        inset 0 0 25px #3a1f00cc,
+        0 0 25px #7a4a00cc;
+      position: relative;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .slot {
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(145deg, #d2b48c, #a6784e);
+      border-radius: 18px;
+      box-shadow:
+        inset 5px 5px 8px #7b4f22,
+        inset -5px -5px 8px #d3a96e,
+        0 3px 5px #643800cc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      cursor: default;
+      position: relative;
+    }
+
+    .slot img {
+      max-width: 80%;
+      max-height: 80%;
+      border-radius: 14px;
+      filter:
+        drop-shadow(0 0 6px #c76f00cc)
+        drop-shadow(0 0 3px #ffab00cc);
+      transition: transform 0.25s ease;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .win-highlight {
+      box-shadow:
+        0 0 15px 8px #ffd54f,
+        0 0 30px 14px #ffca2822;
+      animation: wiggle 0.8s ease-in-out infinite;
+      transform-origin: center;
+      z-index: 10;
+      position: relative;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-6deg); }
+      50% { transform: rotate(6deg); }
+      75% { transform: rotate(-6deg); }
+    }
+
+    #buttonContainer {
+      margin-top: 22px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      user-select: none;
+    }
+
+    #spinButton, #exitButton {
+      background: linear-gradient(145deg, #c86a00, #a45100);
+      border: none;
+      color: #fff4e1;
+      font-weight: 700;
+      font-size: 1.3rem;
+      padding: 15px 36px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow:
+        0 0 20px #ffb300aa,
+        0 6px 12px #c56a0088;
+      user-select: none;
+      transition:
+        box-shadow 0.4s ease,
+        transform 0.2s ease;
+      font-family: 'Poppins', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #spinButton:hover {
+      box-shadow:
+        0 0 40px #ffca28,
+        0 12px 24px #ffca2855;
+      transform: scale(1.05);
+    }
+
+    #spinButton:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 20px #c56a0088;
+    }
+
+    #exitButton {
+      background: linear-gradient(145deg, #6b4a00, #482e00);
+      box-shadow:
+        0 0 12px #583900cc,
+        0 6px 12px #422b0011;
+      font-size: 1rem;
+      padding: 14px 28px;
+    }
+
+    #exitButton:hover {
+      background: linear-gradient(145deg, #6f5100, #563900);
+      box-shadow: 0 0 18px #876200cc;
+      color: #ffddb2;
+    }
+
+    #balance {
+      margin-top: 18px;
+      font-size: 1.28rem;
+      font-weight: 700;
+      color: #fff4e1;
+      text-shadow: 0 0 7px #ffb300cc;
+      user-select: none;
+      letter-spacing: 0.7px;
+    }
+
+    #costInfo {
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: #ffca28cc;
+      margin-left: 14px;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    #paytable {
+      margin-top: 30px;
+      background: linear-gradient(145deg, #b87b3a, #8a5721);
+      padding: 20px 26px;
+      border-radius: 20px;
+      color: #fff4e1;
+      font-size: 16px;
+      max-width: 480px;
+      line-height: 1.45;
+      box-shadow:
+        inset 0 0 20px #8a572166,
+        0 0 25px #bb7c3811;
+      font-weight: 600;
+      user-select: none;
+      text-shadow: 0 0 2px #482a0b;
+      letter-spacing: 0.3px;
+    }
+
+    #popupOverlay {
+      position: fixed;
+      top:0; left:0; width:100vw; height:100vh;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+    #popupMessage {
+      background: #422c09;
+      padding: 28px 42px;
+      border-radius: 20px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffd54f;
+      text-align: center;
+      box-shadow: 0 0 28px #ffca2855;
+      user-select: none;
+      max-width: 90vw;
+      max-height: 80vh;
+      overflow-wrap: break-word;
+      text-shadow: 0 0 5px #9e6f01;
+    }
+
+    canvas.confetti {
+      position: fixed !important;
+      top: 0; left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Glow behind slot machine */
+    #glowEffect {
+      position: absolute;
+      width: 460px;
+      height: 370px;
+      border-radius: 30px;
+      background: radial-gradient(circle at center, #c9741a88 20%, transparent 75%);
+      filter: blur(30px);
+      z-index: 0;
+      top: calc(50% + 15px);
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      user-select: none;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>🍕 JB’s Pizzeria Slot 🍕</h1>
+
+  <div id="slotMachine" aria-label="Slot machine grid"></div>
+
+  <div id="buttonContainer">
+    <button id="spinButton" aria-label="Spin the slot machine">🎰 Spin the Pizza!</button>
+    <span id="costInfo">Cost: 5 Markka$h</span>
+    <button id="exitButton" aria-label="Exit to home page">⏏ Exit</button>
+  </div>
+
+  <div id="balance" aria-live="polite" aria-atomic="true">Balance: <span id="playerCash">0</span> Markka$h</div>
+
+  <div id="paytable" aria-label="Paytable and rules">
+    <strong>🎯 PAYTABLE:</strong><br>
+    - Cheese (common): 3 connected = 50 Markka$h, 4+ = 100 Markka$h, Jackpot (5) = 300 Markka$h<br>
+    - Pepperoni (less common): 3 connected = 35 Markka$h, 4+ = 70 Markka$h, Jackpot (5) = 200 Markka$h<br>
+    - Olives (rare): 3 connected = 25 Markka$h, 4+ = 50 Markka$h, Jackpot (5) = 150 Markka$h<br>
+    <br>
+    🍕 Each spin costs 5 Markka$h.<br>
+    🍕 Win by matching connected lines horizontally, vertically or diagonally.<br>
+  </div>
+
+  <div id="popupOverlay" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="popupMessage"></div>
+  </div>
+
+  <div id="glowEffect" aria-hidden="true"></div>
+
+  <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+
+  <!-- Sounds -->
+  <audio id="spinSound" src="https://actions.google.com/sounds/v1/ambiences/arcade_game_loop.ogg" preload="auto"></audio>
+  <audio id="stopSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
+  <audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const pizzaTypes = [
+      { name: "cheese", weight: 50 },
+      { name: "pepperoni", weight: 30 },
+      { name: "olives", weight: 20 }
+    ];
+
+    const costPerSpin = 5;
+    const ROWS = 3;
+    const COLS = 4;
+
+    const payouts = {
+      cheese: { three: 50, four: 100, jackpot: 300 },
+      pepperoni: { three: 35, four: 70, jackpot: 200 },
+      olives: { three: 25, four: 50, jackpot: 150 }
+    };
+
+    const slotMachine = document.getElementById("slotMachine");
+    const playerCashEl = document.getElementById("playerCash");
+    const spinSound = document.getElementById("spinSound");
+    const stopSound = document.getElementById("stopSound");
+    const winSound = document.getElementById("winSound");
+    const confettiCanvas = document.getElementById("confetti");
+    const popupOverlay = document.getElementById("popupOverlay");
+    const popupMessage = document.getElementById("popupMessage");
+    const spinButton = document.getElementById("spinButton");
+    const exitButton = document.getElementById("exitButton");
+
+    const slots = [];
+
+    // Weighted random pizza picker
+    function weightedRandomPizza() {
+      const totalWeight = pizzaTypes.reduce((acc, p) => acc + p.weight, 0);
+      let rand = Math.random() * totalWeight;
+      for (const p of pizzaTypes) {
+        if (rand < p.weight) return p.name;
+        rand -= p.weight;
+      }
+      return pizzaTypes[0].name; // fallback
+    }
+
+    // Create slots grid
+    for(let i=0; i<ROWS*COLS; i++) {
+      const div = document.createElement("div");
+      div.classList.add("slot");
+      const img = document.createElement("img");
+      img.src = `pizza/${weightedRandomPizza()}.png`;
+      img.alt = "Pizza";
+      div.appendChild(img);
+      slotMachine.appendChild(div);
+      slots.push(img);
+    }
+
+    function updateCashDisplay() {
+      playerCashEl.textContent = localStorage.playerCash || 0;
+    }
+
+    function showPopup(msg) {
+      popupMessage.textContent = msg;
+      popupOverlay.style.display = "flex";
+      setTimeout(() => {
+        popupOverlay.style.display = "none";
+      }, 3000);
+    }
+
+    function triggerConfetti() {
+      confetti.create(confettiCanvas, { resize: true })({
+        particleCount: 200,
+        spread: 110,
+        origin: { y: 0.65 },
+        colors: ['#ffb300','#ff9100','#ffca28']
+      });
+    }
+
+    function clearHighlights() {
+      slots.forEach(img => img.parentElement.classList.remove("win-highlight"));
+    }
+
+    function highlightWinningSlots(winPositions) {
+      winPositions.forEach(([row, col]) => {
+        const index = row * COLS + col;
+        slots[index].parentElement.classList.add("win-highlight");
+      });
+    }
+
+    // Directions to check for connected lines
+    const directions = [
+      [0,1], [1,0], [1,1], [-1,1]
+    ];
+
+    function findLine(results, r, c, dr, dc) {
+      const symbol = results[r][c];
+      const connected = [[r,c]];
+      let nr = r + dr;
+      let nc = c + dc;
+
+      while(nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && results[nr][nc] === symbol) {
+        connected.push([nr,nc]);
+        nr += dr;
+        nc += dc;
+      }
+
+      return connected;
+    }
+
+    function spinSlots() {
+      clearHighlights();
+
+      let cash = parseInt(localStorage.playerCash || "0");
+      if (cash < costPerSpin) {
+        showPopup("❌ Not enough Markka$h!");
+        return;
+      }
+
+      localStorage.playerCash = cash - costPerSpin;
+      updateCashDisplay();
+
+      spinButton.disabled = true;
+
+      spinSound.currentTime = 0;
+      spinSound.play();
+
+      const columns = [[],[],[],[]];
+      for(let i=0; i<ROWS*COLS; i++) {
+        columns[i % COLS].push(slots[i]);
+      }
+
+      let spinCompleteCount = 0;
+      let results = Array(ROWS).fill(null).map(() => Array(COLS).fill(""));
+
+      columns.forEach((colSlots, colIndex) => {
+        setTimeout(() => {
+          let spins = 12 + Math.floor(Math.random() * 6);
+          let count = 0;
+          const interval = setInterval(() => {
+            colSlots.forEach((img, rowIdx) => {
+              const pizza = weightedRandomPizza();
+              img.src = `pizza/${pizza}.png`;
+              img.alt = pizza;
+              img.style.transform = "scale(1.05)";
+              setTimeout(() => img.style.transform = "scale(1)", 150);
+              results[rowIdx][colIndex] = pizza;
+            });
+            count++;
+            if(count >= spins) {
+              clearInterval(interval);
+              stopSound.currentTime = 0;
+              stopSound.play();
+              spinCompleteCount++;
+              if(spinCompleteCount === COLS) {
+                spinButton.disabled = false;
+                checkWin(results);
+              }
+            }
+          }, 100);
+        }, colIndex * 450);
+      });
+    }
+
+    function checkWin(results) {
+      let totalWin = 0;
+      const winningPositions = new Set();
+
+      for(let r=0; r<ROWS; r++) {
+        for(let c=0; c<COLS; c++) {
+          const symbol = results[r][c];
+          if(!symbol) continue;
+
+          directions.forEach(([dr, dc]) => {
+            const line = findLine(results, r, c, dr, dc);
+            if(line.length >= 3) {
+              let reward = 0;
+              if(line.length === 3) reward = payouts[symbol]?.three || 0;
+              else if(line.length === 4) reward = payouts[symbol]?.four || 0;
+              else if(line.length >= 5) reward = payouts[symbol]?.jackpot || 0;
+
+              totalWin += reward;
+
+              line.forEach(pos => {
+                winningPositions.add(pos.toString());
+              });
+            }
+          });
+        }
+      }
+
+      const winArray = [...winningPositions].map(str => str.split(",").map(Number));
+      highlightWinningSlots(winArray);
+
+      if(totalWin > 0) {
+        winSound.currentTime = 0;
+        winSound.play();
+        triggerConfetti();
+        localStorage.playerCash = parseInt(localStorage.playerCash) + totalWin;
+        updateCashDisplay();
+        showPopup(`🎉 You won ${totalWin} Markka$h!`);
+      } else {
+        showPopup("No matches this spin, try again!");
+      }
+    }
+
+    if(!localStorage.playerCash) localStorage.playerCash = 100;
+    updateCashDisplay();
+
+    spinButton.addEventListener("click", spinSlots);
+    exitButton.addEventListener("click", () => {
+      window.location.href = "TheMarkkade.io-Home.html";
+    });
+  </script>
+</body>
+</html>
