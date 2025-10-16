@@ -230,6 +230,31 @@
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     text-shadow: 0 0 10px rgba(255,215,0,0.5);
+    transition: all 0.3s ease;
+  }
+
+  #walletDisplay.low-balance {
+    border-color: #FFA500;
+    background: 
+      linear-gradient(135deg, rgba(139,69,19,0.9) 0%, rgba(205,133,63,0.9) 100%);
+    animation: lowBalancePulse 2s ease-in-out infinite;
+  }
+
+  #walletDisplay.no-balance {
+    border-color: #DC143C;
+    background: 
+      linear-gradient(135deg, rgba(139,0,0,0.9) 0%, rgba(220,20,60,0.9) 100%);
+    animation: noBalancePulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes lowBalancePulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,165,0,0.3), 0 4px 10px rgba(0,0,0,0.8); }
+    50% { box-shadow: 0 0 35px rgba(255,165,0,0.6), 0 4px 15px rgba(0,0,0,0.9); }
+  }
+
+  @keyframes noBalancePulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(220,20,60,0.5), 0 4px 10px rgba(0,0,0,0.8); }
+    50% { box-shadow: 0 0 40px rgba(220,20,60,0.8), 0 4px 15px rgba(0,0,0,0.9); }
   }
 
   #walletDisplay::before {
@@ -1264,7 +1289,7 @@
   const closePayTableBtn = document.getElementById('closePayTableBtn');
   const leaveGameBtn = document.getElementById('leaveGameBtn');
 
-  let balance = Number(localStorage.getItem('localPlayerCash')) || 1000;
+  let balance = Number(localStorage.getItem('localPlayerCash')) || 0;
   let freeSpins = Number(localStorage.getItem('freeSpins')) || 0;
   let bet = 25;
   let spinning = false;
@@ -1426,6 +1451,14 @@
   function updateBalanceDisplay() {
     walletDisplay.textContent = `Balance: $${balance.toFixed(0)}`;
     localStorage.setItem('localPlayerCash', balance.toFixed(0));
+    
+    // Update visual state based on balance
+    walletDisplay.classList.remove('low-balance', 'no-balance');
+    if (balance <= 0) {
+      walletDisplay.classList.add('no-balance');
+    } else if (balance < bet * 3) {
+      walletDisplay.classList.add('low-balance');
+    }
   }
 
   function updateFreeSpinsDisplay() {
@@ -1448,9 +1481,15 @@
     bet = Number(selectedBetBtn.dataset.bet);
 
     if (bet > balance && freeSpins === 0) {
-      showMessage('⚠️ Insufficient Funds ⚠️');
+      showMessage('💸 Not Enough Cash - Visit Other Games to Earn More! 💸');
       spinning = false;
       return;
+    }
+
+    // Show warning when balance is low
+    if (balance > 0 && balance < bet * 2 && freeSpins === 0) {
+      showMessage('⚠️ Low Funds - Consider Playing Other Games! ⚠️');
+      await new Promise(r => setTimeout(r, 1500));
     }
 
     spinBtn.disabled = true;
@@ -1586,6 +1625,11 @@
   updateBalanceDisplay();
   updateFreeSpinsDisplay();
   renderGrid(fillGridRandom());
+  
+  // Show initial message if balance is zero
+  if (balance <= 0) {
+    showMessage('💸 No Cash! Visit Other Games to Earn Money! 💸');
+  }
 
 })();
 </script>
