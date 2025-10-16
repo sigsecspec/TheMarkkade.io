@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Category - The Markkade.io</title>
-<link rel="icon" href="/logo.png" />
+<link rel="icon" href="../logo.png" />
 <style>
   :root { --bg:#ffffff; --fg:#1d1d1f; --muted:#666; --card:#fafafa; --accent:#4CAF50; }
   *{ box-sizing:border-box; }
@@ -23,14 +23,14 @@
 </head>
 <body>
   <header>
-    <a class="back" href="/index.html">← Home</a>
+    <a class="back" href="../index.html">← Home</a>
     <h1 id="title">Category</h1>
   </header>
   <main>
     <div class="desc" id="desc"></div>
     <div class="grid" id="grid"></div>
   </main>
-  <script src="/games-data.js"></script>
+  <script src="../games-data.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const slug = params.get('slug');
@@ -53,12 +53,12 @@
       const el = document.createElement('div');
       el.className = 'card';
       el.innerHTML = `
-        <img src="${game.cover}" alt="${game.title}">
+        <img src="../${game.cover}" alt="${game.title}">
         <div class="title">${game.title}</div>
         <button class="btn" data-href="${game.href}">Play</button>
       `;
       el.querySelector('.btn').addEventListener('click', () => {
-        window.location.href = game.href;
+        window.location.href = "../" + game.href;
       });
       grid.appendChild(el);
     });
