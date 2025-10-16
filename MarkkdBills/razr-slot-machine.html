@@ -985,28 +985,26 @@
   function playMoneyCounterSound(duration = 200, intensity = 1) {
     try {
       const ctx = getAudioContext();
-      
-      // Enhanced money counting machine sound
-      for (let i = 0; i < 6; i++) {
+      // denser, slightly lower ticks for more authentic counter
+      const ticks = 8;
+      for (let i = 0; i < ticks; i++) {
         const oscillator = ctx.createOscillator();
         const gainNode = ctx.createGain();
         const filter = ctx.createBiquadFilter();
-        
         oscillator.connect(filter);
         filter.connect(gainNode);
         gainNode.connect(ctx.destination);
-        
-        oscillator.frequency.value = 160 + (i * 20) + Math.random() * 15;
         oscillator.type = 'square';
+        const base = 150 + Math.random() * 35;
+        oscillator.frequency.value = base;
         filter.type = 'bandpass';
-        filter.frequency.value = 280 + (i * 40);
-        filter.Q.value = 2;
-        
-        gainNode.gain.setValueAtTime(0.06 * intensity, ctx.currentTime + i * 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.02 + 0.05);
-        
-        oscillator.start(ctx.currentTime + i * 0.02);
-        oscillator.stop(ctx.currentTime + i * 0.02 + 0.05);
+        filter.frequency.value = 240 + (i * 35);
+        filter.Q.value = 2.2;
+        const startTime = ctx.currentTime + i * 0.018;
+        gainNode.gain.setValueAtTime(0.05 * intensity, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.05);
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 0.05);
       }
     } catch (e) {
       console.error('Money counter sound error:', e);
@@ -1205,13 +1203,13 @@
       filter.connect(gainNode);
       gainNode.connect(ctx.destination);
       
-      oscillator.frequency.setValueAtTime(110 + Math.random() * 25, ctx.currentTime);
+      oscillator.frequency.setValueAtTime(100 + Math.random() * 18, ctx.currentTime);
       oscillator.type = 'sawtooth';
       filter.type = 'highpass';
-      filter.frequency.value = 140;
+      filter.frequency.value = 120;
       
-      gainNode.gain.setValueAtTime(0.04, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      gainNode.gain.setValueAtTime(0.03, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
       
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.25);
