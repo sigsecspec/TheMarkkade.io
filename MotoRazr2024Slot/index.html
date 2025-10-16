@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>Motorazr 2024 Slot Machine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- Top display: reels, payline overlay, win banners -->
+    <section id="display" class="display" aria-label="Slot Display">
+      <div class="bezel glass"></div>
+      <div class="marquee">
+        <div class="marquee-glow"></div>
+      </div>
+      <div class="reels" role="img" aria-label="Slot Reels" tabindex="0">
+        <div class="reel" data-reel="0"></div>
+        <div class="reel" data-reel="1"></div>
+        <div class="reel" data-reel="2"></div>
+        <div class="reel" data-reel="3"></div>
+        <div class="reel" data-reel="4"></div>
+      </div>
+      <canvas class="overlay lines-canvas" id="lines-canvas"></canvas>
+      <div class="overlay fx-layer" id="fx-layer"></div>
+      <div class="banner" id="banner" aria-live="polite"></div>
+    </section>
+
+    <!-- Bottom controls: buttons, meters, bet settings -->
+    <section id="controls" class="controls" aria-label="Controls">
+      <div class="meters">
+        <div class="meter"><span>Balance</span><strong id="balance">$1,000.00</strong></div>
+        <div class="meter"><span>Bet</span><strong id="bet">$1.00</strong></div>
+        <div class="meter"><span>Win</span><strong id="win">$0.00</strong></div>
+      </div>
+      <div class="buttons">
+        <button class="btn secondary" id="lines-minus" aria-label="Decrease lines">−</button>
+        <button class="btn secondary" id="lines-plus" aria-label="Increase lines">+</button>
+        <div class="btn readout" id="lines-readout">Lines: 10</div>
+
+        <button class="btn secondary" id="bet-minus" aria-label="Decrease bet">−</button>
+        <button class="btn secondary" id="bet-plus" aria-label="Increase bet">+</button>
+        <div class="btn readout" id="bet-readout">Bet/Line: $0.10</div>
+
+        <button class="btn ghost" id="max-bet">MAX BET</button>
+        <button class="btn ghost" id="auto">AUTO</button>
+        <button class="btn primary" id="spin">SPIN</button>
+      </div>
+    </section>
+  </div>
+
+  <audio id="sfx-spin" src="assets/sfx/spin.mp3" preload="auto"></audio>
+  <audio id="sfx-stop" src="assets/sfx/stop.mp3" preload="auto"></audio>
+  <audio id="sfx-win" src="assets/sfx/win.mp3" preload="auto"></audio>
+  <audio id="sfx-lose" src="assets/sfx/lose.mp3" preload="auto"></audio>
+
+  <script src="main.js" type="module"></script>
+  <script>
+    if ('serviceWorker' in navigator){
+      window.addEventListener('load', ()=>{
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</body>
+</html>
