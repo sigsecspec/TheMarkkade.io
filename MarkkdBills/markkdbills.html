@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"<meta name="theme-color" content="#FFD700" />
-<title>Vegas Gold Rush - Markk'dBills</title>title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0a" />
+<title>Vault Slots - Markk'dBills</title>
 <style>
   * {
     margin: 0;
@@ -14,25 +15,24 @@
   html, body {
     width: 100%;
     height: 100%;
-    overflow:   body {
+    overflow: hidden;
+  }
+  
+  body {
     background: 
-      radial-gradient(ellipse at top, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom, rgba(255, 20, 147, 0.2) 0%, transparent 50%),
-      linear-gradient(180deg, #1a0033 0%, #2d1b69 20%, #1a0033 40%, #0f001f 60%, #1a0033 80%, #0a0015 100%);
-    color: #FFD700;
-    font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+      radial-gradient(circle at 30% 40%, rgba(80, 80, 90, 0.15) 0%, transparent 60%),
+      radial-gradient(circle at 70% 60%, rgba(60, 60, 70, 0.12) 0%, transparent 55%),
+      linear-gradient(145deg, #0a0a0a 0%, #1a1a1c 25%, #151518 50%, #0f0f10 75%, #080808 100%);
+    color: #e0e0e5;
+    font-family: 'Courier New', monospace;
     user-select: none;
     overflow: hidden;
     position: relative;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    animation: vegasGlow 10s ease-in-out infinite;
   }
 
-  @keyframes vegasGlow {
-    0%, 100% { filter: brightness(1) contrast(1); }
-    50% { filter: brightness(1.1) contrast(1.1); }
-  }t-smoothing: ant  /* Vegas neon lights pattern */
+  /* Vault door background pattern */
   body::before {
     content: '';
     position: fixed;
@@ -41,45 +41,27 @@
     width: 100%;
     height: 100%;
     background-image: 
-      radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.4) 0%, transparent 30%),
-      radial-gradient(circle at 80% 20%, rgba(255, 20, 147, 0.3) 0%, transparent 30%),
-      radial-gradient(circle at 50% 50%, rgba(147, 112, 219, 0.2) 0%, transparent 40%);
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
+      repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px);
     pointer-events: none;
     z-index: 0;
-    animation: neonPulse 4s ease-in-out infinite;
   }
 
-  @keyframes neonPulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-  }ts: none;
-    z  /* Golden Vegas frame */
+  /* Metal rivets decoration */
   body::after {
     content: '';
     position: fixed;
-    top: 10px;
-    left: 10px;
-    width: calc(100% - 20px);
-    height: calc(100% - 20px);
-    border: 4px solid transparent;
-    border-image: linear-gradient(45deg, #FFD700, #FFA500, #FF69B4, #9370DB, #FFD700) 1;
-    border-radius: 20px;
+    top: 20px;
+    left: 20px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    border: 2px solid rgba(120, 120, 130, 0.3);
+    border-radius: 8px;
     pointer-events: none;
     z-index: 0;
     box-shadow: 
-      0 0 60px rgba(255, 215, 0, 0.5),
-      inset 0 0 60px rgba(255, 215, 0, 0.2),
-      0 0 120px rgba(255, 20, 147, 0.3);
-    animation: borderRotate 8s linear infinite;
-  }
-
-  @keyframes borderRotate {
-    0% { border-image-source: linear-gradient(45deg, #FFD700, #FFA500, #FF69B4, #9370DB, #FFD700); }
-    25% { border-image-source: linear-gradient(45deg, #FFA500, #FF69B4, #9370DB, #FFD700, #FFA500); }
-    50% { border-image-source: linear-gradient(45deg, #FF69B4, #9370DB, #FFD700, #FFA500, #FF69B4); }
-    75% { border-image-source: linear-gradient(45deg, #9370DB, #FFD700, #FFA500, #FF69B4, #9370DB); }
-    100% { border-image-source: linear-gradient(45deg, #FFD700, #FFA500, #FF69B4, #9370DB, #FFD700); }
-  }    0 0 20px rgba(0,0,0,0.3);
+      inset 0 0 30px rgba(0,0,0,0.5),
+      0 0 20px rgba(0,0,0,0.3);
   }
 
   .game-container {
@@ -87,7 +69,11 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    position: relative;  .fold-top {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .fold-top {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -95,130 +81,81 @@
     justify-content: center;
     padding: 20px;
     gap: 16px;
-    background: 
-      linear-gradient(180deg, rgba(26, 0, 51, 0.9) 0%, rgba(15, 0, 31, 0.95) 100%),
-      radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-    border-bottom: 4px solid;
-    border-image: linear-gradient(90deg, #FFD700, #FF69B4, #9370DB, #FFD700) 1;
+    background: linear-gradient(180deg, rgba(20,20,22,0.6) 0%, rgba(15,15,17,0.8) 100%);
+    border-bottom: 3px solid rgba(120, 120, 130, 0.4);
     position: relative;
     overflow: hidden;
-  }n: relative;
-    /* Vegas star burst decoration */
-  .vegas-burst {
+  }
+
+  /* Vault wheel decoration */
+  .vault-wheel {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 800px;
-    height: 800px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(80,80,90,0.08) 0%, transparent 70%);
+    border: 8px solid rgba(100,100,110,0.15);
     pointer-events: none;
     z-index: 0;
   }
 
-  .vegas-burst::before {
-    content: '★';
+  .vault-wheel::before {
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 400px;
-    color: rgba(255, 215, 0, 0.1);
-    animation: starRotate 20s linear infinite;
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    border: 4px solid rgba(100,100,110,0.1);
   }
 
-  .vegas-burst::after {
-    content: '✦';
+  .vault-wheel::after {
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 300px;
-    color: rgba(255, 20, 147, 0.08);
-    animation: starRotate 15s linear infinite reverse;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    border: 3px solid rgba(100,100,110,0.08);
   }
 
-  @keyframes starRotate {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-  }
-
-  /* Floating casino chips */
-  .casino-chips {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  .chip {
-    position: absolute;
-    font-size: 30px;
-    animation: floatChip 15s infinite linear;
-    opacity: 0.3;
-  }
-
-  .chip:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 18s; }
-  .chip:nth-child(2) { left: 30%; animation-delay: 3s; animation-duration: 20s; }
-  .chip:nth-child(3) { left: 50%; animation-delay: 6s; animation-duration: 16s; }
-  .chip:nth-child(4) { left: 70%; animation-delay: 9s; animation-duration: 22s; }
-  .chip:nth-child(5) { left: 90%; animation-delay: 12s; animation-duration: 19s; }
-
-  @keyframes floatChip {
-    from { transform: translateY(120vh) rotate(0deg); }
-    to { transform: translateY(-20vh) rotate(360deg); }
-  }-radius: 50%;
-    border: 3px solid rgb  h1 {
+  h1 {
     text-align: center;
-    color: #FFD700;
-    font-size: clamp(1.8rem, 6vw, 3rem);
-    font-weight: 900;
-    letter-spacing: 5px;
+    color: #c0c0c8;
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: 4px;
     text-transform: uppercase;
     text-shadow: 
-      0 0 30px rgba(255, 215, 0, 0.8),
-      0 0 60px rgba(255, 215, 0, 0.6),
-      0 0 90px rgba(255, 20, 147, 0.4),
-      3px 3px 0 #FF1493,
-      4px 4px 0 #9370DB,
-      5px 5px 15px rgba(0,0,0,0.8);
+      0 0 20px rgba(180, 180, 190, 0.3),
+      2px 2px 4px rgba(0,0,0,0.8);
     position: relative;
     z-index: 1;
-    font-family: 'Arial Black', sans-serif;
-    border: 3px solid #FFD700;
-    padding: 15px 35px;
-    background: 
-      linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 20, 147, 0.1) 50%, rgba(147, 112, 219, 0.2) 100%),
-      linear-gradient(180deg, rgba(26, 0, 51, 0.95) 0%, rgba(15, 0, 31, 0.98) 100%);
-    border-radius: 15px;
+    font-family: 'Courier New', monospace;
+    border: 2px solid rgba(120, 120, 130, 0.4);
+    padding: 12px 24px;
+    background: linear-gradient(135deg, rgba(40,40,45,0.9) 0%, rgba(25,25,28,0.95) 100%);
+    border-radius: 4px;
     box-shadow: 
-      0 0 40px rgba(255, 215, 0, 0.6),
-      inset 0 0 20px rgba(255, 215, 0, 0.3),
-      0 10px 30px rgba(0,0,0,0.8);
-    animation: titlePulse 2s ease-in-out infinite;
-  }
-
-  @keyframes titlePulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
+      0 4px 15px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.1);
   }
 
   h1::before {
-    content: '💎';
-    margin-right: 15px;
-    animation: gemSparkle 1s ease-in-out infinite;
+    content: '⚙';
+    margin-right: 12px;
+    color: #888890;
   }
 
   h1::after {
-    content: '💰';
-    margin-left: 15px;
-    animation: gemSparkle 1s ease-in-out infinite 0.5s;
-  }
-
-  @keyframes gemSparkle {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.2) rotate(10deg); }
-  }ntent: '⚙';
+    content: '⚙';
     margin-left: 12px;
     color: #888890;
   }
@@ -229,131 +166,92 @@
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
-    max-  #walletDisplay, #freeSpinCounter {
-    background: 
-      linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 20, 147, 0.1) 100%),
-      linear-gradient(180deg, rgba(26, 0, 51, 0.95) 0%, rgba(15, 0, 31, 0.98) 100%);
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #FFD700, #FF69B4, #9370DB) 1;
-    border-radius: 10px;
+    max-width: 600px;
+    z-index: 1;
+  }
+  
+  #walletDisplay, #freeSpinCounter {
+    background: linear-gradient(135deg, rgba(50,50,55,0.95) 0%, rgba(30,30,35,0.98) 100%);
+    border: 2px solid rgba(120, 120, 130, 0.5);
+    border-radius: 4px;
     padding: 16px 24px;
     box-shadow: 
-      0 0 30px rgba(255, 215, 0, 0.4),
-      inset 0 0 20px rgba(255, 215, 0, 0.2),
-      0 8px 25px rgba(0,0,0,0.7);
-    color: #FFD700;
-    font-size: 1.4rem;
-    font-weight: 800;
+      0 6px 20px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      inset 0 -1px 0 rgba(0,0,0,0.5);
+    color: #d0d0d8;
+    font-size: 1.3rem;
+    font-weight: 700;
     letter-spacing: 2px;
     text-align: center;
     flex: 1;
     min-width: 180px;
     position: relative;
-    font-family: 'Arial Black', sans-serif;
+    font-family: 'Courier New', monospace;
     text-transform: uppercase;
-    text-shadow: 
-      0 0 10px rgba(255, 215, 0, 0.8),
-      2px 2px 4px rgba(0,0,0,0.8);
-    animation: statGlow 3s ease-in-out infinite;
-  }
-
-  @keyframes statGlow {
-    0%, 100% { 
-      box-shadow: 
-        0 0 30px rgba(255, 215, 0, 0.4),
-        inset 0 0 20px rgba(255, 215, 0, 0.2);
-    }
-    50% { 
-      box-shadow: 
-        0 0 40px rgba(255, 215, 0, 0.6),
-        inset 0 0 30px rgba(255, 215, 0, 0.3);
-    }
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
   }
 
   #walletDisplay::before {
-    content: '💵';
-    margin-right: 10px;
-    font-size: 1.5rem;
+    content: '💰';
+    margin-right: 8px;
+    filter: grayscale(0.5);
   }
 
   #freeSpinCounter {
-    border-image: linear-gradient(45deg, #FF69B4, #9370DB, #FFD700) 1;
-    color: #FF69B4;
-    text-shadow: 
-      0 0 10px rgba(255, 105, 180, 0.8),
-      2px 2px 4px rgba(0,0,0,0.8);
+    border-color: rgba(140, 140, 150, 0.6);
+    color: #b8b8c5;
+    animation: vaultPulse 3s ease-in-out infinite;
     display: none;
   }
 
-  #freeSpinCounter::before {
-    content: '🎰';
-    margin-right: 10px;
-    font-size: 1.5rem;
-    animation: spinIcon 2s linear infinite;
-  }
-
-  @keyframes spinIcon {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }unter::before {
-    content: '🎟';
-    margin-right: 8  #slotContainer {
-    position: relative;
-    width: 100%;
-    max-width: 480px;
-    background: 
-      linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(147, 112, 219, 0.05) 100%),
-      linear-gradient(180deg, rgba(10, 0, 20, 0.98) 0%, rgba(20, 0, 40, 0.95) 100%);
-    border: 4px solid transparent;
-    border-image: linear-gradient(45deg, #FFD700, #FF1493, #9370DB, #FFD700) 1;
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 
-      0 0 50px rgba(255, 215, 0, 0.5),
-      inset 0 0 30px rgba(255, 215, 0, 0.2),
-      0 15px 40px rgba(0,0,0,0.9);
-    z-index: 1;
-    animation: containerPulse 4s ease-in-out infinite;
-  }
-
-  @keyframes containerPulse {
+  @keyframes vaultPulse {
     0%, 100% { 
       box-shadow: 
-        0 0 50px rgba(255, 215, 0, 0.5),
-        inset 0 0 30px rgba(255, 215, 0, 0.2);
+        0 6px 20px rgba(0,0,0,0.7),
+        inset 0 1px 0 rgba(255,255,255,0.08);
     }
     50% { 
       box-shadow: 
-        0 0 70px rgba(255, 20, 147, 0.6),
-        inset 0 0 40px rgba(255, 20, 147, 0.3);
+        0 8px 25px rgba(0,0,0,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.12);
     }
   }
 
-  /* Corner diamonds */
+  #freeSpinCounter::before {
+    content: '🎟';
+    margin-right: 8px;
+    filter: grayscale(0.7);
+  }
+  
+  #slotContainer {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(135deg, rgba(35,35,40,0.95) 0%, rgba(20,20,25,0.98) 100%);
+    border: 3px solid rgba(120, 120, 130, 0.6);
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 
+      0 10px 40px rgba(0,0,0,0.9),
+      inset 0 2px 0 rgba(255,255,255,0.06),
+      inset 0 -2px 0 rgba(0,0,0,0.8);
+    z-index: 1;
+  }
+
+  /* Corner bolts */
   #slotContainer::before,
   #slotContainer::after {
-    content: '💎';
+    content: '⬢';
     position: absolute;
-    font-size: 1.5rem;
-    filter: hue-rotate(0deg);
-    animation: diamondSparkle 2s ease-in-out infinite;
+    color: rgba(100,100,110,0.6);
+    font-size: 1.2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
   }
 
   #slotContainer::before {
-    top: 5px;
-    left: 5px;
-  }
-
-  #slotContainer::after {
-    top: 5px;
-    right: 5px;
-    animation-delay: 1s;
-  }
-
-  @keyframes diamondSparkle {
-    0%, 100% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
-    50% { transform: scale(1.2) rotate(180deg); filter: hue-rotate(60deg); }
-  } 8px;
+    top: 8px;
+    left: 8px;
   }
 
   #slotContainer::after {
@@ -365,97 +263,65 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 6  .slotCell {
-    background: 
-      radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15) 0%, transparent 60%),
-      linear-gradient(135deg, rgba(26, 0, 51, 0.95) 0%, rgba(40, 0, 80, 0.9) 100%);
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #FFD700, #FF69B4, #9370DB) 1;
-    border-radius: 12px;
-    font-size: clamp(2.5rem, 7vw, 3.5rem);
+    gap: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .slotCell {
+    background: linear-gradient(135deg, rgba(60,60,68,0.8) 0%, rgba(40,40,48,0.9) 100%);
+    border: 2px solid rgba(100, 100, 110, 0.4);
+    border-radius: 4px;
+    font-size: clamp(2rem, 6vw, 3rem);
     text-align: center;
     box-shadow: 
-      0 0 25px rgba(255, 215, 0, 0.3),
-      inset 0 0 15px rgba(255, 215, 0, 0.1),
-      0 6px 20px rgba(0,0,0,0.8);
+      0 4px 12px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.05),
+      inset 0 -1px 0 rgba(0,0,0,0.5);
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     transition: all 0.3s ease;
-    overflow: hidden;
   }
 
   .slotCell::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-    transform: rotate(45deg);
-    animation: shimmer 3s infinite;
-  }
-
-  @keyframes shimmer {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    inset: 2px;
+    border: 1px solid rgba(80,80,90,0.3);
+    border-radius: 2px;
+    pointer-events: none;
   }
 
   .slotCell.spinning {
-    animation: vegasSpin 0.1s linear infinite;
-    border-image: linear-gradient(45deg, #FFD700, #FF1493, #00FFFF, #FFD700) 1;
-    box-shadow: 
-      0 0 40px rgba(255, 215, 0, 0.6),
-      inset 0 0 25px rgba(255, 215, 0, 0.3);
+    animation: metalSpin 0.1s linear infinite;
+    border-color: rgba(120, 120, 130, 0.6);
   }
 
-  @keyframes vegasSpin {
-    0% { 
-      transform: rotateY(0deg) scale(1);
-      filter: hue-rotate(0deg) brightness(1.2);
-    }
-    50% { 
-      transform: rotateY(180deg) scale(0.95);
-      filter: hue-rotate(180deg) brightness(1.5);
-    }
-    100% { 
-      transform: rotateY(360deg) scale(1);
-      filter: hue-rotate(360deg) brightness(1.2);
-    }
-  }er: brightness(1.2); }
-    100% { transfor  .winning {
-    background: 
-      radial-gradient(ellipse at center, rgba(255, 215, 0, 0.4) 0%, transparent 70%),
-      linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF69B4 100%);
-    border: 3px solid #FFD700;
+  @keyframes metalSpin {
+    0% { transform: rotateY(0deg); filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+    100% { transform: rotateY(360deg); filter: brightness(1); }
+  }
+  
+  .winning {
+    background: linear-gradient(135deg, rgba(100,100,110,0.9) 0%, rgba(80,80,90,0.95) 100%);
+    border-color: rgba(160, 160, 170, 0.8);
     box-shadow: 
-      0 0 60px rgba(255, 215, 0, 0.8),
-      0 0 120px rgba(255, 215, 0, 0.6),
-      inset 0 0 30px rgba(255, 215, 0, 0.4),
-      0 8px 25px rgba(0,0,0,0.9);
-    animation: jackpotWin 0.5s ease-in-out infinite alternate;
-    z-index: 10;
+      0 0 25px rgba(180, 180, 190, 0.5),
+      0 4px 12px rgba(0,0,0,0.9),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    animation: vaultWin 0.8s ease-in-out infinite alternate;
   }
 
-  @keyframes jackpotWin {
+  @keyframes vaultWin {
     0% { 
-      transform: scale(1) rotate(0deg);
-      filter: hue-rotate(0deg) brightness(1.5);
-      box-shadow: 
-        0 0 60px rgba(255, 215, 0, 0.8),
-        0 0 120px rgba(255, 215, 0, 0.6);
+      transform: scale(1);
+      filter: brightness(1.2);
     }
     100% { 
-      transform: scale(1.1) rotate(5deg);
-      filter: hue-rotate(30deg) brightness(1.8);
-      box-shadow: 
-        0 0 80px rgba(255, 20, 147, 0.9),
-        0 0 160px rgba(255, 20, 147, 0.7);
-    }
-  }
       transform: scale(1.05);
       filter: brightness(1.4);
     }
@@ -466,66 +332,55 @@
     top: 0;
     left: 0;
     width: 100%;
-     .winLine {
-    stroke: #FFD700;
-    stroke-width: 6;
-    stroke-linecap: round;
-    opacity: 1;
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
-    stroke-dasharray: 10, 5;
-    animation: neonLineGlow 0.5s infinite ease-in-out;
-  }
-  
-  @keyframes neonLineGlow {
-    0%, 100% {
-      stroke: #FFD700;
-      stroke-width: 6;
-      filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
-      stroke-dashoffset: 0;
-    }
-    50% {
-      stroke: #FF1493;
-      stroke-width: 8;
-      filter: drop-shadow(0 0 25px rgba(255, 20, 147, 1));
-      stroke-dashoffset: 15;
-    }
-  }   50% {
-      stroke  #message {
-    text-align: center;
-    font-size: 1.3rem;
-    min-height: 2.5em;
-    color: #FFD700;
-    background: 
-      linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 20, 147, 0.05) 100%),
-      linear-gradient(180deg, rgba(26, 0, 51, 0.95) 0%, rgba(15, 0, 31, 0.98) 100%);
-    border: 2px solid transparent;
-    border-image: linear-gradient(90deg, #FFD700, #FF69B4, #9370DB, #FFD700) 1;
-    border-radius: 12px;
-    padding: 16px 24px;
-    box-shadow: 
-      0 0 30px rgba(255, 215, 0, 0.4),
-      inset 0 0 20px rgba(255, 215, 0, 0.2),
-      0 6px 20px rgba(0,0,0,0.7);
-    font-weight: 800;
-    letter-spacing: 2px;
-    max-width: 600px;
-    text-shadow: 
-      0 0 15px rgba(255, 215, 0, 0.8),
-      2px 2px 4px rgba(0,0,0,0.9);
-    font-family: 'Arial Black', sans-serif;
-    text-transform: uppercase;
-    z-index: 1;
-    animation: messageGlow 2s ease-in-out infinite;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
   }
 
-  @keyframes messageGlow {
-    0%, 100% { 
-      border-image-source: linear-gradient(90deg, #FFD700, #FF69B4, #9370DB, #FFD700);
+  .winLine {
+    stroke: #b0b0c0;
+    stroke-width: 4;
+    stroke-linecap: round;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 8px rgba(180, 180, 200, 0.6));
+    animation: metalGlow 1s infinite ease-in-out;
+  }
+  
+  @keyframes metalGlow {
+    0%, 100% {
+      stroke: #b0b0c0;
+      stroke-width: 4;
+      opacity: 0.9;
     }
-    50% { 
-      border-image-source: linear-gradient(90deg, #FF69B4, #9370DB, #FFD700, #FF69B4);
+    50% {
+      stroke: #d0d0e0;
+      stroke-width: 5;
+      opacity: 1;
     }
-  }-family: 'Courier New', mo  .fold-bottom {
+  }
+
+  #message {
+    text-align: center;
+    font-size: 1.1rem;
+    min-height: 2.5em;
+    color: #c8c8d0;
+    background: linear-gradient(135deg, rgba(40,40,45,0.9) 0%, rgba(25,25,30,0.95) 100%);
+    border: 2px solid rgba(120, 120, 130, 0.4);
+    border-radius: 4px;
+    padding: 16px 24px;
+    box-shadow: 
+      0 4px 15px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+    font-weight: 700;
+    letter-spacing: 1px;
+    max-width: 600px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+  
+  .fold-bottom {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -533,113 +388,65 @@
     justify-content: center;
     gap: 16px;
     padding: 20px;
-    background: 
-      linear-gradient(180deg, rgba(15, 0, 31, 0.95) 0%, rgba(10, 0, 20, 0.98) 100%),
-      radial-gradient(ellipse at bottom, rgba(255, 20, 147, 0.1) 0%, transparent 60%);
+    background: linear-gradient(180deg, rgba(15,15,17,0.8) 0%, rgba(10,10,12,0.9) 100%);
     position: relative;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-  }ion: relative;
-  #betSelector {
-    background: 
-      linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(147, 112, 219, 0.05) 100%),
-      linear-gradient(180deg, rgba(20, 0, 40, 0.95) 0%, rgba(15, 0, 30, 0.98) 100%);
-    border: 3px solid transparent;
-    border-image: linear-gradient(45deg, #FFD700, #FF69B4, #9370DB, #FFD700) 1;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 
-      0 0 40px rgba(255, 215, 0, 0.3),
-      inset 0 0 25px rgba(255, 215, 0, 0.15),
-      0 10px 30px rgba(0,0,0,0.8);
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    width: 100%;
-    max-width: 600px;
-  }ns: repeat(5, 1fr  #betSelector button {
-    background: 
-      linear-gradient(135deg, rgba(147, 112, 219, 0.3) 0%, rgba(255, 20, 147, 0.2) 100%),
-      linear-gradient(180deg, rgba(30, 0, 60, 0.9) 0%, rgba(20, 0, 40, 0.95) 100%);
-    border: 2px solid #9370DB;
-    color: #FFD700;
-    padding: 14px 18px;
-    font-weight: 800;
-    font-size: 1.2rem;
-    cursor: pointer;
-    border-radius: 10px;
-    font-family: 'Arial Black', sans-serif;
-    letter-spacing: 1px;
-    box-shadow: 
-      0 0 20px rgba(147, 112, 219, 0.4),
-      inset 0 0 15px rgba(147, 112, 219, 0.2),
-      0 6px 15px rgba(0,0,0,0.7);
-    min-height: 56px;
-    transition: all 0.3s ease;
-    text-shadow: 
-      0 0 10px rgba(255, 215, 0, 0.6),
-      2px 2px 4px rgba(0,0,0,0.9);
-    position: relative;
-    overflow: hidden;
   }
 
-  #betSelector button::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #FFD700, #FF69B4, #9370DB, #00FFFF);
-    border-radius: 10px;
-    opacity: 0;
-    z-index: -1;
-    transition: opacity 0.3s ease;
+  #betSelector {
+    background: linear-gradient(135deg, rgba(45,45,50,0.9) 0%, rgba(30,30,35,0.95) 100%);
+    border: 2px solid rgba(120, 120, 130, 0.5);
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 
+      0 6px 25px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  #betSelector button {
+    background: linear-gradient(135deg, rgba(60,60,68,0.9) 0%, rgba(45,45,53,0.95) 100%);
+    border: 2px solid rgba(100, 100, 110, 0.5);
+    color: #c0c0c8;
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    box-shadow: 
+      0 4px 12px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+    min-height: 56px;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
   }
 
   #betSelector button:hover {
-    transform: translateY(-3px) scale(1.05);
-    border-color: #FFD700;
+    transform: translateY(-2px);
+    border-color: rgba(140, 140, 150, 0.7);
     box-shadow: 
-      0 0 30px rgba(255, 215, 0, 0.6),
-      inset 0 0 20px rgba(255, 215, 0, 0.3),
-      0 8px 20px rgba(0,0,0,0.8);
-  }
-
-  #betSelector button:hover::before {
-    opacity: 0.3;
+      0 6px 16px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.12);
   }
 
   #betSelector button:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(0);
   }
 
   #betSelector button.selected {
-    background: 
-      linear-gradient(135deg, rgba(255, 215, 0, 0.4) 0%, rgba(255, 20, 147, 0.3) 100%),
-      linear-gradient(180deg, rgba(40, 0, 80, 0.95) 0%, rgba(30, 0, 60, 0.98) 100%);
-    color: #FFD700;
-    border-color: #FFD700;
+    background: linear-gradient(135deg, rgba(100,100,110,0.95) 0%, rgba(80,80,90,0.98) 100%);
+    color: #e8e8f0;
+    border-color: rgba(160, 160, 170, 0.8);
     box-shadow: 
-      0 0 40px rgba(255, 215, 0, 0.8),
-      inset 0 0 25px rgba(255, 215, 0, 0.4),
-      0 0 60px rgba(255, 215, 0, 0.5);
-    transform: translateY(-3px) scale(1.05);
-    animation: selectedPulse 1s ease-in-out infinite;
-  }
-
-  @keyframes selectedPulse {
-    0%, 100% { 
-      box-shadow: 
-        0 0 40px rgba(255, 215, 0, 0.8),
-        inset 0 0 25px rgba(255, 215, 0, 0.4);
-    }
-    50% { 
-      box-shadow: 
-        0 0 60px rgba(255, 20, 147, 0.9),
-        inset 0 0 35px rgba(255, 20, 147, 0.5);
-    }
-  }55,255,255,0.15),
+      0 6px 20px rgba(0,0,0,0.9),
+      inset 0 1px 0 rgba(255,255,255,0.15),
       0 0 15px rgba(140, 140, 150, 0.3);
     transform: translateY(-2px) scale(1.02);
   }
@@ -676,111 +483,63 @@
   }
 
   #autoSpinBtn[data-running="true"] {
-    background: linear-gradient(135deg, rgba(100,80,80,0.95)  #spinBtn {
-    background: 
-      linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF69B4 100%),
-      linear-gradient(180deg, rgba(40, 0, 80, 0.95) 0%, rgba(30, 0, 60, 0.98) 100%);
-    color: #1a0033;
-    font-weight: 900;
-    font-size: 2rem;
-    padding: 25px 60px;
-    border: 4px solid #FFD700;
-    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(100,80,80,0.95) 0%, rgba(80,60,60,0.98) 100%);
+    border-color: rgba(160, 120, 120, 0.8);
+    color: #ffb8b8;
+  }
+
+  #spinBtn {
+    background: linear-gradient(135deg, rgba(90,90,100,0.95) 0%, rgba(70,70,80,0.98) 100%);
+    color: #f0f0f5;
+    font-weight: 800;
+    font-size: 1.6rem;
+    padding: 20px 50px;
+    border: 3px solid rgba(140, 140, 150, 0.7);
+    border-radius: 6px;
     cursor: pointer;
     box-shadow: 
-      0 0 60px rgba(255, 215, 0, 0.8),
-      0 0 120px rgba(255, 215, 0, 0.5),
-      inset 0 0 30px rgba(255, 255, 255, 0.3),
-      0 10px 30px rgba(0,0,0,0.9);
-    letter-spacing: 4px;
-    min-width: 300px;
-    text-shadow: 
-      0 0 20px rgba(255, 255, 255, 0.9),
-      2px 2px 0 rgba(255, 255, 255, 0.5);
-    font-family: 'Arial Black', sans-serif;
+      0 8px 30px rgba(0,0,0,0.9),
+      inset 0 2px 0 rgba(255,255,255,0.12),
+      inset 0 -2px 0 rgba(0,0,0,0.6);
+    letter-spacing: 3px;
+    min-width: 280px;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.9);
+    font-family: 'Courier New', monospace;
     text-transform: uppercase;
     position: relative;
     transition: all 0.3s ease;
     grid-column: 1 / -1;
-    overflow: hidden;
-    animation: spinButtonGlow 2s ease-in-out infinite;
-  }
-
-  @keyframes spinButtonGlow {
-    0%, 100% { 
-      box-shadow: 
-        0 0 60px rgba(255, 215, 0, 0.8),
-        0 0 120px rgba(255, 215, 0, 0.5),
-        inset 0 0 30px rgba(255, 255, 255, 0.3);
-    }
-    50% { 
-      box-shadow: 
-        0 0 80px rgba(255, 20, 147, 0.9),
-        0 0 160px rgba(255, 20, 147, 0.6),
-        inset 0 0 40px rgba(255, 255, 255, 0.4);
-    }
   }
 
   #spinBtn::before {
-    content: '🎰';
-    position: absolute;
-    left: 30px;
-    font-size: 1.8rem;
-    animation: slotSpin 2s linear infinite;
+    content: '⚡';
+    margin-right: 12px;
+    filter: grayscale(0.5);
   }
 
   #spinBtn::after {
-    content: '💰';
-    position: absolute;
-    right: 30px;
-    font-size: 1.8rem;
-    animation: coinFlip 2s ease-in-out infinite;
-  }
-
-  @keyframes slotSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes coinFlip {
-    0%, 100% { transform: rotateY(0deg); }
-    50% { transform: rotateY(180deg); }
+    content: '⚡';
+    margin-left: 12px;
+    filter: grayscale(0.5);
   }
 
   #spinBtn:hover {
-    transform: translateY(-5px) scale(1.05);
-    background: 
-      linear-gradient(135deg, #FFA500 0%, #FF69B4 50%, #9370DB 100%),
-      linear-gradient(180deg, rgba(50, 0, 100, 0.95) 0%, rgba(40, 0, 80, 0.98) 100%);
+    transform: translateY(-3px);
     box-shadow: 
-      0 0 100px rgba(255, 215, 0, 1),
-      0 0 200px rgba(255, 215, 0, 0.7),
-      inset 0 0 50px rgba(255, 255, 255, 0.5),
-      0 15px 40px rgba(0,0,0,1);
+      0 12px 40px rgba(0,0,0,1),
+      inset 0 2px 0 rgba(255,255,255,0.15);
+    border-color: rgba(160, 160, 170, 0.9);
   }
 
   #spinBtn:active {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-1px);
   }
   
   #spinBtn:disabled {
-    background: 
-      linear-gradient(135deg, rgba(60, 60, 60, 0.7) 0%, rgba(40, 40, 40, 0.8) 100%);
-    color: rgba(150, 150, 150, 0.5);
+    background: linear-gradient(135deg, rgba(50,50,55,0.7) 0%, rgba(35,35,40,0.8) 100%);
+    color: rgba(255, 255, 255, 0.3);
     cursor: not-allowed;
-    border-color: rgba(100, 100, 100, 0.5);
-    box-shadow: 
-      0 4px 15px rgba(0,0,0,0.5),
-      inset 0 0 10px rgba(0,0,0,0.3);
-    transform: none;
-    animation: none;
-  }
-
-  #spinBtn:disabled::before,
-  #spinBtn:disabled::after {
-    animation: none;
-    opacity: 0.3;
-  } border-color: rgba(80, 80, 90, 0.5);
+    border-color: rgba(80, 80, 90, 0.5);
     box-shadow: 
       0 4px 15px rgba(0,0,0,0.5),
       inset 0 1px 0 rgba(255,255,255,0.03);
@@ -1017,17 +776,14 @@
       padding: 16px 36px;
       min-width: 90%;
       font-size: 1.3rem;
-      letter-spacing:<div class="game-container">
-  <div class="fold-top">
-    <div class="vegas-burst"></div>
-    <div class="casino-chips">
-      <span class="chip">🎲</span>
-      <span class="chip">🎰</span>
-      <span class="chip">💵</span>
-      <span class="chip">💎</span>
-      <span class="chip">💰</span>
-    </div>
-    <h1>Vegas Gold Rush</h1> letter-spacing: 0.5px;
+      letter-spacing: 2px;
+    }
+    
+    #message {
+      font-size: 0.9rem;
+      padding: 12px 16px;
+      width: 100%;
+      letter-spacing: 0.5px;
     }
 
     .vault-wheel {
@@ -1048,13 +804,16 @@
 <div class="game-container">
   <div class="fold-top">
     <div class="vault-wheel"></div>
-    <h1>V    <div id="betSelector">
-      <button data-bet="10" class="selected">💵 $10</button>
-      <button data-bet="20">💵 $20</button>
-      <button data-bet="30">💵 $30</button>
-      <button data-bet="40">💵 $40</button>
-      <button data-bet="50">💵 $50</button>
-    </div>Svg"></svg>
+    <h1>Vault Slots</h1>
+    
+    <div class="game-stats">
+      <div id="walletDisplay">Balance: $0.00</div>
+      <div id="freeSpinCounter">Free Spins: 0</div>
+    </div>
+    
+    <div id="slotContainer">
+      <div id="slotGrid"></div>
+      <svg id="linesSvg"></svg>
     </div>
     
     <div id="message">Place Your Bet</div>
@@ -1070,7 +829,7 @@
     </div>
 
     <div class="action-buttons">
-      <button id="spinBtn">SPIN TO WIN</button>
+      <button id="spinBtn">🎰 Spin</button>
       <button id="autoSpinBtn" data-running="false">▶️ Auto</button>
       <button id="openPayTableBtn">📜 Pay Table</button>
       <button id="leaveGameBtn">🚪 Exit</button>
@@ -1130,52 +889,64 @@
           <tr><td>$20</td><td>$220</td><td>$440</td><td>$660</td></tr>
           <tr><td>$30</td><td>$330</td><td>$660</td><td>$990</td></tr>
           <tr><td>$40</td><td>$440</td><td>$880</td><td>$1320</td></tr>
-          <tr><td>$50</td><td>$550</td><td      </table>
+          <tr><td>$50</td><td>$550</td><td>$1100</td><td>$1650</td></tr>
+
+          <tr><td rowspan="5">💱 EXCH</td><td>$10</td><td>-$11</td><td>-$22</td><td>-$33</td></tr>
+          <tr><td>$20</td><td>-$22</td><td>-$44</td><td>-$66</td></tr>
+          <tr><td>$30</td><td>-$33</td><td>-$66</td><td>-$99</td></tr>
+          <tr><td>$40</td><td>-$44</td><td>-$88</td><td>-$132</td></tr>
+          <tr><td>$50</td><td>-$55</td><td>-$110</td><td>-$165</td></tr>
+        </tbody>
+      </table>
       
       <div class="receipt-footer">
-        <p>THANK YOU FOR PLAYING!</p>
-        <p class="special">VEGAS GOLD RUSH ✨</p>
-        <p>Good Luck & Play Responsibly</p>
+        <p>━━━━━━━━━━━━━━━━━━━━━━━━</p>
+        <p class="special">💲 WILD BONUS SPINS</p>
+        <p>3x WILDS = 5 FREE SPINS</p>
+        <p>5x WILDS = 10 FREE SPINS</p>
+        <p style="margin-top: 8px;">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+        <p>🧾 ATM = WILD CARD</p>
+        <p>(Substitutes any symbol except 💳 & 💲)</p>
+        <p style="margin-top: 12px; font-size: 0.65rem;">THANK YOU FOR PLAYING</p>
+        <p style="font-size: 0.65rem;">MARKK'DBILLS VAULT © 2025</p>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-(function() {
-  const rows = 3, cols = 5;
+(() => {
+  'use strict';
+
+  const rows = 3;
+  const cols = 5;
 
   const symbols = [
-    { sym: "💎", name: "Diamond" },
-    { sym: "💰", name: "Money Bag" },
-    { sym: "💵", name: "Dollar" },
-    { sym: "🎰", name: "Slot Machine" },
-    { sym: "👑", name: "Crown" },
-    { sym: "✨", name: "Sparkles" },
-    { sym: "🎆", name: "Fireworks" },
-    { sym: "🌈", name: "Rainbow Jackpot" }
-  ];0, 325, 550
-  // Vegas-style balanced weights for exciting gameplay
+    { sym: "💴", name: "Yen" },
+    { sym: "💵", name: "USD" },
+    { sym: "💶", name: "Euro" },
+    { sym: "💷", name: "Pound" },
+    { sym: "💳", name: "Credit Card" },
+    { sym: "💱", name: "Currency Exchange" },
+    { sym: "💲", name: "Wild" },
+    { sym: "🧾", name: "ATM" }
+  ];
+
   const weights = {
-    "💎": 8, "💰": 12, "💵": 18, "🎰": 14,
-    "👑": 10, "✨": 16, "🎆": 14, "🌈": 8
+    "💴": 20, "💵": 20, "💶": 15, "💷": 10,
+    "💳": 5, "💱": 15, "💲": 10, "🧾": 5
   };
 
-  // Vegas jackpot-style payouts with progressive wins
   const payouts = {
-    "💎": { 10: [200, 500, 1000], 20: [400, 1000, 2000], 30: [600, 1500, 3000], 40: [800, 2000, 4000], 50: [1000, 2500, 5000] },
-    "💰": { 10: [50, 125, 250], 20: [100, 250, 500], 30: [150, 375, 750], 40: [200, 500, 1000], 50: [250, 625, 1250] },
-    "💵": { 10: [20, 50, 100], 20: [40, 100, 200], 30: [60, 150, 300], 40: [80, 200, 400], 50: [100, 250, 500] },
-    "🎰": { 10: [30, 75, 150], 20: [60, 150, 300], 30: [90, 225, 450], 40: [120, 300, 600], 50: [150, 375, 750] },
-    "👑": { 10: [75, 188, 375], 20: [150, 375, 750], 30: [225, 563, 1125], 40: [300, 750, 1500], 50: [375, 938, 1875] },
-    "✨": { 10: [15, 38, 75], 20: [30, 75, 150], 30: [45, 113, 225], 40: [60, 150, 300], 50: [75, 188, 375] }
-  }; 20: [66, 132, 198], 30: [99, 198, 297], 40: [132, 264, 396], 50: [165, 330, 495] },
+    "💴": { 10: [11, 22, 33], 20: [22, 44, 66], 30: [33, 66, 99], 40: [44, 88, 132], 50: [55, 110, 165] },
+    "💵": { 10: [22, 44, 66], 20: [44, 88, 132], 30: [66, 132, 198], 40: [88, 176, 264], 50: [110, 220, 330] },
+    "💶": { 10: [33, 66, 99], 20: [66, 132, 198], 30: [99, 198, 297], 40: [132, 264, 396], 50: [165, 330, 495] },
     "💷": { 10: [44, 88, 132], 20: [88, 176, 264], 30: [132, 264, 396], 40: [176, 352, 528], 50: [220, 440, 660] },
     "💳": { 10: [110, 220, 330], 20: [220, 440, 660], 30: [330, 660, 990], 40: [440, 880, 1320], 50: [550, 1100, 1650] },
     "💱": { 10: [-11, -22, -33], 20: [-22, -44, -66], 30: [-33, -66, -99], 40: [-44, -88, -132], 50: [-55, -110, -165] }
   };
 
-  const freeSpinsAward = { 3: 10, 4: 20, 5: 50 }; // Rainbow Jackpot free spins
+  const freeSpinsAward = { 3: 5, 5: 10 };
 
   // Enhanced Sound System - Reliable Web Audio API
   let audioContext = null;
@@ -1401,9 +1172,10 @@
         if (gridArr[currIdx] === gridArr[prevIdx] && isSymbolMatchable(gridArr[currIdx])) {
           streak.push(currIdx);
         } else {
-        function isSymbolMatchable(sym) {
-    return ["💎", "💰", "💵", "🎰", "👑", "✨"].includes(sym);
-  } }
+          if(streak.length >= 3) matches.push([...streak]);
+          streak = [currIdx];
+        }
+      }
       if(streak.length >= 3) matches.push([...streak]);
     }
 
@@ -1446,11 +1218,11 @@
       }
     });
 
-    wildCount = gridArr.filter(s => s === "🌈").length;
+    wildCount = gridArr.filter(s => s === "💲").length;
     if(freeSpinsAward[wildCount]) {
       freeSpins += freeSpinsAward[wildCount];
       updateFreeSpinsDisplay();
-      showMessage(`🌈 ${freeSpinsAward[wildCount]} JACKPOT FREE SPINS! 🌈`);
+      showMessage(`🎉 ${freeSpinsAward[wildCount]} Free Spins Awarded! 🎉`);
     }
 
     return totalPayout;
