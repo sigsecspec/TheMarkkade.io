@@ -2,433 +2,866 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Markkade.io Hub</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Markkade.io - Mobile Game Arcade</title>
+<link rel="icon" href="logo.png">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+    --primary:#4CAF50;
+    --primary-dark:#388E3C;
+    --secondary:#FF9800;
+    --bg:#0a0a0a;
+    --card-bg:#1a1a1a;
+    --text:#ffffff;
+    --text-muted:#aaa;
+    --accent-glow:0 0 20px rgba(76,175,80,0.5);
+}
 body{
-    font-family:system-ui,Arial;
-    background:#fff;
-    color:#1d1d1f;
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-    overflow:hidden;
-}
-.top-half{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#eee;
-    position:relative;
-    overflow:hidden;
-}
-.game-preview{
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
+    font-family:'Segoe UI',system-ui,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
+    min-height:100vh;
     position:relative;
 }
-.game-preview img{
-    max-width:60%;
-    transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);
-    filter:drop-shadow(0 10px 20px rgba(0,0,0,0.1));
-    position:relative;
-    z-index:1;
+/* Animated Background */
+.bg-animation{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    pointer-events:none;
+    z-index:0;
+    background:radial-gradient(circle at 20% 50%,rgba(76,175,80,0.08) 0%,transparent 50%),
+               radial-gradient(circle at 80% 80%,rgba(255,152,0,0.06) 0%,transparent 50%);
+    animation:bgPulse 8s ease-in-out infinite;
 }
-.game-details{
-    position:absolute;
-    bottom:20px;
-    left:20px;
-    right:20px;
-    background:rgba(255,255,255,0.95);
-    backdrop-filter:blur(10px);
-    padding:15px;
-    border-radius:16px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.15);
-    animation:slideUpDetail 0.5s cubic-bezier(0.34,1.56,0.64,1);
+@keyframes bgPulse{
+    0%,100%{opacity:0.3;}
+    50%{opacity:0.6;}
 }
-@keyframes slideUpDetail{
-    from{
-        opacity:0;
-        transform:translateY(30px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
+/* Header */
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(26,26,26,0.95);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding:12px 16px;
 }
-.preview-title{
-    font-size:18px;
-    font-weight:700;
-    color:#1d1d1f;
-    margin-bottom:6px;
-}
-.preview-desc{
-    font-size:13px;
-    color:#666;
-    line-height:1.4;
-}
-.currency-bar{
-    background:rgba(248,248,248,0.95);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border-top:1px solid rgba(0,0,0,0.08);
-    border-bottom:1px solid rgba(0,0,0,0.08);
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    padding:10px 0;
-    font-weight:600;
-    font-size:14px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
-}
-.currency-item{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
-.currency-item:active{
-    transform:scale(0.95);
-}
-.currency-icon{
-    font-size:18px;
-    animation:float 3s ease-in-out infinite;
-}
-.currency-item:nth-child(2) .currency-icon{
-    animation-delay:1.5s;
-}
-@keyframes float{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-3px);}
-}
-.bottom-half{
-    flex:1;
-    background:#fff;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    padding:12px;
-}
-.option{
+.header-content{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    background:linear-gradient(135deg, #fafafa, #f2f2f2);
-    padding:12px 14px;
-    border-radius:16px;
-    margin-bottom:12px;
-    transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    box-shadow:0 4px 12px rgba(0,0,0,0.06);
-    border:1px solid rgba(0,0,0,0.04);
+    gap:12px;
+}
+.logo-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.logo-title img{
+    width:32px;
+    height:32px;
+    border-radius:8px;
+}
+.logo-title h1{
+    font-size:18px;
+    font-weight:700;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.header-actions{
+    display:flex;
+    gap:8px;
+}
+.icon-btn{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    background:rgba(76,175,80,0.1);
+    border:1px solid rgba(76,175,80,0.3);
+    color:var(--primary);
+    font-size:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    position:relative;
+}
+.icon-btn:active{
+    transform:scale(0.9);
+    box-shadow:var(--accent-glow);
+}
+.badge{
+    position:absolute;
+    top:-4px;
+    right:-4px;
+    background:var(--secondary);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    padding:2px 6px;
+    border-radius:10px;
+    animation:pulse 2s infinite;
+}
+@keyframes pulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.1);}
+}
+/* Currency Bar */
+.currency-bar{
+    background:rgba(26,26,26,0.8);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding:10px 16px;
+    display:flex;
+    justify-content:space-around;
+    gap:12px;
+    position:sticky;
+    top:56px;
+    z-index:99;
+}
+.currency-item{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:8px 12px;
+    background:rgba(76,175,80,0.1);
+    border-radius:12px;
+    border:1px solid rgba(76,175,80,0.2);
+    transition:all 0.3s ease;
+}
+.currency-item:active{
+    transform:scale(0.95);
+    box-shadow:var(--accent-glow);
+}
+.currency-icon{
+    font-size:20px;
+    animation:float 3s ease-in-out infinite;
+}
+.currency-item:nth-child(2) .currency-icon{animation-delay:1.5s;}
+@keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-4px);}
+}
+.currency-value{
+    font-weight:700;
+    font-size:16px;
+    color:var(--primary);
+}
+/* Main Content */
+main{
+    position:relative;
+    z-index:1;
+    padding:16px;
+    padding-bottom:80px;
+}
+/* Featured Game */
+.featured{
+    background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(255,152,0,0.1));
+    border:1px solid rgba(76,175,80,0.3);
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:24px;
     position:relative;
     overflow:hidden;
 }
-.option::after{
+.featured::before{
     content:'';
     position:absolute;
-    top:-50%;right:-50%;
-    width:100%;height:100%;
-    background:linear-gradient(45deg, transparent, rgba(76,175,80,0.03), transparent);
+    top:-50%;
+    right:-50%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(45deg,transparent,rgba(255,255,255,0.03),transparent);
     transform:rotate(45deg);
     animation:shine 3s infinite;
 }
 @keyframes shine{
     0%{transform:translateX(-100%) rotate(45deg);}
-    100%{transform:translateX(100%) rotate(45deg);}
+    100%{transform:translateX(200%) rotate(45deg);}
 }
-.option:active{
-    transform:scale(0.96);
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+.featured-label{
+    display:inline-block;
+    background:var(--primary);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    padding:4px 12px;
+    border-radius:20px;
+    margin-bottom:12px;
 }
-.option.selected{
-    background:linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    border:1px solid rgba(76,175,80,0.2);
+.featured h2{
+    font-size:22px;
+    margin-bottom:8px;
 }
-.option-title{
-    font-weight:600;
-    font-size:16px;
-    position:relative;
-    z-index:1;
+.featured p{
+    color:var(--text-muted);
+    margin-bottom:16px;
+    line-height:1.5;
 }
-.option button{
-    background:linear-gradient(135deg, #4CAF50, #66BB6A);
+.featured-btn{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
     color:#fff;
     border:none;
-    padding:8px 16px;
-    border-radius:14px;
-    font-size:14px;
+    padding:12px 24px;
+    border-radius:12px;
+    font-size:16px;
     font-weight:700;
     cursor:pointer;
-    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-    box-shadow:0 4px 12px rgba(76,175,80,0.3);
-    position:relative;
-    z-index:1;
+    box-shadow:0 4px 20px rgba(76,175,80,0.4);
+    transition:all 0.3s ease;
+}
+.featured-btn:active{
+    transform:scale(0.95);
+}
+/* Section Title */
+.section-title{
+    font-size:20px;
+    font-weight:700;
+    margin:24px 0 16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.section-title span{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+/* Games Grid */
+.games-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:24px;
+}
+.game-card{
+    background:var(--card-bg);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:16px;
     overflow:hidden;
+    transition:all 0.3s ease;
+    cursor:pointer;
+    position:relative;
 }
-.option button::before{
-    content:'';
-    position:absolute;
-    top:0;left:-100%;
-    width:100%;height:100%;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition:left 0.6s;
+.game-card:active{
+    transform:scale(0.95);
+    box-shadow:0 8px 24px rgba(76,175,80,0.3);
 }
-.option button:hover::before{
-    left:100%;
-}
-.option button:active{
-    transform:scale(0.92);
-    box-shadow:0 2px 6px rgba(76,175,80,0.4);
-}
-.page-transition{
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    background:linear-gradient(135deg, #4CAF50, #66BB6A);
-    z-index:9999;
+.game-card-img{
+    width:100%;
+    height:100px;
+    background:linear-gradient(135deg,rgba(76,175,80,0.1),rgba(255,152,0,0.1));
     display:flex;
     align-items:center;
     justify-content:center;
-    opacity:0;
+    position:relative;
+    overflow:hidden;
+}
+.game-card-img img{
+    width:60%;
+    height:60%;
+    object-fit:contain;
+}
+.game-card-info{
+    padding:12px;
+}
+.game-title{
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.game-category{
+    font-size:11px;
+    color:var(--text-muted);
+}
+/* Quick Actions */
+.quick-actions{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:24px;
+}
+.action-card{
+    background:linear-gradient(135deg,var(--card-bg),rgba(76,175,80,0.05));
+    border:1px solid rgba(76,175,80,0.3);
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+    cursor:pointer;
+    transition:all 0.3s ease;
+}
+.action-card:active{
+    transform:scale(0.95);
+    box-shadow:var(--accent-glow);
+}
+.action-icon{
+    font-size:32px;
+    margin-bottom:8px;
+}
+.action-title{
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:4px;
+}
+.action-desc{
+    font-size:11px;
+    color:var(--text-muted);
+}
+/* Modal */
+.modal{
+    position:fixed;
+    top:0;left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    backdrop-filter:blur(10px);
+    z-index:1000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    animation:fadeIn 0.3s ease;
+}
+.modal.active{
+    display:flex;
+}
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+.modal-content{
+    background:var(--card-bg);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:24px;
+    max-width:400px;
+    width:100%;
+    max-height:80vh;
+    overflow-y:auto;
+    animation:slideUp 0.3s ease;
+}
+@keyframes slideUp{
+    from{transform:translateY(50px);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
+}
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+.modal-title{
+    font-size:20px;
+    font-weight:700;
+}
+.close-btn{
+    font-size:24px;
+    cursor:pointer;
+    color:var(--text-muted);
+    transition:color 0.3s;
+}
+.close-btn:hover{
+    color:var(--text);
+}
+/* Shop Items */
+.shop-item{
+    background:rgba(76,175,80,0.05);
+    border:1px solid rgba(76,175,80,0.2);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.shop-item-info{
+    flex:1;
+}
+.shop-item-title{
+    font-weight:600;
+    margin-bottom:4px;
+}
+.shop-item-price{
+    font-size:14px;
+    color:var(--primary);
+}
+.shop-btn{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s ease;
+}
+.shop-btn:active{
+    transform:scale(0.9);
+}
+/* Reward Card */
+.reward-card{
+    background:linear-gradient(135deg,rgba(255,152,0,0.15),rgba(76,175,80,0.1));
+    border:1px solid rgba(255,152,0,0.3);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:12px;
+    text-align:center;
+}
+.reward-icon{
+    font-size:48px;
+    margin-bottom:12px;
+}
+.reward-amount{
+    font-size:24px;
+    font-weight:700;
+    color:var(--secondary);
+    margin-bottom:8px;
+}
+.reward-text{
+    color:var(--text-muted);
+    margin-bottom:16px;
+}
+.claim-btn{
+    background:linear-gradient(135deg,var(--secondary),#F57C00);
+    color:#fff;
+    border:none;
+    padding:12px 32px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 4px 20px rgba(255,152,0,0.4);
+    transition:all 0.3s ease;
+}
+.claim-btn:active{
+    transform:scale(0.95);
+}
+.claim-btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+}
+/* Particles */
+.particle{
+    position:fixed;
     pointer-events:none;
-    transition:opacity 0.5s cubic-bezier(0.4,0,0.2,1);
+    z-index:9999;
+    font-size:24px;
+    animation:particleFloat 2s ease-out forwards;
 }
-.page-transition::before{
-    content:'';
-    position:absolute;
-    width:100%;height:100%;
-    background:radial-gradient(circle at center, transparent 0%, rgba(255,255,255,0.1) 100%);
-    animation:ripple 1.5s ease-out infinite;
+@keyframes particleFloat{
+    0%{transform:translateY(0) scale(1);opacity:1;}
+    100%{transform:translateY(-100px) scale(0);opacity:0;}
 }
-@keyframes ripple{
-    0%{transform:scale(0.8);opacity:1;}
-    100%{transform:scale(1.5);opacity:0;}
+/* Toast Notification */
+.toast{
+    position:fixed;
+    bottom:100px;
+    left:50%;
+    transform:translateX(-50%) translateY(200px);
+    background:rgba(76,175,80,0.95);
+    color:#fff;
+    padding:12px 24px;
+    border-radius:12px;
+    font-weight:600;
+    z-index:9999;
+    transition:transform 0.3s ease;
+    box-shadow:0 4px 20px rgba(76,175,80,0.5);
 }
-.page-transition.active{
-    opacity:1;
-    pointer-events:auto;
-}
-.loader{
-    width:50px;
-    height:50px;
-    border:4px solid rgba(255,255,255,0.3);
-    border-top:4px solid #fff;
-    border-radius:50%;
-    animation:spin 0.8s linear infinite;
-}
-@keyframes spin{
-    to{transform:rotate(360deg);}
+.toast.show{
+    transform:translateX(-50%) translateY(0);
 }
 </style>
 </head>
 <body>
+<div class="bg-animation"></div>
 
-<div class="page-transition" id="pageTransition">
-    <div class="loader"></div>
-</div>
-
-<div class="top-half" id="topHalf">
-    <div class="game-preview" id="gamePreview">
-        <img src="logo.png" alt="Markkade.io Logo" id="previewImage">
-        <div class="game-details" id="gameDetails" style="display:none;">
-            <h2 class="preview-title" id="previewTitle"></h2>
-            <p class="preview-desc" id="previewDesc"></p>
+<header>
+    <div class="header-content">
+        <div class="logo-title">
+            <img src="logo.png" alt="Logo">
+            <h1>Markkade.io</h1>
+        </div>
+        <div class="header-actions">
+            <div class="icon-btn" id="rewardsBtn">
+                🎁
+                <span class="badge" id="rewardBadge" style="display:none;">!</span>
+            </div>
+            <div class="icon-btn" id="shopBtn">
+                🛒
+            </div>
         </div>
     </div>
-</div>
+</header>
 
 <div class="currency-bar">
     <div class="currency-item">
         <span class="currency-icon">💰</span>
-        <span id="playerCash">0</span>
+        <span class="currency-value" id="playerCash">0</span>
     </div>
     <div class="currency-item">
         <span class="currency-icon">🪙</span>
-        <span id="playerCoins">0</span>
+        <span class="currency-value" id="playerCoins">0</span>
     </div>
 </div>
 
-<div class="bottom-half">
-    <div class="option" 
-         data-cover="Cover art/EmojiSlots.png" 
-         data-link="EmojiSlots/emoji-slots.html"
-         data-title="🎟️ Emoji Slots"
-         data-desc="Spin the reels to reveal hidden prizes! Test your luck with our exciting emoji slot machine collection.">
-        <span class="option-title">🎟️ Emoji Slots</span>
-        <button>Select</button>
-    </div>
-    <div class="option" 
-         data-cover="logo.png" 
-         data-link="MarkksSlotMachine/markks-slot-machine-razr.html"
-         data-title="🎰 Markk's Royal Slots - Razr Edition"
-         data-desc="Professional casino slot machine designed for Motorola Razr 2024. Features dual-screen gameplay, haptic feedback, bonus rounds, and authentic casino experience.">
-        <span class="option-title">🎰 Markk's Royal Slots</span>
-        <button>Select</button>
-    </div>
-    <div class="option" 
-         data-cover="logo.png" 
-         data-link="GPT5HighSlots/neon-crown-royale-razr.html"
-         data-title="👑 Neon Crown Royale — GPT-5 HIGH"
-         data-desc="Premium casino slot optimized for Motorola Razr 2024. Realistic reels, neon cabinet, rich audio, haptics, top-screen effects, multi-lines & jackpots.">
-        <span class="option-title">👑 Neon Crown Royale — GPT-5 HIGH</span>
-        <button>Select</button>
-    </div>
-    <div class="option" 
-         data-cover="Cover art/Annex.png" 
-         data-link="Annex/annex.html"
-         data-title="🦁 The Annex"
-         data-desc="Financial Services & Currency Exchange. Claim daily bonuses, manage your currencies, and add cash to your account.">
-        <span class="option-title">🦁 The Annex</span>
-        <button>Select</button>
+<main>
+    <div class="featured">
+        <span class="featured-label">⭐ FEATURED</span>
+        <h2 id="featuredTitle">Welcome to Markkade.io!</h2>
+        <p id="featuredDesc">Your ultimate mobile game arcade. Play slots, win rewards, and enjoy premium gaming!</p>
+        <button class="featured-btn" id="featuredBtn">Play Now</button>
     </div>
 
-    <!-- Navigation: All Games and Categories -->
-    <div class="option"
-         data-cover="logo.png"
-         data-link="all-games.html"
-         data-title="🗂️ All Games"
-         data-desc="Browse the complete Markkade.io library.">
-        <span class="option-title">🗂️ All Games</span>
-        <button>Select</button>
+    <div class="section-title">
+        <span>🎮</span> All Games
     </div>
-    <div class="option"
-         data-cover="logo.png"
-         data-link="categories/ai-slots.html"
-         data-title="🤖 AI Slots"
-         data-desc="AI-powered and GPT‑5 enhanced slot machines.">
-        <span class="option-title">🤖 AI Slots</span>
-        <button>Select</button>
+    <div class="games-grid" id="gamesGrid"></div>
+
+    <div class="section-title">
+        <span>⚡</span> Quick Actions
     </div>
-    <div class="option"
-         data-cover="Cover art/EmojiSlots.png"
-         data-link="categories/emoji-slots.html"
-         data-title="😀 Emoji & Scratchers"
-         data-desc="Fun emoji slots and instant scratchers.">
-        <span class="option-title">😀 Emoji & Scratchers</span>
-        <button>Select</button>
+    <div class="quick-actions">
+        <div class="action-card" id="viewAllBtn">
+            <div class="action-icon">📚</div>
+            <div class="action-title">All Games</div>
+            <div class="action-desc">Browse complete library</div>
+        </div>
+        <div class="action-card" id="annexBtn">
+            <div class="action-icon">🏦</div>
+            <div class="action-title">The Annex</div>
+            <div class="action-desc">Financial services</div>
+        </div>
     </div>
-    <div class="option"
-         data-cover="logo.png"
-         data-link="categories/fruit-slots.html"
-         data-title="🍒 Fruit Slots"
-         data-desc="Juicy fruit-themed reels and classics.">
-        <span class="option-title">🍒 Fruit Slots</span>
-        <button>Select</button>
-    </div>
-    <div class="option"
-         data-cover="logo.png"
-         data-link="categories/food-slots.html"
-         data-title="🍕 Food & Restaurant"
-         data-desc="Delicious food-themed casino experiences.">
-        <span class="option-title">🍕 Food & Restaurant</span>
-        <button>Select</button>
-    </div>
-    <div class="option"
-         data-cover="logo.png"
-         data-link="categories/classic-slots.html"
-         data-title="🎞️ Classic & Razr"
-         data-desc="Professional slots and Motorola Razr editions.">
-        <span class="option-title">🎞️ Classic & Razr</span>
-        <button>Select</button>
-    </div>
-    <div class="option"
-         data-cover="Cover art/Annex.png"
-         data-link="categories/bank-vault.html"
-         data-title="🏦 Bank & Vault"
-         data-desc="Vaults, currency, and financial services.">
-        <span class="option-title">🏦 Bank & Vault</span>
-        <button>Select</button>
-    </div>
-    <div class="option"
-         data-cover="logo.png"
-         data-link="categories/emotions.html"
-         data-title="💖 Emotions"
-         data-desc="Mood and emotion-driven slots.">
-        <span class="option-title">💖 Emotions</span>
-        <button>Select</button>
+</main>
+
+<!-- Shop Modal -->
+<div class="modal" id="shopModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">🛒 Shop</div>
+            <div class="close-btn" id="closeShop">×</div>
+        </div>
+        <div id="shopItems"></div>
     </div>
 </div>
 
+<!-- Rewards Modal -->
+<div class="modal" id="rewardsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">🎁 Rewards</div>
+            <div class="close-btn" id="closeRewards">×</div>
+        </div>
+        <div id="rewardsContent"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="games-data.js"></script>
 <script>
-let selectedOption = null;
+// ========== AUDIO EFFECTS ==========
+const sounds = {
+    click: () => playTone(200, 0.1),
+    success: () => playTone(400, 0.2),
+    reward: () => playTone(600, 0.3),
+    buy: () => playTone(500, 0.25)
+};
 
-const pageTransition = document.getElementById('pageTransition');
-
-function showPageTransition(){
-    pageTransition.classList.add('active');
-}
-
-function updatePreview(cover, title, desc) {
-    const previewImage = document.getElementById('previewImage');
-    const gameDetails = document.getElementById('gameDetails');
-    const previewTitle = document.getElementById('previewTitle');
-    const previewDesc = document.getElementById('previewDesc');
+function playTone(freq, duration) {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
     
-    previewImage.src = cover;
-    previewTitle.textContent = title;
-    previewDesc.textContent = desc;
-    gameDetails.style.display = 'block';
-}
-
-function resetPreview() {
-    const previewImage = document.getElementById('previewImage');
-    const gameDetails = document.getElementById('gameDetails');
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
     
-    previewImage.src = 'logo.png';
-    gameDetails.style.display = 'none';
+    oscillator.frequency.value = freq;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+    
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + duration);
 }
 
-document.querySelectorAll('.option').forEach(option => {
-    option.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') return;
-        
-        const cover = option.dataset.cover;
-        const title = option.dataset.title;
-        const desc = option.dataset.desc;
-        
-        // Deselect all
-        document.querySelectorAll('.option').forEach(opt => {
-            opt.classList.remove('selected');
-            opt.querySelector('button').textContent = 'Select';
-        });
-        
-        // If clicking already selected, deselect
-        if (selectedOption === option) {
-            selectedOption = null;
-            resetPreview();
-            return;
+// ========== VIBRATION EFFECTS ==========
+function vibrate(pattern = [50]) {
+    if ('vibrate' in navigator) {
+        navigator.vibrate(pattern);
+    }
+}
+
+// ========== PARTICLE EFFECTS ==========
+function createParticles(x, y, icon = '💰') {
+    for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.textContent = icon;
+        particle.style.left = x + (Math.random() - 0.5) * 100 + 'px';
+        particle.style.top = y + 'px';
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 2000);
+    }
+}
+
+// ========== TOAST NOTIFICATION ==========
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========== CURRENCY SYSTEM ==========
+let playerCash = Number(localStorage.getItem('localPlayerCash')) || 0;
+let playerCoins = Number(localStorage.getItem('localPlayerCoins')) || 0;
+
+function updateCurrency() {
+    document.getElementById('playerCash').textContent = playerCash.toLocaleString();
+    document.getElementById('playerCoins').textContent = playerCoins.toLocaleString();
+    localStorage.setItem('localPlayerCash', playerCash);
+    localStorage.setItem('localPlayerCoins', playerCoins);
+}
+
+function addCurrency(cash = 0, coins = 0) {
+    playerCash += cash;
+    playerCoins += coins;
+    updateCurrency();
+}
+
+// ========== FIRST TIME BONUS ==========
+function checkFirstTimeBonus() {
+    const hasReceivedBonus = localStorage.getItem('firstTimeBonus');
+    if (!hasReceivedBonus) {
+        setTimeout(() => {
+            addCurrency(1000, 500);
+            showToast('🎉 Welcome Bonus: 💰1000 + 🪙500!');
+            sounds.reward();
+            vibrate([100, 50, 100]);
+            createParticles(window.innerWidth / 2, window.innerHeight / 2, '🎉');
+            localStorage.setItem('firstTimeBonus', 'true');
+        }, 500);
+    }
+}
+
+// ========== DAILY REWARDS ==========
+function checkDailyReward() {
+    const lastClaim = localStorage.getItem('lastDailyReward');
+    const today = new Date().toDateString();
+    
+    if (lastClaim !== today) {
+        document.getElementById('rewardBadge').style.display = 'block';
+        return true;
+    }
+    return false;
+}
+
+function claimDailyReward() {
+    const today = new Date().toDateString();
+    localStorage.setItem('lastDailyReward', today);
+    
+    const cash = Math.floor(Math.random() * 300) + 200;
+    const coins = Math.floor(Math.random() * 150) + 100;
+    
+    addCurrency(cash, coins);
+    showToast(`Daily Reward: 💰${cash} + 🪙${coins}!`);
+    sounds.reward();
+    vibrate([100, 50, 100, 50, 100]);
+    createParticles(window.innerWidth / 2, window.innerHeight / 2, '🎁');
+    
+    document.getElementById('rewardBadge').style.display = 'none';
+    loadRewards();
+}
+
+// ========== SHOP SYSTEM ==========
+const shopItems = [
+    { id: 1, title: 'Coin Pack Small', coins: 500, price: 100, currency: 'cash' },
+    { id: 2, title: 'Coin Pack Medium', coins: 1200, price: 200, currency: 'cash' },
+    { id: 3, title: 'Coin Pack Large', coins: 3000, price: 450, currency: 'cash' },
+    { id: 4, title: 'Cash Pack Small', cash: 500, price: 500, currency: 'coins' },
+    { id: 5, title: 'Cash Pack Medium', cash: 1200, price: 1000, currency: 'coins' },
+    { id: 6, title: 'Cash Pack Large', cash: 3000, price: 2200, currency: 'coins' }
+];
+
+function loadShop() {
+    const container = document.getElementById('shopItems');
+    container.innerHTML = shopItems.map(item => `
+        <div class="shop-item">
+            <div class="shop-item-info">
+                <div class="shop-item-title">${item.title}</div>
+                <div class="shop-item-price">
+                    ${item.currency === 'cash' ? '💰' : '🪙'} ${item.price}
+                </div>
+            </div>
+            <button class="shop-btn" onclick="buyItem(${item.id})">
+                ${item.coins ? '🪙 ' + item.coins : '💰 ' + item.cash}
+            </button>
+        </div>
+    `).join('');
+}
+
+function buyItem(id) {
+    const item = shopItems.find(i => i.id === id);
+    
+    if (item.currency === 'cash' && playerCash >= item.price) {
+        playerCash -= item.price;
+        if (item.coins) playerCoins += item.coins;
+        if (item.cash) playerCash += item.cash;
+        updateCurrency();
+        showToast(`✅ Purchased ${item.title}!`);
+        sounds.buy();
+        vibrate([50, 30, 50]);
+        createParticles(window.innerWidth / 2, window.innerHeight / 2, item.coins ? '🪙' : '💰');
+    } else if (item.currency === 'coins' && playerCoins >= item.price) {
+        playerCoins -= item.price;
+        if (item.coins) playerCoins += item.coins;
+        if (item.cash) playerCash += item.cash;
+        updateCurrency();
+        showToast(`✅ Purchased ${item.title}!`);
+        sounds.buy();
+        vibrate([50, 30, 50]);
+        createParticles(window.innerWidth / 2, window.innerHeight / 2, item.coins ? '🪙' : '💰');
+    } else {
+        showToast('❌ Not enough currency!');
+        vibrate([200]);
+    }
+}
+
+// ========== REWARDS DISPLAY ==========
+function loadRewards() {
+    const container = document.getElementById('rewardsContent');
+    const canClaim = checkDailyReward();
+    
+    container.innerHTML = `
+        <div class="reward-card">
+            <div class="reward-icon">🎁</div>
+            <div class="reward-amount">Daily Reward</div>
+            <div class="reward-text">
+                ${canClaim ? 'Claim your daily bonus!' : 'Come back tomorrow!'}
+            </div>
+            <button class="claim-btn" ${!canClaim ? 'disabled' : ''} onclick="claimDailyReward()">
+                ${canClaim ? 'Claim Now' : 'Already Claimed'}
+            </button>
+        </div>
+    `;
+}
+
+// ========== GAMES DISPLAY ==========
+function loadGames() {
+    const games = window.MARKKADE?.GAMES || [];
+    const categories = window.MARKKADE?.CATEGORIES || [];
+    
+    const container = document.getElementById('gamesGrid');
+    
+    const displayGames = games.slice(0, 8);
+    
+    container.innerHTML = displayGames.map(game => {
+        const category = categories.find(c => c.slug === game.category);
+        return `
+            <div class="game-card" onclick="playGame('${game.href}', '${game.title}')">
+                <div class="game-card-img">
+                    <img src="${game.cover}" alt="${game.title}">
+                </div>
+                <div class="game-card-info">
+                    <div class="game-title">${game.title}</div>
+                    <div class="game-category">${category?.name || ''}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Set featured game
+    if (games.length > 0) {
+        const featured = games[0];
+        document.getElementById('featuredTitle').textContent = featured.title;
+        document.getElementById('featuredDesc').textContent = featured.desc;
+        document.getElementById('featuredBtn').onclick = () => playGame(featured.href, featured.title);
+    }
+}
+
+// ========== NAVIGATION ==========
+function playGame(href, title) {
+    sounds.click();
+    vibrate([30]);
+    showToast(`🎮 Loading ${title}...`);
+    setTimeout(() => window.location.href = href, 300);
+}
+
+// ========== EVENT LISTENERS ==========
+document.getElementById('shopBtn').addEventListener('click', () => {
+    sounds.click();
+    vibrate([30]);
+    loadShop();
+    document.getElementById('shopModal').classList.add('active');
+});
+
+document.getElementById('closeShop').addEventListener('click', () => {
+    sounds.click();
+    vibrate([30]);
+    document.getElementById('shopModal').classList.remove('active');
+});
+
+document.getElementById('rewardsBtn').addEventListener('click', () => {
+    sounds.click();
+    vibrate([30]);
+    loadRewards();
+    document.getElementById('rewardsModal').classList.add('active');
+});
+
+document.getElementById('closeRewards').addEventListener('click', () => {
+    sounds.click();
+    vibrate([30]);
+    document.getElementById('rewardsModal').classList.remove('active');
+});
+
+document.getElementById('viewAllBtn').addEventListener('click', () => {
+    sounds.click();
+    vibrate([30]);
+    window.location.href = 'all-games.html';
+});
+
+document.getElementById('annexBtn').addEventListener('click', () => {
+    sounds.click();
+    vibrate([30]);
+    window.location.href = 'Annex/annex.html';
+});
+
+// Close modals on background click
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            sounds.click();
+            vibrate([30]);
+            modal.classList.remove('active');
         }
-        
-        // Select new
-        selectedOption = option;
-        option.classList.add('selected');
-        option.querySelector('button').textContent = 'Open';
-        updatePreview(cover, title, desc);
     });
 });
 
-document.querySelectorAll('.option button').forEach(btn=>{
-    btn.addEventListener('click',(e)=>{
-        e.stopPropagation();
-        const option = btn.parentElement;
-        const link = option.dataset.link;
-
-        showPageTransition();
-        setTimeout(()=>window.location.href=link,500);
+// Add touch feedback to all clickable elements
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('button, .game-card, .action-card, .currency-item, .icon-btn').forEach(el => {
+        el.addEventListener('touchstart', () => vibrate([10]));
     });
 });
 
-// Simple currency initialization
-let localPlayerCash = Number(localStorage.getItem('localPlayerCash')) || 0;
-let localPlayerCoins = Number(localStorage.getItem('localPlayerCoins')) || 0;
-document.getElementById('playerCash').textContent = localPlayerCash.toLocaleString();
-document.getElementById('playerCoins').textContent = localPlayerCoins.toLocaleString();
+// ========== INITIALIZATION ==========
+updateCurrency();
+loadGames();
+checkFirstTimeBonus();
+checkDailyReward();
 </script>
 </body>
 </html>
